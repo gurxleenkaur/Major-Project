@@ -2016,3 +2016,569 @@ textarea::placeholder {
     transition-duration: 0.01ms !important;
   }
 }
+
+
+
+/* StudySpark AI — accessible blue and white theme */
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #F5F7FB;
+  --surface: #FFFFFF;
+  --surface-strong: #FFFFFF;
+  --text: #172033;
+  --text-soft: #334155;
+  --muted: #526176;
+  --border: #E2E8F0;
+  --border-hover: #93B4F5;
+  --accent: #2563EB;
+  --accent-light: #1D4ED8;
+  --accent-dark: #1E40AF;
+  --success: #15803D;
+  --danger: #B91C1C;
+  --shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+
+  color: var(--text);
+  background: var(--bg);
+}
+
+[data-theme="light"] body {
+  color: var(--text);
+  background: var(--bg);
+}
+
+[data-theme="light"] .sidebar,
+[data-theme="light"] .topbar {
+  color: var(--text);
+  background: #FFFFFF;
+  border-color: var(--border);
+}
+
+[data-theme="light"] .brand,
+[data-theme="light"] .profile strong,
+[data-theme="light"] .nav-item,
+[data-theme="light"] .help-card h3,
+[data-theme="light"] .section-heading h2,
+[data-theme="light"] .panel-title-row h2 {
+  color: var(--text);
+}
+
+[data-theme="light"] .sidebar-label,
+[data-theme="light"] .section-kicker,
+[data-theme="light"] .eyebrow,
+[data-theme="light"] .input-label {
+  color: #475569;
+}
+
+[data-theme="light"] .nav-item:hover {
+  color: #1D4ED8;
+  background: #EFF6FF;
+}
+
+[data-theme="light"] .nav-item.active {
+  color: #1D4ED8;
+  background: #DBEAFE;
+  border-color: #BFDBFE;
+  box-shadow: inset 3px 0 0 #2563EB;
+}
+
+[data-theme="light"] .learn-panel,
+[data-theme="light"] .progress-panel,
+[data-theme="light"] .quiz-preview,
+[data-theme="light"] .empty-state,
+[data-theme="light"] .quiz-container,
+[data-theme="light"] .result-container,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .flashcard-study,
+[data-theme="light"] .flashcard-source-panel,
+[data-theme="light"] .recommendation-card {
+  color: var(--text);
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+[data-theme="light"] .help-card,
+[data-theme="light"] .tip-panel {
+  color: var(--text);
+  background: #F1F5F9;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+[data-theme="light"] .help-card p,
+[data-theme="light"] .tip-panel p,
+[data-theme="light"] .subtitle,
+[data-theme="light"] .page-intro p,
+[data-theme="light"] .section-heading p,
+[data-theme="light"] .tool-text,
+[data-theme="light"] .privacy-note,
+[data-theme="light"] .profile span {
+  color: #526176;
+}
+
+[data-theme="light"] .topic-input-wrap,
+[data-theme="light"] .quiz-settings select,
+[data-theme="light"] .answer-option,
+[data-theme="light"] .quiz-option,
+[data-theme="light"] .theme-toggle,
+[data-theme="light"] .secondary-button {
+  color: var(--text);
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #64748B;
+  opacity: 1;
+}
+
+[data-theme="light"] .topic-input-wrap:focus-within {
+  background: #FFFFFF;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+[data-theme="light"] .upload-area {
+  color: #334155;
+  background: #F8FAFC;
+  border-color: #93B4F5;
+}
+
+[data-theme="light"] .upload-area:hover {
+  background: #EFF6FF;
+  border-color: #2563EB;
+}
+
+[data-theme="light"] .upload-title,
+[data-theme="light"] .empty-progress strong {
+  color: #172033;
+}
+
+[data-theme="light"] .upload-subtitle,
+[data-theme="light"] .or-divider,
+[data-theme="light"] .empty-progress p {
+  color: #526176;
+}
+
+[data-theme="light"] .primary-button {
+  color: #FFFFFF;
+  background: #2563EB;
+  border-color: #2563EB;
+  box-shadow: 0 3px 0 #1D4ED8;
+}
+
+[data-theme="light"] .primary-button:hover {
+  background: #1D4ED8;
+}
+
+[data-theme="light"] .tool-card {
+  color: var(--text);
+  background: #FFFFFF;
+  border-color: var(--border);
+  box-shadow: var(--shadow);
+}
+
+[data-theme="light"] .tool-card:hover {
+  background: #F8FAFC;
+  border-color: #93B4F5;
+}
+
+[data-theme="light"] .tool-title,
+[data-theme="light"] .result-container > h2 {
+  color: #172033;
+}
+
+[data-theme="light"] .tool-arrow,
+[data-theme="light"] .sparkle,
+[data-theme="light"] .search-icon {
+  color: #2563EB;
+}
+
+[data-theme="light"] .quiz-option.selected {
+  color: #1D4ED8;
+  background: #EFF6FF;
+  border-color: #60A5FA;
+}
+
+[data-theme="light"] .option-letter,
+[data-theme="light"] .answer-option > span {
+  color: #1D4ED8;
+  background: #DBEAFE;
+}
+
+[data-theme="light"] .quiz-score {
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+}
+
+[data-theme="light"] .quiz-score h2 {
+  color: #1D4ED8;
+}
+
+[data-theme="light"] .quiz-explanation {
+  color: #334155;
+  background: #F1F5F9;
+}
+
+[data-theme="light"] .quiz-explanation strong {
+  color: #1D4ED8;
+}
+
+[data-theme="light"] .markdown-result {
+  color: #334155;
+}
+
+[data-theme="light"] .markdown-result a {
+  color: #1D4ED8;
+}
+
+[data-theme="light"] .markdown-result th {
+  color: #172033;
+  background: #DBEAFE;
+}
+
+[data-theme="light"] .markdown-result pre {
+  color: #F8FAFC;
+  background: #172033;
+}
+
+[data-theme="light"] .feedback-message {
+  color: #1D4ED8;
+  background: #EFF6FF;
+  border-color: #BFDBFE;
+}
+
+[data-theme="light"] .flashcard {
+  color: #172033;
+  background: #FFFFFF;
+  border-color: #BFDBFE;
+}
+
+[data-theme="light"] .flashcard-label {
+  color: #1D4ED8;
+  background: #DBEAFE;
+}
+
+[data-theme="light"] .real-flashcard-front {
+  color: #172033;
+  background: #FFFFFF;
+}
+
+[data-theme="light"] .real-flashcard-back {
+  color: #FFFFFF;
+  background: #1E40AF;
+}
+
+[data-theme="light"] .flashcard-progress-track {
+  background: #E2E8F0;
+}
+
+[data-theme="light"] .flashcard-progress-fill {
+  background: #2563EB;
+}
+
+[data-theme="light"] .art-book {
+  background: #2563EB;
+}
+
+[data-theme="light"] .art-orbit {
+  border-color: #BFDBFE;
+}
+
+[data-theme="light"] .brand-icon {
+  background: #2563EB;
+}
+
+[data-theme="light"] .brand-accent,
+[data-theme="light"] .welcome-row h1 span {
+  color: #2563EB;
+}
+
+[data-theme="light"] button:focus-visible,
+[data-theme="light"] input:focus-visible,
+[data-theme="light"] textarea:focus-visible,
+[data-theme="light"] select:focus-visible {
+  outline-color: #2563EB;
+}
+
+[data-theme="light"] ::selection {
+  color: #172033;
+  background: #BFDBFE;
+}
+
+
+
+
+/* StudySpark AI — improved dark theme */
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0F172A;
+  --surface: #1E293B;
+  --surface-strong: #263449;
+  --text: #F1F5F9;
+  --text-soft: #E2E8F0;
+  --muted: #CBD5E1;
+  --border: #475569;
+  --border-hover: #60A5FA;
+  --accent: #60A5FA;
+  --accent-light: #93C5FD;
+  --accent-dark: #3B82F6;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] body {
+  color: var(--text);
+  background: #0F172A;
+}
+
+/* Sidebar and header */
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] .topbar {
+  color: var(--text);
+  background: #111C30;
+  border-color: #334155;
+}
+
+/* Main cards and panels */
+[data-theme="dark"] .learn-panel,
+[data-theme="dark"] .progress-panel,
+[data-theme="dark"] .quiz-preview,
+[data-theme="dark"] .empty-state,
+[data-theme="dark"] .quiz-container,
+[data-theme="dark"] .result-container,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .flashcard-study,
+[data-theme="dark"] .flashcard-source-panel,
+[data-theme="dark"] .recommendation-card,
+[data-theme="dark"] .tool-card {
+  color: #F1F5F9;
+  background: #1E293B;
+  border-color: #475569;
+  box-shadow: var(--shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Headings */
+[data-theme="dark"] .brand,
+[data-theme="dark"] .profile strong,
+[data-theme="dark"] .nav-item,
+[data-theme="dark"] .help-card h3,
+[data-theme="dark"] .section-heading h2,
+[data-theme="dark"] .panel-title-row h2,
+[data-theme="dark"] .tool-title,
+[data-theme="dark"] .result-container > h2,
+[data-theme="dark"] .upload-title {
+  color: #F8FAFC;
+}
+
+/* Secondary text */
+[data-theme="dark"] .sidebar-label,
+[data-theme="dark"] .section-kicker,
+[data-theme="dark"] .eyebrow,
+[data-theme="dark"] .input-label,
+[data-theme="dark"] .subtitle,
+[data-theme="dark"] .page-intro p,
+[data-theme="dark"] .section-heading p,
+[data-theme="dark"] .tool-text,
+[data-theme="dark"] .privacy-note,
+[data-theme="dark"] .profile span,
+[data-theme="dark"] .upload-subtitle,
+[data-theme="dark"] .empty-progress p {
+  color: #CBD5E1;
+}
+
+/* Sidebar navigation */
+[data-theme="dark"] .nav-item:hover {
+  color: #BFDBFE;
+  background: #263449;
+}
+
+[data-theme="dark"] .nav-item.active {
+  color: #FFFFFF;
+  background: #1E40AF;
+  border-color: #60A5FA;
+  box-shadow: inset 3px 0 0 #93C5FD;
+}
+
+/* Input fields and secondary buttons */
+[data-theme="dark"] .topic-input-wrap,
+[data-theme="dark"] .quiz-settings select,
+[data-theme="dark"] .answer-option,
+[data-theme="dark"] .quiz-option,
+[data-theme="dark"] .theme-toggle,
+[data-theme="dark"] .secondary-button {
+  color: #F1F5F9;
+  background: #0F172A;
+  border-color: #64748B;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #AAB8CC;
+  opacity: 1;
+}
+
+[data-theme="dark"] .topic-input-wrap:focus-within {
+  border-color: #60A5FA;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+/* PDF upload area */
+[data-theme="dark"] .upload-area {
+  color: #E2E8F0;
+  background: #172338;
+  border-color: #64748B;
+}
+
+[data-theme="dark"] .upload-area:hover {
+  background: #263449;
+  border-color: #60A5FA;
+}
+
+/* Buttons */
+[data-theme="dark"] .primary-button {
+  color: #FFFFFF;
+  background: #2563EB;
+  border-color: #60A5FA;
+  box-shadow: 0 3px 0 #1D4ED8;
+}
+
+[data-theme="dark"] .primary-button:hover {
+  background: #1D4ED8;
+}
+
+/* Study tools */
+[data-theme="dark"] .tool-card:hover {
+  background: #263449;
+  border-color: #60A5FA;
+}
+
+[data-theme="dark"] .tool-arrow,
+[data-theme="dark"] .sparkle,
+[data-theme="dark"] .search-icon,
+[data-theme="dark"] .brand-accent,
+[data-theme="dark"] .welcome-row h1 span {
+  color: #93C5FD;
+}
+
+/* Quiz selections and feedback */
+[data-theme="dark"] .quiz-option.selected {
+  color: #DBEAFE;
+  background: #1E3A5F;
+  border-color: #60A5FA;
+}
+
+[data-theme="dark"] .option-letter,
+[data-theme="dark"] .answer-option > span {
+  color: #FFFFFF;
+  background: #1D4ED8;
+}
+
+[data-theme="dark"] .quiz-score {
+  background: #172C49;
+  border-color: #60A5FA;
+}
+
+[data-theme="dark"] .quiz-score h2,
+[data-theme="dark"] .quiz-explanation strong {
+  color: #93C5FD;
+}
+
+[data-theme="dark"] .quiz-explanation {
+  color: #E2E8F0;
+  background: #172338;
+}
+
+/* Generated study notes */
+[data-theme="dark"] .markdown-result {
+  color: #E2E8F0;
+}
+
+[data-theme="dark"] .markdown-result a {
+  color: #93C5FD;
+}
+
+[data-theme="dark"] .markdown-result th {
+  color: #F8FAFC;
+  background: #263449;
+}
+
+[data-theme="dark"] .markdown-result pre {
+  color: #F1F5F9;
+  background: #0B1220;
+}
+
+[data-theme="dark"] .feedback-message {
+  color: #BFDBFE;
+  background: #172C49;
+  border-color: #3B82F6;
+}
+
+/* Flashcards */
+[data-theme="dark"] .flashcard {
+  color: #F1F5F9;
+  background: #1E293B;
+  border-color: #64748B;
+}
+
+[data-theme="dark"] .flashcard-label {
+  color: #DBEAFE;
+  background: #1D4ED8;
+}
+
+[data-theme="dark"] .real-flashcard-front {
+  color: #F8FAFC;
+  background: #1E293B;
+}
+
+[data-theme="dark"] .real-flashcard-back {
+  color: #FFFFFF;
+  background: #1D4ED8;
+}
+
+[data-theme="dark"] .flashcard-progress-track {
+  background: #475569;
+}
+
+[data-theme="dark"] .flashcard-progress-fill {
+  background: #60A5FA;
+}
+
+/* Help cards and artwork */
+[data-theme="dark"] .help-card,
+[data-theme="dark"] .tip-panel {
+  color: #F1F5F9;
+  background: #172338;
+  border-color: #475569;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .help-card p,
+[data-theme="dark"] .tip-panel p {
+  color: #CBD5E1;
+}
+
+[data-theme="dark"] .art-book,
+[data-theme="dark"] .brand-icon {
+  background: #2563EB;
+}
+
+[data-theme="dark"] .art-orbit {
+  border-color: #475569;
+}
+
+/* Keyboard focus */
+[data-theme="dark"] button:focus-visible,
+[data-theme="dark"] input:focus-visible,
+[data-theme="dark"] textarea:focus-visible,
+[data-theme="dark"] select:focus-visible {
+  outline-color: #93C5FD;
+}
