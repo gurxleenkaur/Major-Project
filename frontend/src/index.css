@@ -1,0 +1,108 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #282642;
+  background: #f5f4fc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --bg: #f5f4fc;
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-solid: #ffffff;
+  --text: #282642;
+  --muted: #88869f;
+  --border: rgba(130, 117, 184, 0.17);
+  --accent: #7865e9;
+  --accent-hover: #6550d4;
+  --shadow: 0 16px 45px rgba(63, 47, 122, 0.09);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(181, 161, 255, 0.20), transparent 36%),
+    radial-gradient(ellipse at 95% 25%, rgba(127, 218, 218, 0.14), transparent 30%),
+    var(--bg);
+  color: var(--text);
+  transition: background 250ms ease, color 250ms ease;
+}
+
+body, button, input, textarea, select {
+  font-family: 'DM Sans', sans-serif;
+}
+
+button, input, textarea, select {
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(120, 101, 233, 0.55);
+  outline-offset: 3px;
+}
+
+a {
+  color: inherit;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+::selection {
+  background: #ded7ff;
+  color: #30245e;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #11101c;
+  --surface: rgba(34, 31, 53, 0.76);
+  --surface-solid: #211e32;
+  --text: #f1efff;
+  --muted: #aaa5c4;
+  --border: rgba(194, 180, 255, 0.15);
+  --accent: #a394ff;
+  --accent-hover: #b6aaff;
+  --shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+}
+
+[data-theme="dark"] body {
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(115, 83, 207, 0.20), transparent 36%),
+    radial-gradient(ellipse at 95% 25%, rgba(47, 140, 148, 0.12), transparent 30%),
+    var(--bg);
+}
