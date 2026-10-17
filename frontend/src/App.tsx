@@ -7,14 +7,27 @@ import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import Predict from "./components/Predict";
+import Auth from "./components/Auth";
+import PredictionHistory from "./components/PredictionHistory"
+import BookRecommendations from "./components/BookRecommendations";
 
 type Tab =
+
   | 'Overview'
+  | 'Productivity Predictor'
+  | 'Prediction History'
+  | 'Book Recommendations'
   | 'Study Materials'
   | 'Quizzes'
   | 'Flashcards'
   | 'Recommendations'
 
+type AuthUser = {
+  id: number;
+  name: string;
+  email: string;
+};
 type StudyAction = 'summary' | 'quiz' | 'flashcards' | 'weak_topics'
 
 type QuizOption = {
@@ -193,6 +206,65 @@ function renderTextWithBreaks(
 }
 
 function App() {
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const [authChecking, setAuthChecking] = useState(true);
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function verifySession() {
+    const token = localStorage.getItem("studyspark_token");
+
+    if (!token) {
+      if (!cancelled) setAuthChecking(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.user) {
+        throw new Error("Session expired");
+      }
+
+      if (!cancelled) {
+        setAuthUser(data.user);
+        localStorage.setItem("studyspark_user", JSON.stringify(data.user));
+      }
+    } catch {
+      localStorage.removeItem("studyspark_token");
+      localStorage.removeItem("studyspark_user");
+
+      if (!cancelled) setAuthUser(null);
+    } finally {
+      if (!cancelled) setAuthChecking(false);
+    }
+  }
+
+  void verifySession();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+  function handleAuthSuccess(token: string, user: AuthUser) {
+    localStorage.setItem('studyspark_token', token)
+    localStorage.setItem('studyspark_user', JSON.stringify(user))
+    setAuthUser(user)
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('studyspark_token')
+    localStorage.removeItem('studyspark_user')
+    setAuthUser(null)
+    setActiveTab('Overview')
+  }
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
       return localStorage.getItem('studyspark-theme') === 'dark'
@@ -247,7 +319,11 @@ function App() {
   const fileInput = useRef<HTMLInputElement>(null)
 
   const tabs: { name: Tab; icon: string }[] = [
+  
     { name: 'Overview', icon: 'home' },
+    { name: 'Productivity Predictor', icon: 'sparkles' },
+    { name: 'Prediction History', icon: 'file' },
+    { name: 'Book Recommendations', icon: 'book' },
     { name: 'Study Materials', icon: 'book' },
     { name: 'Quizzes', icon: 'brain' },
     { name: 'Flashcards', icon: 'cards' },
@@ -577,6 +653,13 @@ function App() {
   ).length
 
   const currentCard = generatedFlashcards[currentFlashcard]
+  if (authChecking) {
+  return <div className="ss-auth-loading">Loading StudySpark...</div>;
+}
+
+if (!authUser) {
+  return <Auth onAuthSuccess={handleAuthSuccess} />;
+}
 
   return (
     <div className="app-shell" data-theme={theme}>
@@ -639,12 +722,30 @@ function App() {
           </div>
 
           <div className="profile">
-            <div className="avatar">S</div>
-            <div>
-              <strong>StudySpark workspace</strong>
-              <span>Your personal learning space</span>
-            </div>
-          </div>
+            <div className="avatar">
+              {(authUser.name || "S").charAt(0).toUpperCase()}
+              </div>
+
+              <div style={{ minWidth: 0, overflow: "hidden" }}>
+                <strong>{authUser.name}</strong>
+                 <span>{authUser.email}</span>
+                 </div>
+                 <button
+                  type="button"
+                  onClick={handleLogout}
+                   title="Sign out"
+                   style={{
+                    marginLeft: "auto",
+                    border: "none",
+                    background: "transparent",
+                    color: "inherit",
+                    cursor: "pointer",
+                    fontSize: "0.8rem",
+                  }}
+                  >
+                    Logout
+                    </button>
+                    </div>
         </div>
       </aside>
 
@@ -684,6 +785,12 @@ function App() {
             </button>
           </div>
         </header>
+
+        {/* PRODUCTIVITY PREDICTOR */}
+        {activeTab === 'Productivity Predictor' && <Predict />}
+        {activeTab === 'Prediction History' && <PredictionHistory />}
+        {activeTab === 'Book Recommendations' && <BookRecommendations />}
+
 
         {/* OVERVIEW */}
         {activeTab === 'Overview' && (

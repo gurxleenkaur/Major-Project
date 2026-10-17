@@ -1,0 +1,41 @@
+{
+    "best_model": "Logistic Regression",
+    "test_accuracy": 0.7612,
+    "dataset_rows": 20000,
+    "training_rows": 16000,
+    "testing_rows": 4000,
+    "feature_names": [
+        "study_hours",
+        "screen_time",
+        "sleep_hours",
+        "social_media_usage",
+        "stress_level",
+        "attendance"
+    ],
+    "numeric_features": [
+        "study_hours",
+        "screen_time",
+        "sleep_hours",
+        "stress_level",
+        "attendance"
+    ],
+    "categorical_features": [
+        "social_media_usage"
+    ],
+    "target_classes": [
+        "High",
+        "Low",
+        "Medium"
+    ],
+    "candidate_results": {
+        "Logistic Regression": {
+            "accuracy": 0.7612
+        },
+        "Random Forest": {
+            "accuracy": 0.7605
+        },
+        "XGBoost": {
+            "accuracy": 0.755
+        }
+    }
+}

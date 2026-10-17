@@ -1,8 +1,12 @@
-
+from productivity_routes import productivity_bp
+from auth_routes import auth_bp
 import json
 import os
 import re
 from io import BytesIO
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request as flask_request
@@ -54,6 +58,11 @@ CORS(
     ]}},
     supports_credentials=True,
 )
+
+# Register the Productivity Predictor API.
+
+app.register_blueprint(productivity_bp)
+app.register_blueprint(auth_bp)
 # Leave room for multipart form overhead; enforce the 10 MB PDF limit
 # against the uploaded file itself in the upload route below.
 app.config["MAX_CONTENT_LENGTH"] = 11 * 1024 * 1024
@@ -616,3 +625,138 @@ def upload_pdf():
     finally:
         if file is not None:
             file.close()
+
+
+# ==========================================
+# GOOGLE BOOKS API — BOOK RECOMMENDATIONS
+# ==========================================
+
+@app.get("/api/books")
+def get_books():
+    # Read and validate search parameters.
+    query = flask_request.args.get("q", "").strip()
+    subject = flask_request.args.get("subject", "").strip()
+    order_by = flask_request.args.get("orderBy", "relevance").strip()
+
+    try:
+        max_results = int(flask_request.args.get("maxResults", 24))
+    except (TypeError, ValueError):
+        max_results = 24
+
+    max_results = max(1, min(max_results, 40))
+
+    if order_by not in ("relevance", "newest"):
+        order_by = "relevance"
+
+    # Google Books requires a search query.
+    search_query = query or (
+        f"subject:{subject}" if subject else "study skills"
+    )
+
+    params = {
+        "q": search_query[:200],
+        "maxResults": max_results,
+        "orderBy": order_by,
+        "printType": "books",
+    }
+
+    # An API key is optional for basic usage.
+    google_books_key = os.getenv("GOOGLE_BOOKS_API_KEY")
+    if google_books_key:
+        params["key"] = google_books_key
+
+    url = (
+        "https://www.googleapis.com/books/v1/volumes?"
+        + urlencode(params)
+    )
+
+    api_request = Request(
+        url,
+        headers={"User-Agent": "StudySpark-AI/1.0"},
+    )
+
+    try:
+        with urlopen(api_request, timeout=12) as response:
+            google_data = json.loads(response.read().decode("utf-8"))
+
+        books = []
+
+        for item in google_data.get("items", []):
+            volume = item.get("volumeInfo", {})
+            image_links = volume.get("imageLinks", {})
+
+            thumbnail = (
+                image_links.get("thumbnail")
+                or image_links.get("smallThumbnail")
+                or ""
+            )
+
+            # Prefer HTTPS for book-cover images.
+            if thumbnail.startswith("http://"):
+                thumbnail = "https://" + thumbnail[len("http://"):]
+
+            description = re.sub(
+                r"<[^>]+>", " ", volume.get("description", "")
+            )
+            description = re.sub(r"\s+", " ", description).strip()
+
+            books.append({
+                "id": item.get("id", ""),
+                "title": volume.get("title", "Untitled"),
+                "authors": volume.get("authors", []),
+                "description": description,
+                "thumbnail": thumbnail,
+                "publishedDate": volume.get("publishedDate", ""),
+                "categories": volume.get("categories", []),
+                "averageRating": volume.get("averageRating"),
+                "previewLink": volume.get("previewLink", ""),
+                "infoLink": volume.get("infoLink", ""),
+            })
+
+        return jsonify({
+            "totalItems": google_data.get("totalItems", 0),
+            "books": books,
+        })
+
+    
+    except HTTPError as error:
+        error_body = error.read().decode("utf-8", errors="replace")
+
+        print("Google Books HTTP error:", error.code)
+        print("Google Books error details:", error_body)
+
+        if error.code == 429:
+            return jsonify({
+                "detail": "Google Books is temporarily rate-limiting requests. Please try again later.",
+                "books": []
+            }), 200
+
+        return jsonify({
+            "detail": "Google Books could not complete the search.",
+            "books": []
+        }), 200
+
+
+    except (URLError, TimeoutError) as error:
+        print("Google Books connection error:", repr(error))
+        return jsonify({
+            "detail": "Could not connect to Google Books. Please try again."
+        }), 502
+
+    except (json.JSONDecodeError, UnicodeDecodeError) as error:
+        print("Google Books response error:", repr(error))
+        return jsonify({
+            "detail": "Google Books returned an invalid response."
+        }), 502
+
+
+# ==========================================
+# START FLASK SERVER
+# ==========================================
+
+if __name__ == "__main__":
+    app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True,
+    )
