@@ -33,3 +33,5 @@ __pycache__/
 node_modules/
 dist/
 build/
+
+/backend/studyspark_auth.db
