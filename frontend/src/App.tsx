@@ -1,5 +1,4 @@
-﻿
-import { Fragment } from 'react'
+﻿import { Fragment } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -11,6 +10,9 @@ import Predict from "./components/Predict";
 import Auth from "./components/Auth";
 import PredictionHistory from "./components/PredictionHistory"
 import BookRecommendations from "./components/BookRecommendations";
+import MusicPlayer from './components/MusicPlayer'
+import PopularMusic from "./components/PopularMusic";
+import { handleSpotifyCallback } from './services/spotify';
 
 type Tab =
 
@@ -18,6 +20,7 @@ type Tab =
   | 'Productivity Predictor'
   | 'Prediction History'
   | 'Book Recommendations'
+  | 'Study Music'
   | 'Study Materials'
   | 'Quizzes'
   | 'Flashcards'
@@ -155,6 +158,15 @@ function Icon({
       </>
     ),
     check: <path d="m5 12 4 4L19 6" />,
+    timer: (<>
+      <path d="M8 2h8M8 22h8M8 3c0 6 4 7 4 9s-4 3-4 9M16 3c0 6-4 7-4 9s4 3 4 9" />
+      <path d="M9 7h6M9 17h6" />
+    </>),
+    music: (<>
+      <path d="M9 18V5l12-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="16" r="3" />
+    </>),
     lightbulb: (
       <>
         <path d="M9 18h6m-5 4h4" />
@@ -205,9 +217,34 @@ function renderTextWithBreaks(
   return children
 }
 
+
+/* Decorative, click-through particles shared by all dashboard tabs. */
+function MagicalParticles() {
+  return (
+    <div className="ss-magical-particles" aria-hidden="true">
+      {Array.from({ length: 65 }, (_, i) => (
+        <span
+          key={i}
+          className="ss-magical-particle"
+          style={{
+            '--particle-x': `${(i * 47 + 13) % 100}%`,
+            '--particle-size': `${3 + (i % 5) * 2}px`,
+            '--particle-delay': `${-((i * 11) % 28)}s`,
+            '--particle-duration': `${15 + (i % 12) * 1.5}s`,
+            '--particle-drift': `${(i % 2 ? 1 : -1) * (18 + (i * 13) % 75)}px`,
+          } as React.CSSProperties}
+        />
+      ))}
+    </div>
+  );
+}
+
 function App() {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [authChecking, setAuthChecking] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const accountMenuRef = useRef<HTMLDivElement>(null)
 
 useEffect(() => {
   let cancelled = false;
@@ -256,14 +293,34 @@ useEffect(() => {
     localStorage.setItem('studyspark_token', token)
     localStorage.setItem('studyspark_user', JSON.stringify(user))
     setAuthUser(user)
+    setActiveTab('Productivity Predictor')
   }
 
   function handleLogout() {
+    setAccountOpen(false)
     localStorage.removeItem('studyspark_token')
     localStorage.removeItem('studyspark_user')
     setAuthUser(null)
-    setActiveTab('Overview')
+    setActiveTab('Productivity Predictor')
   }
+
+  useEffect(() => {
+    if (!accountOpen) return
+    function closeAccountMenu(event: MouseEvent) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) {
+        setAccountOpen(false)
+      }
+    }
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === 'Escape') setAccountOpen(false)
+    }
+    document.addEventListener('mousedown', closeAccountMenu)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('mousedown', closeAccountMenu)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [accountOpen])
 
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     try {
@@ -283,7 +340,7 @@ useEffect(() => {
     }
   }, [theme])
 
-  const [activeTab, setActiveTab] = useState<Tab>('Overview')
+  const [activeTab, setActiveTab] = useState<Tab>('Productivity Predictor')
   const [topic, setTopic] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [studyContent, setStudyContent] = useState('')
@@ -291,6 +348,49 @@ useEffect(() => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [musicSection, setMusicSection] = useState<"sounds" | "popular">(
+  "sounds");
+
+  const [spotifyAuthLoading, setSpotifyAuthLoading] = useState(window.location.pathname === '/callback');
+  const [spotifyAuthError, setSpotifyAuthError] = useState('');
+
+  useEffect(() => {
+    if (window.location.pathname !== '/callback') {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function processSpotifyCallback() {
+     try {
+      const success = await handleSpotifyCallback()
+
+      if (!success) {
+        throw new Error(
+          'No Spotify authorization code was received. Please try connecting again.',
+        )
+      }
+     } catch (error) {
+      if (!cancelled) {
+        setSpotifyAuthError(
+          error instanceof Error
+            ? error.message
+            : 'Spotify login failed.'
+        );
+      }
+     } finally {
+      if (!cancelled) {
+        setSpotifyAuthLoading(false);
+      }
+     }
+    }
+
+    void processSpotifyCallback();
+
+    return () => {
+     cancelled = true;
+    };
+  }, []);
 
   const [generatedResults, setGeneratedResults] = useState<
     Record<StudyAction, string>
@@ -320,10 +420,11 @@ useEffect(() => {
 
   const tabs: { name: Tab; icon: string }[] = [
   
-    { name: 'Overview', icon: 'home' },
     { name: 'Productivity Predictor', icon: 'sparkles' },
     { name: 'Prediction History', icon: 'file' },
     { name: 'Book Recommendations', icon: 'book' },
+    { name: 'Study Music', icon: 'music'},
+    { name: 'Overview', icon: 'home' },
     { name: 'Study Materials', icon: 'book' },
     { name: 'Quizzes', icon: 'brain' },
     { name: 'Flashcards', icon: 'cards' },
@@ -660,18 +761,81 @@ useEffect(() => {
 if (!authUser) {
   return <Auth onAuthSuccess={handleAuthSuccess} />;
 }
+  if (window.location.pathname === '/callback') {
+  if (spotifyAuthLoading) {
+    return (
+      <div className="spotify-callback-screen">
+        <h2>🎵 Connecting to Spotify...</h2>
+        <p>Preparing your music experience.</p>
+      </div>
+    );
+  }
+
+  if (spotifyAuthError) {
+    return (
+      <div className="spotify-callback-screen">
+        <h2>Couldn't connect to Spotify</h2>
+        <p>{spotifyAuthError}</p>
+        <button onClick={() => window.location.assign('/')}>
+          Return to StudySpark AI
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="app-shell" data-theme={theme}>
+    <div className="spotify-callback-screen">
+      <h2>🎉 Spotify connected!</h2>
+      <p>You can return to StudySpark AI.</p>
+      <button onClick={() => window.location.assign('/')}>
+        Continue to StudySpark AI
+      </button>
+    </div>
+  );
+ }
+ 
+  return (
+    <div className={`app-shell ${sidebarCollapsed ? "sidebar-collapsed" : ""}`} data-theme={theme}>
+      <MagicalParticles />
       <aside className="sidebar">
         <a
-          className="brand"
+          className="brand brand-stacked"
           href="#home"
           onClick={() => setActiveTab('Overview')}
         >
-          <span className="brand-icon">
-            <Icon name="sparkles" size={22} />
-          </span>
+          <span className="brand-icon luxury-brand-icon">
+  <svg
+    viewBox="0 0 64 64"
+    width="42"
+    height="42"
+    fill="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id="sparkGradient" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#ffb6dc" />
+        <stop offset="48%" stopColor="#d995ff" />
+        <stop offset="100%" stopColor="#8c9dff" />
+      </linearGradient>
+    </defs>
+    <path
+      d="M32 48C23 42 16 42 7 44V19C17 16 25 20 32 27C39 20 47 16 57 19V44C48 42 41 42 32 48Z"
+      stroke="url(#sparkGradient)"
+      strokeWidth="3"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M32 27V48M12 26C20 25 26 29 29 32M52 26C44 25 38 29 35 32"
+      stroke="url(#sparkGradient)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+    />
+    <path
+      d="M32 5L35 13L43 16L35 19L32 27L29 19L21 16L29 13L32 5Z"
+      fill="url(#sparkGradient)"
+    />
+  </svg>
+</span>
           <span>
             StudySpark <span className="brand-accent">AI</span>
           </span>
@@ -714,43 +878,30 @@ if (!authUser) {
 
         <div className="sidebar-bottom">
           <div className="help-card">
-            <span className="help-icon">
+            <span className="help-card-icon" aria-hidden="true">
               <Icon name="sparkles" size={22} />
             </span>
             <h3>Small steps, big progress.</h3>
             <p>Keep showing up. Your future self will thank you.</p>
           </div>
-
-          <div className="profile">
-            <div className="avatar">
-              {(authUser.name || "S").charAt(0).toUpperCase()}
-              </div>
-
-              <div style={{ minWidth: 0, overflow: "hidden" }}>
-                <strong>{authUser.name}</strong>
-                 <span>{authUser.email}</span>
-                 </div>
-                 <button
-                  type="button"
-                  onClick={handleLogout}
-                   title="Sign out"
-                   style={{
-                    marginLeft: "auto",
-                    border: "none",
-                    background: "transparent",
-                    color: "inherit",
-                    cursor: "pointer",
-                    fontSize: "0.8rem",
-                  }}
-                  >
-                    Logout
-                    </button>
-                    </div>
         </div>
       </aside>
 
       <main className="main-content" id="home">
+        <div className="aurora-wave-scene" aria-hidden="true">
+          <span className="aurora-wave aurora-wave--teal" />
+          <span className="aurora-wave aurora-wave--blue" />
+          <span className="aurora-wave aurora-wave--purple" />
+          <span className="aurora-wave aurora-wave--pink" />
+        </div>
         <header className="topbar">
+          <button type="button" className="sidebar-toggle"
+            onClick={() => setSidebarCollapsed(previous => !previous)}
+            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-expanded={!sidebarCollapsed}
+            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+            <span aria-hidden="true">{sidebarCollapsed ? '☰' : '«'}</span>
+          </button>
           <div className="breadcrumb">
             Workspace <span>/</span> {activeTab}
           </div>
@@ -783,13 +934,51 @@ if (!authUser) {
               <Icon name={theme === 'light' ? 'moon' : 'sun'} size={16} />
               {theme === 'light' ? 'Dark' : 'Light'}
             </button>
+            <div className="account-menu" ref={accountMenuRef}>
+              <button type="button" className="account-trigger"
+                aria-expanded={accountOpen} aria-haspopup="true"
+                onClick={() => setAccountOpen(open => !open)}>
+                <span className="account-avatar">{(authUser.name || 'S').charAt(0).toUpperCase()}</span>
+                <span className="account-trigger-name">{authUser.name}</span>
+                <span aria-hidden="true">⌄</span>
+              </button>
+              {accountOpen && (
+                <div className="account-dropdown" role="menu">
+                  <div className="account-details">
+                    <strong>{authUser.name}</strong>
+                    <span>{authUser.email}</span>
+                  </div>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="account-logout-btn"
+                    onClick={handleLogout}
+                  >
+                    <span aria-hidden="true">↪</span>
+                    Log out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </header>
 
         {/* PRODUCTIVITY PREDICTOR */}
-        {activeTab === 'Productivity Predictor' && <Predict />}
-        {activeTab === 'Prediction History' && <PredictionHistory />}
-        {activeTab === 'Book Recommendations' && <BookRecommendations />}
+        {activeTab === 'Productivity Predictor' && (
+          <div className="predictor-peacock-page">
+            <Predict />
+          </div>
+        )}
+        {activeTab === 'Prediction History' && (
+          <div className="history-wave-page">
+            <PredictionHistory />
+          </div>
+        )}
+        {activeTab === 'Book Recommendations' && (
+          <div className="books-wave-page">
+            <BookRecommendations />
+          </div>
+        )}
 
 
         {/* OVERVIEW */}
@@ -808,7 +997,8 @@ if (!authUser) {
                 </p>
               </div>
 
-              <div className="welcome-art" aria-hidden="true">
+              <div className="overview-hero-right">
+                <div className="welcome-art" aria-hidden="true">
                 <div className="art-orbit orbit-one" />
                 <div className="art-orbit orbit-two" />
                 <span className="art-star star-one">
@@ -819,6 +1009,7 @@ if (!authUser) {
                 </span>
                 <div className="art-book">
                   <Icon name="book" size={40} />
+                </div>
                 </div>
               </div>
             </section>
@@ -1550,6 +1741,40 @@ if (!authUser) {
           </div>
         )}
 
+        {/* STUDY MUSIC PAGE */}
+        <div className="page" style={{display: activeTab === "Study Music" ? "block" : "none",}}>
+          <section className="study-music-section">
+            <div className="section-heading compact">
+              <div>
+                <span className="section-kicker">YOUR FOCUS SPACE</span>
+                <h2>Study Music</h2>
+                <p>Find your rhythm, relax, and focus on your studies.</p>
+              </div>
+            </div>
+
+            <div className="study-music-switcher">
+              <button type="button"
+                  className={ musicSection === "sounds" ? "study-music-switcher__button is-active": "study-music-switcher__button"}
+                  onClick={() => setMusicSection("sounds")}
+                  aria-pressed={musicSection === "sounds"}> 🎧 Study Sounds
+              </button>
+
+              <button type="button" className={musicSection === "popular" ? "study-music-switcher__button is-active": "study-music-switcher__button"}
+                 onClick={() => setMusicSection("popular")}
+                 aria-pressed={musicSection === "popular"}> 🎵 Popular Music
+              </button>
+            </div>
+
+            <div style={{ display: musicSection === "sounds" ? "block" : "none" }}>
+              <MusicPlayer />
+            </div>
+
+            <div style={{ display: musicSection === "popular" ? "block" : "none" }}>
+              <PopularMusic />
+            </div>
+          </section>
+        </div>
+
         {/* RECOMMENDATIONS */}
         {activeTab === 'Recommendations' && (
           <div className="page">
@@ -1604,4 +1829,3 @@ if (!authUser) {
 }
 
 export default App
-

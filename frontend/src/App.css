@@ -2582,3 +2582,2056 @@ textarea::placeholder {
 [data-theme="dark"] select:focus-visible {
   outline-color: #93C5FD;
 }
+
+.study-music-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.study-music-switcher__button {
+  padding: 11px 18px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 999px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.04));
+  color: var(--text-primary, #f4f4f8);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.study-music-switcher__button:hover {
+  border-color: #a78bfa;
+}
+
+.study-music-switcher__button.is-active {
+  border-color: #a78bfa;
+  background: rgba(139, 92, 246, 0.16);
+  color: #c4b5fd;
+}
+
+.spotify-callback-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.spotify-callback-screen button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #1db954;
+  color: #081b0e;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.study-music-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.study-music-switcher__button {
+  padding: 11px 18px;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 999px;
+  background: var(--card-bg, rgba(255, 255, 255, 0.04));
+  color: var(--text-primary, #f4f4f8);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.study-music-switcher__button:hover {
+  border-color: #a78bfa;
+}
+
+.study-music-switcher__button.is-active {
+  border-color: #a78bfa;
+  background: rgba(139, 92, 246, 0.16);
+  color: #c4b5fd;
+}
+
+.spotify-callback-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.spotify-callback-screen button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #1db954;
+  color: #081b0e;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ==========================================
+   LIGHT MODE — TEXT READABILITY FIX
+   ========================================== */
+
+[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-strong: #ffffff;
+
+  --text: #172033;
+  --text-soft: #334155;
+  --muted: #64748b;
+
+  --border: #dbe3ef;
+  --border-hover: #93b4f5;
+
+  --accent: #4f46e5;
+  --accent-light: #4338ca;
+  --accent-dark: #3730a3;
+
+  --shadow: 0 8px 28px rgba(15, 23, 42, 0.07);
+
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Main text */
+[data-theme="light"] .app-shell,
+[data-theme="light"] .main-content {
+  color: var(--text);
+}
+
+/* Headings */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4 {
+  color: var(--text);
+}
+
+/* Supporting text */
+[data-theme="light"] p,
+[data-theme="light"] .subtitle,
+[data-theme="light"] .page-intro p,
+[data-theme="light"] .section-heading p,
+[data-theme="light"] .tool-text,
+[data-theme="light"] .profile span {
+  color: var(--muted);
+}
+
+/* Panels and cards */
+[data-theme="light"] .learn-panel,
+[data-theme="light"] .progress-panel,
+[data-theme="light"] .quiz-preview,
+[data-theme="light"] .quiz-container,
+[data-theme="light"] .result-container,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .flashcard-study,
+[data-theme="light"] .flashcard-source-panel,
+[data-theme="light"] .empty-state {
+  color: var(--text);
+  background: #ffffff;
+  border-color: var(--border);
+}
+
+/* Inputs */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  color: var(--text);
+  background: #ffffff;
+  border-color: var(--border);
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #64748b;
+  opacity: 1;
+}
+
+/* Secondary buttons */
+[data-theme="light"] .theme-toggle,
+[data-theme="light"] .secondary-button,
+[data-theme="light"] .answer-option,
+[data-theme="light"] .quiz-option {
+  color: var(--text-soft);
+  background: #ffffff;
+  border-color: var(--border);
+}
+
+/* Sidebar and top navigation */
+[data-theme="light"] .sidebar,
+[data-theme="light"] .topbar {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--border);
+}
+
+/* Links and accent text */
+[data-theme="light"] .tool-arrow,
+[data-theme="light"] .search-icon,
+[data-theme="light"] .sparkle,
+[data-theme="light"] .brand-accent,
+[data-theme="light"] .welcome-row h1 span {
+  color: var(--accent);
+}
+
+
+/* ===== STUDYSPARK REFINED LAYOUT (single source of truth) ===== */
+html { font-size: 16px; }
+.app-shell { --sidebar-width: 252px; width: 100%; min-height: 100vh; overflow-x: clip; font-size: 1rem; }
+.app-shell.sidebar-collapsed { --sidebar-width: 76px; }
+.sidebar { width: var(--sidebar-width); transition: width .28s ease; }
+.main-content { width: calc(100% - var(--sidebar-width)); max-width: none; margin-left: var(--sidebar-width); transition: margin-left .28s ease, width .28s ease; }
+.page { width: 100%; max-width: none; margin: 0; padding: 34px clamp(22px, 3.5vw, 56px) 65px; }
+.topbar { padding-left: clamp(22px, 3.5vw, 56px); padding-right: clamp(22px, 3.5vw, 56px); }
+.page h1 { font-size: clamp(30px, 3vw, 42px); }
+.page h2 { font-size: clamp(19px, 1.7vw, 24px); }
+.learn-panel { padding: 30px; }
+.tool-card { min-height: 175px; padding: 22px; }
+.tool-title { font-size: 14px; }
+.tool-text { font-size: 12px; line-height: 1.6; }
+.sidebar .brand { font-size: 19px; }
+.sidebar .nav-item { font-size: 13px; }
+.learn-panel, .tools-section, .bottom-grid, .quiz-container, .result-container, .recommendation-panel { width: 100%; max-width: none; }
+.flashcard-study { width: 100%; max-width: 1100px; }
+.luxury-brand-icon {
+  display: grid; place-items: center; flex: 0 0 48px; width: 48px; height: 48px;
+  border-radius: 16px; border: 1px solid rgba(231,168,255,.5);
+  background: linear-gradient(145deg, rgba(119,58,169,.45), rgba(27,18,62,.9));
+  box-shadow: 0 0 12px rgba(202,105,255,.5), 0 0 28px rgba(130,83,255,.25), inset 0 0 15px rgba(216,132,255,.16);
+  animation: sparkGlow 3s ease-in-out infinite alternate;
+}
+.luxury-brand-icon svg { filter: drop-shadow(0 0 5px rgba(226,155,255,.85)); }
+@keyframes sparkGlow {
+  from { box-shadow: 0 0 10px rgba(202,105,255,.35), 0 0 22px rgba(130,83,255,.2); }
+  to { box-shadow: 0 0 20px rgba(226,127,255,.75), 0 0 40px rgba(130,83,255,.4); }
+}
+.learn-panel, .tool-card, .progress-panel, .tip-panel, .quiz-preview, .empty-state {
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-color: rgba(231,168,255,.16);
+}
+/* Collapsed sidebar: icons remain visible and clickable. */
+.app-shell.sidebar-collapsed .sidebar { padding-left: 10px; padding-right: 10px; }
+.app-shell.sidebar-collapsed .sidebar .brand { justify-content: center; padding: 0; }
+.app-shell.sidebar-collapsed .sidebar .brand > :not(.brand-icon):not(.luxury-brand-icon),
+.app-shell.sidebar-collapsed .sidebar .sidebar-label,
+.app-shell.sidebar-collapsed .sidebar .help-card,
+.app-shell.sidebar-collapsed .sidebar .profile { display: none; }
+.app-shell.sidebar-collapsed .sidebar .nav-item { justify-content: center; padding: 12px 6px; }
+.app-shell.sidebar-collapsed .sidebar .nav-item .nav-count { display: none; }
+.app-shell.sidebar-collapsed .sidebar .nav-item .nav-icon { flex-shrink: 0; }
+@media (max-width: 1100px) and (min-width: 761px) {
+  .app-shell { --sidebar-width: 220px; }
+  .app-shell.sidebar-collapsed { --sidebar-width: 76px; }
+}
+@media (max-width: 760px) {
+  .app-shell, .app-shell.sidebar-collapsed { --sidebar-width: 0px; }
+  .sidebar, .app-shell.sidebar-collapsed .sidebar { position: relative; inset: auto; width: 100%; height: auto; padding: 14px 16px; }
+  .main-content { width: 100%; margin-left: 0; }
+  .page { padding: 24px 16px 42px; }
+  .topbar { padding: 10px 18px; }
+  .tool-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .app-shell.sidebar-collapsed .sidebar .navigation { display: flex; }
+  .app-shell.sidebar-collapsed .sidebar .nav-item { padding: 9px 11px; }
+}
+@media (max-width: 520px) { .tool-grid, .bottom-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .luxury-brand-icon { animation: none; } }
+
+/* Top navigation and account dropdown */
+.sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 38px; width: 38px; height: 38px; border: 1px solid rgba(200,160,220,.24); border-radius: 12px; background: rgba(165,100,180,.12); color: inherit; cursor: pointer; font-size: 21px; }
+.sidebar-toggle:hover, .account-trigger:hover { background: rgba(185,115,200,.22); }
+.account-menu { position: relative; z-index: 50; }
+.account-trigger { display: flex; align-items: center; gap: 9px; padding: 5px 10px 5px 5px; border-radius: 24px; border: 1px solid rgba(210,160,220,.3); background: rgba(155,100,170,.13); color: inherit; cursor: pointer; max-width: 240px; }
+.account-avatar { display: grid; place-items: center; flex: 0 0 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#a33f79,#68347f); color: white; font-weight: 700; }
+.account-trigger-name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; font-weight: 600; }
+.account-dropdown { position: absolute; right: 0; top: calc(100% + 10px); min-width: 230px; max-width: min(300px,90vw); border-radius: 15px; padding: 10px; background: #24142f; color: #f9f0fc; border: 1px solid rgba(223,170,236,.3); box-shadow: 0 16px 40px rgba(0,0,0,.28); backdrop-filter: blur(22px); }
+.account-details { display: flex; flex-direction: column; gap: 3px; padding: 9px 10px 12px; border-bottom: 1px solid rgba(223,170,236,.2); overflow-wrap: anywhere; }
+.account-details span { opacity: .72; font-size: 12px; }
+.account-dropdown button { width: 100%; text-align: left; margin-top: 6px; padding: 10px; border: 0; border-radius: 8px; color: inherit; background: transparent; cursor: pointer; }
+.account-dropdown button:hover { background: rgba(255,255,255,.1); }
+[data-theme="light"] .account-dropdown { background: #fff9ff; color: #382341; }
+@media (max-width: 760px) { .account-trigger-name { display: none; } .prototype-label { display: none; } }
+
+/* ===== FIX: COLLAPSED SIDEBAR ICON-ONLY (19 OCT) ===== */
+@media (min-width: 761px) {
+  .app-shell.sidebar-collapsed .sidebar {
+    width: 76px !important;
+    min-width: 76px;
+    padding: 24px 9px 16px !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+  }
+  .app-shell.sidebar-collapsed .sidebar .brand {
+    width: 100%;
+    margin: 0;
+    padding: 0 !important;
+    gap: 0;
+    justify-content: center !important;
+    overflow: hidden;
+  }
+  .app-shell.sidebar-collapsed .sidebar .brand > span:not(.brand-icon) {
+    display: none !important;
+  }
+  .app-shell.sidebar-collapsed .sidebar .brand-icon {
+    flex: 0 0 48px;
+    width: 48px;
+  }
+  .app-shell.sidebar-collapsed .sidebar .sidebar-label,
+  .app-shell.sidebar-collapsed .sidebar .sidebar-bottom {
+    display: none !important;
+  }
+  .app-shell.sidebar-collapsed .sidebar .navigation {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+    gap: 9px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .app-shell.sidebar-collapsed .sidebar .nav-item {
+    display: flex !important;
+    width: 48px !important;
+    min-width: 0 !important;
+    max-width: 48px !important;
+    height: 48px;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    flex: 0 0 48px;
+    transform: none;
+  }
+  .app-shell.sidebar-collapsed .sidebar .nav-item > span:not(.nav-icon) {
+    display: none !important;
+  }
+  .app-shell.sidebar-collapsed .sidebar .nav-item .nav-icon {
+    display: grid !important;
+    place-items: center;
+    flex: 0 0 24px;
+    width: 24px;
+    margin: 0 !important;
+  }
+  .app-shell.sidebar-collapsed .main-content {
+    margin-left: 76px !important;
+    width: calc(100% - 76px) !important;
+    min-width: 0;
+  }
+}
+/* StudySpark AI — Productivity Predictor-inspired glass navigation.
+   Append AFTER existing App.css rules. No JSX changes required. */
+
+.app-shell {
+  --nav-violet: #a88aff;
+  --nav-pink: #d987e8;
+  --nav-border: rgba(178, 151, 255, .24);
+}
+
+/* Midnight glass sidebar with violet and plum liquid lighting */
+.app-shell .sidebar {
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 210px 260px at 2% 3%, rgba(122, 77, 220, .22), transparent 75%),
+    radial-gradient(ellipse 200px 250px at 100% 80%, rgba(165, 73, 180, .13), transparent 75%),
+    linear-gradient(160deg, rgba(24, 22, 52, .96), rgba(17, 20, 41, .96) 65%, rgba(29, 20, 51, .96));
+  border-right: 1px solid var(--nav-border);
+  box-shadow: inset -1px 0 rgba(214, 185, 255, .05), 12px 0 36px rgba(8, 6, 25, .2);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+}
+
+.app-shell .sidebar .brand { color: #f7f2ff; text-decoration: none; }
+.app-shell .sidebar .brand-accent { color: #c7b6ff; }
+.app-shell .sidebar .sidebar-label { color: #b7a7dc; letter-spacing: .16em; }
+.app-shell .sidebar .nav-item {
+  position: relative;
+  color: #d5cdea;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  transition: background .22s ease, border-color .22s ease, box-shadow .22s ease, color .22s ease, transform .22s ease;
+}
+.app-shell .sidebar .nav-item:hover {
+  color: #fff;
+  border-color: rgba(181, 147, 255, .26);
+  background: linear-gradient(115deg, rgba(129, 91, 217, .23), rgba(197, 98, 205, .09));
+  box-shadow: inset 0 1px rgba(255,255,255,.06), 0 5px 22px rgba(105, 67, 211, .12);
+  transform: translateX(2px);
+}
+.app-shell .sidebar .nav-item.active {
+  color: #fff;
+  border-color: rgba(178, 156, 255, .68);
+  background: linear-gradient(115deg, rgba(107, 82, 211, .8), rgba(67, 91, 211, .8) 64%, rgba(117, 78, 190, .75));
+  box-shadow: inset 3px 0 0 #b9b5ff, inset 0 1px rgba(255,255,255,.23), 0 5px 22px rgba(96, 78, 221, .27), 0 0 16px rgba(128, 101, 250, .12);
+}
+.app-shell .sidebar .nav-item.active .nav-icon { filter: drop-shadow(0 0 5px rgba(230, 217, 255, .6)); }
+.app-shell .sidebar .nav-count {
+  color: #e9b9f8;
+  border-color: rgba(202, 136, 255, .25);
+  background: rgba(143, 83, 195, .18);
+}
+.app-shell .sidebar .help-card {
+  background: linear-gradient(140deg, rgba(110, 82, 175, .15), rgba(47, 47, 96, .25));
+  border: 1px solid rgba(177, 150, 243, .26);
+  box-shadow: inset 0 1px rgba(255,255,255,.045), 0 10px 28px rgba(8, 7, 29, .1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.app-shell .sidebar .help-card h3 { color: #f9f6ff; }
+.app-shell .sidebar .help-card p { color: #bdb4d7; }
+
+/* Topbar: same lavender / midnight liquid glass as predictor panels */
+.app-shell .topbar {
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse 38% 180% at 7% -50%, rgba(137, 85, 231, .21), transparent 85%),
+    radial-gradient(ellipse 36% 180% at 95% 160%, rgba(159, 86, 207, .15), transparent 85%),
+    linear-gradient(100deg, rgba(24, 23, 53, .94), rgba(17, 20, 43, .94));
+  border-bottom: 1px solid rgba(181, 151, 246, .25);
+  box-shadow: inset 0 1px rgba(255,255,255,.055), 0 7px 26px rgba(8, 6, 28, .17);
+  backdrop-filter: blur(26px) saturate(145%);
+  -webkit-backdrop-filter: blur(26px) saturate(145%);
+}
+.app-shell .topbar .breadcrumb { color: #e1d8f5; }
+.app-shell .topbar .breadcrumb span { color: #a48dd6; }
+.app-shell .topbar .prototype-label { color: #c4b9df; }
+.app-shell .topbar .theme-toggle,
+.app-shell .topbar .sidebar-toggle,
+.app-shell .topbar .account-trigger {
+  color: #f7f3ff;
+  background: linear-gradient(135deg, rgba(112, 85, 177, .24), rgba(64, 57, 113, .2));
+  border: 1px solid rgba(181, 152, 245, .32);
+  box-shadow: inset 0 1px rgba(255,255,255,.09), 0 4px 14px rgba(8, 6, 29, .12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.app-shell .topbar .theme-toggle:hover,
+.app-shell .topbar .sidebar-toggle:hover,
+.app-shell .topbar .account-trigger:hover {
+  background: linear-gradient(125deg, rgba(139, 104, 226, .35), rgba(165, 85, 180, .24));
+  border-color: rgba(210, 179, 255, .65);
+  box-shadow: 0 0 20px rgba(141, 105, 234, .18), inset 0 1px rgba(255,255,255,.12);
+  transform: translateY(-1px);
+}
+.app-shell .topbar .account-avatar {
+  background: linear-gradient(140deg, #ac72df, #7d54ca 60%, #5e6bde);
+  box-shadow: 0 0 14px rgba(171, 120, 244, .32);
+}
+.app-shell .topbar .account-dropdown {
+  background: linear-gradient(145deg, rgba(38, 29, 70, .97), rgba(20, 22, 47, .97));
+  border: 1px solid rgba(193, 164, 255, .35);
+  box-shadow: 0 16px 45px rgba(5, 4, 19, .4), 0 0 22px rgba(119, 81, 208, .13);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+.app-shell .topbar .account-dropdown button:hover { background: rgba(155, 117, 225, .18); }
+
+/* Keep collapsed sidebar icon-only without changing content width rules. */
+.app-shell.sidebar-collapsed .sidebar { overflow-x: hidden; }
+.app-shell.sidebar-collapsed .sidebar .navigation { min-width: 0; }
+.app-shell.sidebar-collapsed .sidebar .nav-item { gap: 0; min-width: 0; }
+.app-shell.sidebar-collapsed .sidebar .nav-item > span:not(.nav-icon) { display: none; }
+.app-shell.sidebar-collapsed .sidebar .nav-item:hover { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .sidebar .nav-item,
+  .app-shell .topbar .theme-toggle,
+  .app-shell .topbar .sidebar-toggle,
+  .app-shell .topbar .account-trigger { transition: none; }
+}
+/* StudySpark — match the Productivity Predictor's violet glass appearance.
+   Append to the END of App.css. No React or ML changes. */
+:root {
+  --ss-violet: #a78bfa;
+  --ss-electric: #8559f7;
+  --ss-rose: #e38bcf;
+  --ss-glass: rgba(33, 29, 57, .76);
+  --ss-glass-border: rgba(178, 153, 255, .20);
+}
+
+/* Shared page backdrop, typography and card language */
+.main-content {
+  background:
+    radial-gradient(ellipse at 4% 2%, rgba(110, 65, 205, .25), transparent 38%),
+    radial-gradient(ellipse at 92% 16%, rgba(59, 60, 160, .15), transparent 38%),
+    linear-gradient(125deg, #1c0e28 0%, #100b20 54%, #100e26 100%);
+}
+.main-content > .page {
+  min-width: 0;
+  max-width: none;
+}
+.page-intro h1,
+.study-music-section .section-heading h2 {
+  background: linear-gradient(105deg, #fff 2%, #e4d7ff 44%, #b7a5f7 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -.035em;
+}
+.page-intro > p,
+.study-music-section .section-heading p { color: #a9a1c7; }
+
+/* Quizzes: larger predictor-style glass surface */
+.quiz-preview,
+.quiz-container,
+.quiz-question,
+.quiz-score {
+  background: linear-gradient(140deg, rgba(43, 35, 70, .88), rgba(20, 20, 38, .84)) !important;
+  border: 1px solid var(--ss-glass-border) !important;
+  border-radius: 26px;
+  box-shadow: 0 18px 50px rgba(4, 3, 19, .22), inset 0 1px rgba(255,255,255,.055);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.quiz-preview { width: min(100%, 1000px); max-width: none; padding: clamp(24px, 3vw, 36px); }
+.quiz-preview h2 { margin-top: 0; font-size: clamp(24px, 2.1vw, 30px); }
+.quiz-settings { gap: 18px; }
+.quiz-settings select,
+.quiz-option,
+.answer-option {
+  background: rgba(25, 24, 48, .82);
+  border: 1px solid rgba(175, 153, 255, .25);
+  border-radius: 14px;
+  color: #f3edff;
+}
+.quiz-settings select:focus,
+.quiz-option:focus-within,
+.answer-option:focus-visible {
+  outline: 2px solid #a78bfa;
+  outline-offset: 2px;
+}
+.quiz-option:hover,
+.answer-option:hover { border-color: rgba(178, 145, 255, .65); background: rgba(116, 77, 189, .19); }
+.quiz-option.selected { border-color: #a78bfa; background: rgba(118, 79, 207, .26); }
+.quiz-preview button:not(:disabled),
+.quiz-submit-area button:not(:disabled) { transition: transform .2s ease, box-shadow .2s ease; }
+.quiz-preview button:not(:disabled):hover,
+.quiz-submit-area button:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(126, 84, 242, .27); }
+
+/* Music: match predictor's soft luminous controls */
+.study-music-section { width: 100%; }
+.study-music-switcher { gap: 12px; }
+.study-music-switcher__button {
+  border: 1px solid rgba(174, 146, 255, .27);
+  background: linear-gradient(130deg, rgba(54, 40, 84, .64), rgba(24, 21, 41, .78));
+  color: #ddd2f6;
+  box-shadow: inset 0 1px rgba(255,255,255,.045);
+  backdrop-filter: blur(14px);
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.study-music-switcher__button:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99, 63, 170, .24); }
+.study-music-switcher__button.is-active {
+  color: #f5eaff;
+  border-color: rgba(192, 154, 255, .76);
+  background: linear-gradient(115deg, rgba(112, 73, 188, .44), rgba(65, 46, 115, .62));
+  box-shadow: 0 0 20px rgba(127, 88, 255, .16), inset 0 1px rgba(255,255,255,.1);
+}
+
+/* Prediction History: shared glass panels, with common component class variants */
+.prediction-history .stat-card,
+.prediction-history .history-card,
+.prediction-history .prediction-card,
+.history-page .stat-card,
+.history-page .history-card,
+.history-page .prediction-card,
+.history-summary-card,
+.history-entry,
+.history-record,
+.prediction-history-card {
+  background: linear-gradient(140deg, rgba(47, 36, 71, .84), rgba(25, 22, 44, .82)) !important;
+  border: 1px solid rgba(181, 155, 255, .24) !important;
+  border-radius: 22px;
+  box-shadow: 0 12px 38px rgba(6, 3, 22, .22), inset 0 1px rgba(255,255,255,.055);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+.prediction-history .history-card:hover,
+.history-page .history-card:hover,
+.history-entry:hover,
+.history-record:hover {
+  border-color: rgba(180, 145, 255, .50) !important;
+  box-shadow: 0 16px 42px rgba(82, 48, 166, .15);
+}
+@media (max-width: 700px) {
+  .quiz-preview { padding: 20px; }
+  .quiz-settings { grid-template-columns: 1fr; }
+  .study-music-switcher { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .study-music-switcher__button, .quiz-preview button, .quiz-submit-area button { transition: none; }
+}
+
+
+/* ===== STUDYSPARK LIQUID GLASS: BRAND + INNER PANELS ===== */
+/* Brand: centered logo above bold text, without changing navigation behavior */
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 4px 20px;
+  text-align: center;
+  text-decoration: none;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked > span:last-child {
+  display: block;
+  white-space: nowrap;
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -.65px;
+  color: #f9f4ff;
+  text-shadow: 0 0 22px rgba(185,136,255,.3);
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked .brand-accent {
+  color: #c9afff;
+  font-weight: 900;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked .luxury-brand-icon {
+  flex: 0 0 76px;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  border: 1px solid rgba(223,185,255,.58);
+  background: linear-gradient(145deg,rgba(190,137,255,.43),rgba(106,69,215,.62) 48%,rgba(35,24,92,.92));
+  box-shadow: 0 0 0 5px rgba(172,117,255,.07),0 0 27px rgba(159,105,255,.58),0 0 55px rgba(116,78,225,.23),inset 0 2px 1px rgba(255,255,255,.35);
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked .luxury-brand-icon svg {
+  width: 46px;
+  height: 46px;
+  filter: drop-shadow(0 0 10px rgba(235,185,255,.85));
+}
+.app-shell.sidebar-collapsed .sidebar .brand.brand-stacked { padding: 8px 0 14px; justify-content: center; }
+.app-shell.sidebar-collapsed .sidebar .brand.brand-stacked .luxury-brand-icon {
+  flex: 0 0 48px; width: 48px; height: 48px; border-radius: 15px;
+}
+.app-shell.sidebar-collapsed .sidebar .brand.brand-stacked .luxury-brand-icon svg { width: 30px; height: 30px; }
+
+/* Liquid-glass surfaces for the main app's own content cards */
+.main-content .page :is(.learn-panel,.tool-card,.progress-panel,.tip-panel,.quiz-preview,.quiz-container,.empty-state,.material-card,.flashcard,.recommendation-panel) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(135deg,rgba(130,100,183,.22) 0%,rgba(39,34,67,.67) 37%,rgba(32,29,57,.78) 100%);
+  border: 1px solid rgba(197,166,255,.28);
+  border-radius: 24px;
+  box-shadow: 0 16px 42px rgba(4,3,19,.25),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -1px 0 rgba(151,109,230,.07);
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+}
+.main-content .page :is(.learn-panel,.tool-card,.progress-panel,.tip-panel,.quiz-preview,.quiz-container,.empty-state,.material-card,.flashcard,.recommendation-panel)::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 5% 0%,rgba(215,178,255,.19),transparent 42%),linear-gradient(155deg,rgba(255,255,255,.07),transparent 40%);
+}
+.main-content .page :is(.tool-card,.progress-panel,.tip-panel,.quiz-preview,.material-card,.flashcard) {
+  transition: transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+}
+.main-content .page :is(.tool-card,.progress-panel,.tip-panel,.quiz-preview,.material-card,.flashcard):hover {
+  transform: translateY(-3px);
+  border-color: rgba(200,156,255,.55);
+  box-shadow: 0 20px 44px rgba(10,5,36,.35),0 0 24px rgba(144,93,243,.15),inset 0 1px 0 rgba(255,255,255,.2);
+}
+/* Inputs and drop area get a matching frosted inset look */
+.main-content .page :is(input,textarea,select,.upload-zone,.drop-zone,.pdf-dropzone) {
+  background-color: rgba(14,13,35,.56);
+  border-color: rgba(182,155,237,.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.main-content .page :is(input,textarea,select):focus-visible {
+  outline: 2px solid rgba(187,147,255,.65);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-content .page :is(.tool-card,.progress-panel,.tip-panel,.quiz-preview,.material-card,.flashcard) { transition: none; }
+}
+
+
+/* =============================================================
+   OVERVIEW MOTIVATION CARD + COMPACT SIDEBAR BRAND
+   Overrides placed last to preserve the existing app theme.
+   ============================================================= */
+
+/* Reduce the blank area between the logo and first navigation item. */
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked {
+  gap: 6px;
+  padding: 4px 4px 6px;
+  margin: 0;
+  flex-shrink: 0;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked .luxury-brand-icon {
+  flex-basis: 62px;
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked .luxury-brand-icon svg {
+  width: 39px;
+  height: 39px;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .brand.brand-stacked > span:last-child {
+  font-size: 19px;
+  line-height: 1.15;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .sidebar-label {
+  margin: 14px 10px 7px;
+  padding: 0;
+}
+.app-shell:not(.sidebar-collapsed) .sidebar .navigation {
+  margin-top: 0;
+}
+/* No motivational card remains in the sidebar. */
+.app-shell .sidebar .sidebar-bottom:empty { display: none; }
+
+/* Position the motivation panel in the hero, just LEFT of the book illustration. */
+.page .welcome-row > div:first-child { min-width: 0; }
+.page .overview-hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 1 auto;
+  gap: clamp(12px, 1.5vw, 24px);
+  min-width: 0;
+}
+.page .overview-hero-right .welcome-art {
+  flex: 0 0 160px;
+  width: 160px;
+  height: 160px;
+}
+.page .overview-motivation-card {
+  position: relative;
+  width: clamp(245px, 23vw, 350px);
+  flex: 0 1 auto;
+  padding: 21px 23px;
+  overflow: hidden;
+  border: 1px solid rgba(203, 169, 255, .38);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(175, 130, 245, .25), rgba(89, 57, 157, .15) 58%, rgba(255, 170, 218, .08));
+  box-shadow: 0 15px 38px rgba(9, 4, 30, .28), inset 0 1px 0 rgba(255,255,255,.2), 0 0 30px rgba(146, 96, 255, .12);
+  backdrop-filter: blur(24px) saturate(145%);
+  -webkit-backdrop-filter: blur(24px) saturate(145%);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.page .overview-motivation-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 45%;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.10), transparent);
+}
+.page .overview-motivation-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(221, 189, 255, .65);
+  box-shadow: 0 18px 46px rgba(9, 4, 30, .38), 0 0 34px rgba(164, 112, 255, .2);
+}
+.page .overview-motivation-sparkle { display: inline-flex; margin-bottom: 9px; color: #d9b5ff; }
+.page .overview-motivation-card h3 { margin: 0 0 7px; color: #fbf5ff; font-size: 16px; line-height: 1.35; font-weight: 800; }
+.page .overview-motivation-card p { margin: 0; color: #c9bcdf; font-size: 12px; line-height: 1.65; }
+
+@media (max-width: 1160px) {
+  .page .overview-hero-right { gap: 8px; }
+  .page .overview-motivation-card { width: 240px; padding: 16px; }
+  .page .overview-hero-right .welcome-art { flex-basis: 120px; width: 120px; transform: scale(.8); }
+}
+@media (max-width: 900px) {
+  .page .welcome-row { flex-wrap: wrap; }
+  .page .overview-hero-right { width: 100%; justify-content: space-between; }
+  .page .overview-motivation-card { width: min(100%, 360px); }
+}
+@media (max-width: 520px) {
+  .page .overview-hero-right { flex-wrap: wrap-reverse; justify-content: center; }
+  .page .overview-motivation-card { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page .overview-motivation-card { transition: none; }
+}
+
+/* ===== FINAL: SIDEBAR MOTIVATION + PEACOCK BLUE LAVENDER ===== */
+@media (min-width: 761px) {
+  .app-shell:not(.sidebar-collapsed) .sidebar {
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  .app-shell:not(.sidebar-collapsed) .sidebar .sidebar-bottom {
+    display: block; margin-top: auto; padding: 18px 0 6px; flex-shrink: 0;
+  }
+}
+.app-shell .sidebar {
+  background: radial-gradient(ellipse at 0% 0%, rgba(77,83,149,.26), transparent 56%),
+    linear-gradient(170deg,#102d42 0%,#151d3b 48%,#211932 100%);
+  border-right: 1px solid rgba(174,167,242,.26);
+}
+.app-shell .sidebar .help-card {
+  display: block; padding: 17px 15px; border-radius: 19px;
+  background: linear-gradient(145deg,rgba(90,146,166,.19),rgba(144,113,200,.17));
+  border: 1px solid rgba(178,188,245,.36);
+  box-shadow: inset 0 1px rgba(255,255,255,.14), 0 12px 32px rgba(4,14,34,.26);
+  backdrop-filter: blur(24px) saturate(155%);
+  -webkit-backdrop-filter: blur(24px) saturate(155%);
+}
+.app-shell .sidebar .help-card-icon { display:inline-flex; color:#d6c5ff; margin-bottom:9px; }
+.app-shell .sidebar .help-card h3 { margin:0 0 8px; color:#fff; font-size:14px; line-height:1.4; }
+.app-shell .sidebar .help-card p { margin:0; color:#c6d2e6; font-size:12px; line-height:1.6; }
+.app-shell .sidebar .sidebar-label { color:#c1c0ec; }
+.app-shell .sidebar .nav-item.active {
+  background:linear-gradient(115deg,rgba(31,120,145,.78),rgba(103,82,177,.8));
+  border-color:rgba(173,190,244,.65);
+}
+.app-shell .topbar {
+  background:linear-gradient(100deg,rgba(14,44,62,.96),rgba(28,25,61,.95));
+  border-bottom-color:rgba(171,171,230,.27);
+}
+.app-shell .page .overview-hero-right { justify-content:flex-end; }
+@media (max-width:760px) {
+  .app-shell .sidebar .sidebar-bottom { padding: 12px 0; }
+}
+
+
+/* ========================================================================
+   STUDYSPARK AI — VIBRANT OCEAN / AURORA WAVES THEME
+   Keeps existing components, responsive navigation and predictor styles.
+   ======================================================================== */
+.app-shell {
+  --bg: #0a1035;
+  --surface: rgba(21, 32, 90, .57);
+  --surface-strong: rgba(22, 34, 91, .83);
+  --text: #fbfaff;
+  --text-soft: #e3e7ff;
+  --muted: #aeb9e7;
+  --border: rgba(166, 200, 255, .25);
+  --border-hover: rgba(74, 241, 219, .68);
+  --accent: #35ddce;
+  --accent-light: #8afbed;
+  --accent-dark: #2156ab;
+  --success: #4ef3c5;
+  --danger: #ff73ab;
+  --shadow: 0 20px 50px rgba(1, 7, 40, .33);
+  --glass-blur: 24px;
+  color: var(--text);
+  background: #090f35;
+}
+html, body, #root { background: #090f35; }
+.app-shell .main-content {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 7% 13%, rgba(29, 219, 200, .18), transparent 36%),
+    radial-gradient(ellipse at 89% 14%, rgba(37, 112, 240, .30), transparent 43%),
+    radial-gradient(ellipse at 12% 68%, rgba(230, 44, 153, .20), transparent 43%),
+    linear-gradient(139deg, #0b1447 0%, #11164e 42%, #17134b 75%, #0a1446 100%);
+  overflow: clip;
+}
+/* Decorative waves are not clickable and do not affect page layout. */
+.app-shell .aurora-wave-scene {
+  position: absolute;
+  inset: 0 0 auto;
+  height: min(950px, 115vh);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.app-shell .aurora-wave {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  filter: saturate(115%);
+}
+.app-shell .aurora-wave--teal {
+  top: -340px; left: -25%; width: 110%; height: 570px;
+  border-radius: 44% 56% 58% 42% / 66% 62% 38% 34%;
+  background: linear-gradient(110deg, rgba(38, 224, 192, .85), rgba(38, 199, 223, .50) 65%, rgba(35, 111, 214, .15));
+  transform: rotate(-11deg);
+  box-shadow: 0 35px 0 rgba(37, 242, 184, .12), 0 85px 0 rgba(50, 150, 255, .12);
+}
+.app-shell .aurora-wave--blue {
+  top: 75px; right: -42%; width: 112%; height: 310px;
+  border-radius: 53% 47% 43% 57% / 44% 48% 52% 56%;
+  background: linear-gradient(100deg, rgba(20, 54, 164, .02), rgba(34, 99, 231, .36), rgba(43, 212, 225, .34));
+  transform: rotate(10deg);
+}
+.app-shell .aurora-wave--purple {
+  top: 440px; left: -37%; width: 105%; height: 365px;
+  border-radius: 48% 52% 52% 48% / 61% 37% 63% 39%;
+  background: linear-gradient(95deg, rgba(149, 56, 190, .58), rgba(85, 64, 210, .36), rgba(42, 67, 173, .03));
+  transform: rotate(-15deg);
+}
+.app-shell .aurora-wave--pink {
+  top: 710px; right: -27%; width: 110%; height: 315px;
+  border-radius: 55% 45% 45% 55% / 52% 47% 53% 48%;
+  background: linear-gradient(100deg, rgba(250, 55, 143, .06), rgba(255, 58, 148, .50), rgba(255, 135, 113, .37));
+  transform: rotate(-8deg);
+  box-shadow: 0 -24px 0 rgba(172, 67, 201, .18);
+}
+.app-shell .main-content > :not(.aurora-wave-scene) { position: relative; z-index: 1; }
+.app-shell .sidebar {
+  background:
+    radial-gradient(ellipse at 12% 4%, rgba(33, 216, 200, .20), transparent 38%),
+    radial-gradient(ellipse at 91% 92%, rgba(242, 53, 156, .24), transparent 46%),
+    linear-gradient(165deg, rgba(9, 24, 77, .97), rgba(19, 19, 78, .96) 60%, rgba(32, 16, 75, .97));
+  border-right: 1px solid rgba(131, 214, 255, .30);
+  box-shadow: 8px 0 36px rgba(0, 5, 42, .30), inset -1px 0 rgba(255, 255, 255, .06);
+}
+.app-shell .sidebar .luxury-brand-icon {
+  background: linear-gradient(140deg, #1ccdc5, #395fda 48%, #8a4cce 85%, #fa4b9d);
+  border: 1px solid rgba(175, 249, 251, .64);
+  box-shadow: 0 0 18px rgba(36, 226, 211, .44), 0 0 36px rgba(135, 89, 255, .36), inset 0 1px rgba(255,255,255,.38);
+}
+.app-shell .sidebar .brand-accent { color: #70f3e2; }
+.app-shell .sidebar .sidebar-label { color: #9bdbec; letter-spacing: .16em; }
+.app-shell .sidebar .nav-item { color: #dbe5ff; border-color: transparent; }
+.app-shell .sidebar .nav-item:hover {
+  background: linear-gradient(110deg, rgba(30, 201, 197, .16), rgba(115, 82, 216, .20));
+  border-color: rgba(117, 218, 238, .25);
+}
+.app-shell .sidebar .nav-item.active {
+  background: linear-gradient(106deg, rgba(18, 191, 199, .74), rgba(58, 103, 220, .85) 48%, rgba(141, 73, 201, .85));
+  border: 1px solid rgba(135, 249, 237, .70);
+  color: white;
+  box-shadow: 0 7px 26px rgba(27, 160, 219, .26), 0 0 20px rgba(124, 84, 255, .20), inset 0 1px rgba(255,255,255,.30);
+}
+.app-shell .sidebar .help-card {
+  background: linear-gradient(135deg, rgba(31, 196, 200, .20), rgba(89, 72, 190, .23) 55%, rgba(255, 63, 149, .19));
+  border: 1px solid rgba(141, 222, 244, .40);
+  box-shadow: 0 12px 34px rgba(1, 8, 45, .29), inset 0 1px rgba(255,255,255,.19);
+}
+.app-shell .sidebar .help-card-icon { color: #5ff8df; }
+.app-shell .sidebar .help-card p { color: #c7d6f7; }
+.app-shell .topbar {
+  background: linear-gradient(102deg, rgba(11, 34, 91, .79), rgba(23, 28, 94, .78) 58%, rgba(43, 28, 93, .82));
+  border-bottom: 1px solid rgba(139, 200, 255, .33);
+  box-shadow: 0 10px 32px rgba(3, 7, 48, .16), inset 0 1px rgba(255,255,255,.06);
+  backdrop-filter: blur(28px) saturate(165%);
+  -webkit-backdrop-filter: blur(28px) saturate(165%);
+}
+.app-shell .breadcrumb { color: #e1e9ff; }
+.app-shell .breadcrumb span { color: #50dfd9; }
+.app-shell .topbar-right { color: #d6e4ff; }
+.app-shell .sidebar-toggle, .app-shell .theme-toggle, .app-shell .account-trigger {
+  border-color: rgba(135, 207, 251, .37);
+  background: linear-gradient(125deg, rgba(33, 103, 177, .20), rgba(143, 78, 205, .20));
+  color: #f5f8ff;
+  box-shadow: inset 0 1px rgba(255,255,255,.11);
+}
+.app-shell .page { max-width: none; }
+.app-shell .page .welcome-row h1 span { color: #6ef5e1; }
+.app-shell .page .section-kicker, .app-shell .page .eyebrow { color: #8ef8e6; }
+/* Existing panels, prediction history, study cards, quizzes and flashcards */
+.app-shell .page :is(
+  .learn-panel, .progress-panel, .quiz-preview, .empty-state,
+  .quiz-container, .result-container, .stat-card, .flashcard-study,
+  .flashcard-source-panel, .recommendation-card, .tool-card,
+  .tip-panel, .quiz-question, .quiz-settings, .flashcard,
+  .answer-option, .quiz-option, .real-flashcard-front,
+  .overview-motivation-card
+) {
+  background: linear-gradient(135deg, rgba(73, 118, 212, .26), rgba(31, 41, 112, .53) 48%, rgba(118, 51, 163, .23));
+  border: 1px solid rgba(164, 207, 255, .32);
+  box-shadow: 0 14px 42px rgba(2, 9, 48, .26), inset 0 1px 0 rgba(255, 255, 255, .16);
+  backdrop-filter: blur(26px) saturate(145%);
+  -webkit-backdrop-filter: blur(26px) saturate(145%);
+}
+.app-shell .page :is(.learn-panel, .stat-card, .tool-card, .recommendation-card, .quiz-container):hover {
+  border-color: rgba(88, 239, 225, .58);
+  box-shadow: 0 18px 48px rgba(1, 7, 45, .34), 0 0 20px rgba(62, 212, 217, .10), inset 0 1px rgba(255,255,255,.20);
+}
+.app-shell .page :is(input, textarea, select) {
+  border-color: rgba(146, 193, 248, .40);
+  color: #f5f7ff;
+  background: rgba(7, 18, 65, .65);
+}
+.app-shell .page :is(input, textarea, select):focus { border-color: #50e6d5; outline-color: #50e6d5; }
+.app-shell .page :is(button.primary-button, .primary-button, .action-button) {
+  color: white;
+  border: 1px solid rgba(149, 245, 245, .47);
+  background: linear-gradient(110deg, #169fb6, #3769dc 50%, #9b48ce 78%, #f13e98);
+  box-shadow: 0 10px 28px rgba(47, 106, 216, .28), inset 0 1px rgba(255,255,255,.30);
+}
+.app-shell .page :is(.nav-count, .badge, .tag) { border-color: rgba(82, 229, 222, .30); }
+.app-shell .page .welcome-art { filter: drop-shadow(0 0 25px rgba(51, 221, 226, .26)); }
+.app-shell .page .drop-zone { background: rgba(10, 27, 77, .38); border-color: rgba(98, 225, 220, .43); }
+.app-shell .page .drop-zone:hover { background: rgba(28, 92, 133, .30); }
+/* Preserve light-mode functionality, with a vibrant airy counterpart. */
+.app-shell[data-theme="light"] {
+  --bg: #eaf5ff;
+  --surface: rgba(255,255,255,.68);
+  --surface-strong: rgba(255,255,255,.88);
+  --text: #142353;
+  --text-soft: #263c71;
+  --muted: #526a96;
+  --border: rgba(43, 105, 173, .24);
+}
+.app-shell[data-theme="light"] .main-content {
+  background: linear-gradient(130deg, #e7faff, #e9e8ff 54%, #ffe4f1);
+}
+.app-shell[data-theme="light"] .aurora-wave { opacity: .27; }
+.app-shell[data-theme="light"] .page :is(.learn-panel,.progress-panel,.quiz-preview,.empty-state,.quiz-container,.result-container,.stat-card,.flashcard-study,.flashcard-source-panel,.recommendation-card,.tool-card,.tip-panel) {
+  background: rgba(255,255,255,.66);
+  color: #142353;
+  border-color: rgba(72, 111, 179, .23);
+}
+@media (max-width: 760px) {
+  .app-shell .aurora-wave-scene { height: 730px; }
+  .app-shell .aurora-wave--teal { top: -400px; }
+  .app-shell .aurora-wave--purple { top: 350px; }
+  .app-shell .aurora-wave--pink { top: 590px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .aurora-wave, .app-shell .page { animation: none; }
+}
+
+
+/* ===== PREDICTION HISTORY — FLOWING AURORA WAVES ===== */
+/* Scoped to Prediction History only; other tabs and logic are unchanged. */
+.app-shell .history-wave-page {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+  min-height: calc(100vh - 68px);
+  width: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 2% 6%, rgba(41, 220, 203, .28), transparent 36%),
+    radial-gradient(ellipse at 98% 22%, rgba(62, 116, 236, .33), transparent 48%),
+    radial-gradient(ellipse at 24% 84%, rgba(129, 54, 209, .32), transparent 48%),
+    linear-gradient(135deg, #102454 0%, #172b72 36%, #161b60 68%, #160d49 100%);
+}
+/* Waves extend behind the statistics and the history entries. */
+.app-shell .history-wave-page::before,
+.app-shell .history-wave-page::after {
+  content: '';
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  z-index: -1;
+  width: 150%;
+  left: -22%;
+  border-radius: 48% 52% 54% 46% / 62% 45% 55% 38%;
+}
+.app-shell .history-wave-page::before {
+  top: -280px;
+  height: 660px;
+  transform: rotate(-11deg);
+  background: linear-gradient(105deg, rgba(31, 222, 197, .90), rgba(37, 183, 217, .66) 40%, rgba(44, 91, 210, .36) 75%, rgba(55, 61, 183, .13));
+  box-shadow: 0 42px 0 rgba(49, 219, 207, .13), 0 91px 0 rgba(50, 133, 234, .13);
+}
+.app-shell .history-wave-page::after {
+  top: 440px;
+  height: 640px;
+  transform: rotate(-13deg);
+  background: linear-gradient(110deg, rgba(94, 52, 192, .70), rgba(106, 58, 208, .46) 50%, rgba(236, 57, 164, .43) 86%, rgba(255, 99, 150, .56));
+  box-shadow: 0 45px 0 rgba(153, 56, 199, .19), 0 95px 0 rgba(252, 61, 142, .24);
+}
+/* The imported history component owns its structure. Make its page surface
+   transparent so the waves remain visible without touching its logic. */
+.app-shell .history-wave-page > :first-child {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  min-height: calc(100vh - 68px);
+  background: transparent !important;
+  background-image: none !important;
+}
+.app-shell .history-wave-page :is(.page, .history-page, .prediction-history, .prediction-history-page) {
+  background: transparent !important;
+  background-image: none !important;
+}
+/* Floating translucent glass: history summaries, results and detail tiles. */
+.app-shell .history-wave-page :is(
+  .stat-card, .history-card, .prediction-card, .history-summary-card,
+  .history-entry, .history-record, .prediction-history-card,
+  .summary-card, .history-stat-card, .prediction-stat-card,
+  .history-detail-card, .history-metric, .metric-card
+) {
+  background: linear-gradient(135deg, rgba(82, 116, 195, .24), rgba(25, 33, 91, .52) 52%, rgba(106, 55, 161, .23)) !important;
+  border: 1px solid rgba(178, 219, 255, .35) !important;
+  box-shadow: 0 18px 42px rgba(4, 11, 61, .23), inset 0 1px rgba(255, 255, 255, .19);
+  backdrop-filter: blur(23px) saturate(150%);
+  -webkit-backdrop-filter: blur(23px) saturate(150%);
+  border-radius: 21px;
+}
+.app-shell .history-wave-page :is(.history-card, .history-entry, .history-record, .prediction-history-card):hover {
+  border-color: rgba(88, 246, 221, .66) !important;
+  box-shadow: 0 22px 48px rgba(3, 12, 69, .34), 0 0 24px rgba(38, 219, 203, .12), inset 0 1px rgba(255,255,255,.23);
+}
+.app-shell .history-wave-page :is(h1, h2, h3, strong) { color: #f8f7ff; }
+.app-shell .history-wave-page :is(p, small, .muted, .subtitle) { color: #d2dcf8; }
+.app-shell .history-wave-page :is(.badge, .confidence-badge, .confidence-pill) {
+  background: linear-gradient(110deg, rgba(28, 190, 191, .25), rgba(132, 83, 217, .34));
+  border: 1px solid rgba(141, 227, 241, .40);
+  color: #f7f6ff;
+}
+@media (max-width: 760px) {
+  .app-shell .history-wave-page::before { top: -320px; height: 580px; }
+  .app-shell .history-wave-page::after { top: 530px; height: 480px; }
+}
+
+
+/* ================================================================
+   STUDYSPARK: BOOKS AURORA + DARK TITLES (October 2026)
+   Page-scoped: sidebar, topbar, auth, and React logic are unchanged.
+   ================================================================ */
+.app-shell .books-wave-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: calc(100vh - 68px);
+  background:
+    radial-gradient(ellipse at 0% 10%, rgba(70, 230, 211, .30), transparent 43%),
+    radial-gradient(ellipse at 98% 22%, rgba(91, 137, 244, .35), transparent 48%),
+    linear-gradient(130deg, #64d6d3 0%, #68b9d7 27%, #7d9ee4 56%, #a98ae4 78%, #e19ac8 100%);
+}
+.app-shell .books-wave-page::before,
+.app-shell .books-wave-page::after {
+  content: "";
+  position: absolute;
+  left: -23%;
+  width: 155%;
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 46% 54% 51% 49% / 51% 46% 54% 49%;
+}
+.app-shell .books-wave-page::before {
+  top: -310px;
+  height: 680px;
+  transform: rotate(-10deg);
+  background: linear-gradient(105deg, rgba(23, 207, 192, .82), rgba(51, 172, 225, .63) 45%, rgba(51, 84, 197, .38));
+  box-shadow: 0 48px 0 rgba(17, 117, 185, .12), 0 98px 0 rgba(32, 87, 173, .13);
+}
+.app-shell .books-wave-page::after {
+  top: 580px;
+  height: 750px;
+  transform: rotate(-13deg);
+  background: linear-gradient(110deg, rgba(79, 70, 190, .46), rgba(130, 69, 190, .46) 48%, rgba(252, 67, 148, .55));
+  box-shadow: 0 48px 0 rgba(177, 69, 174, .13), 0 96px 0 rgba(255, 67, 145, .15);
+}
+/* Allow the gradient to show through any component-level page surface. */
+.app-shell .books-wave-page > * {
+  position: relative;
+  z-index: 0;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+.app-shell .books-wave-page :is(.page, .books-page, .book-recommendations, .book-recommendations-page) {
+  background: transparent !important;
+}
+/* Readable deep-ink headings and supporting copy over the bright aurora. */
+.app-shell .books-wave-page :is(h1, h2, h3, h4) {
+  color: #11204d !important;
+  text-shadow: 0 1px 0 rgba(255,255,255,.15);
+}
+.app-shell .books-wave-page :is(p, .subtitle, .page-subtitle) {
+  color: #27365f;
+}
+/* Search and chips: luminous but readable. */
+.app-shell .books-wave-page :is(input[type="text"], input[type="search"], .search-bar, .search-box, .book-search) {
+  background: rgba(243, 250, 255, .74) !important;
+  color: #17234e !important;
+  border-color: rgba(255,255,255,.58) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.65), 0 12px 32px rgba(21,39,102,.10);
+  backdrop-filter: blur(18px);
+}
+.app-shell .books-wave-page input::placeholder { color: #65708e !important; }
+.app-shell .books-wave-page :is(.book-card, .books-card, .book-item, .book-tile, .recommendation-card) {
+  background: linear-gradient(145deg, rgba(242, 249, 255, .75), rgba(221, 218, 250, .70)) !important;
+  border: 1px solid rgba(255,255,255,.58) !important;
+  box-shadow: 0 20px 42px rgba(18,34,100,.18), inset 0 1px rgba(255,255,255,.70);
+  backdrop-filter: blur(20px) saturate(135%);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+  border-radius: 20px;
+  color: #18244d;
+}
+.app-shell .books-wave-page :is(.book-card, .books-card, .book-item, .book-tile, .recommendation-card) :is(h3,h4,strong) {
+  color: #13204c !important;
+}
+.app-shell .books-wave-page :is(.book-card, .books-card, .book-item, .book-tile, .recommendation-card) :is(p,span,small) {
+  color: #35436d;
+}
+.app-shell .books-wave-page :is(button, .category-chip, .filter-chip) {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.app-shell .books-wave-page :is(button, .category-chip, .filter-chip):hover {
+  box-shadow: 0 10px 24px rgba(47,53,138,.20);
+}
+/* Prediction History: deep ink titles on the bright aqua wave. */
+.app-shell .history-wave-page :is(h1, h2, h3) {
+  color: #13204c !important;
+  text-shadow: 0 1px rgba(255,255,255,.12);
+}
+.app-shell .history-wave-page :is(.stat-card, .history-card, .prediction-card, .history-summary-card,
+  .history-entry, .history-record, .prediction-history-card, .summary-card,
+  .history-stat-card, .prediction-stat-card, .history-detail-card, .history-metric, .metric-card) {
+  background: linear-gradient(135deg, rgba(224,246,255,.58), rgba(202,205,247,.43), rgba(213,176,234,.48)) !important;
+  color: #172450;
+}
+.app-shell .history-wave-page :is(.stat-card, .history-card, .prediction-card, .history-summary-card,
+  .history-entry, .history-record, .prediction-history-card, .summary-card,
+  .history-stat-card, .prediction-stat-card, .history-detail-card, .history-metric, .metric-card) :is(p,small,span) {
+  color: #24345f;
+}
+@media (max-width: 760px) {
+  .app-shell .books-wave-page::before { top: -380px; height: 600px; }
+  .app-shell .books-wave-page::after { top: 640px; height: 540px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .books-wave-page * { transition-duration: 0.01ms !important; }
+}
+
+
+/* ============================================================
+   STUDYSPARK — PEACOCK PREDICTOR + FLOWING HISTORY
+   Predictor cards intentionally retain all original styles.
+   ============================================================ */
+
+/* Only the OUTER productivity page receives a new background.
+   The Predict component's sliders, buttons, panels and colors are untouched. */
+.app-shell .predictor-peacock-page {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: calc(100vh - 68px);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 0% 8%, rgba(28, 139, 162, .24), transparent 43%),
+    radial-gradient(ellipse at 100% 10%, rgba(69, 70, 185, .28), transparent 46%),
+    radial-gradient(ellipse at 86% 92%, rgba(121, 45, 157, .27), transparent 52%),
+    linear-gradient(135deg, #101c4c 0%, #102754 28%, #141746 58%, #211341 100%);
+}
+.app-shell .predictor-peacock-page::before,
+.app-shell .predictor-peacock-page::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+  left: -18%;
+  width: 145%;
+  border-radius: 48% 52% 46% 54% / 55% 43% 57% 45%;
+}
+.app-shell .predictor-peacock-page::before {
+  top: -460px;
+  height: 620px;
+  transform: rotate(-8deg);
+  background: linear-gradient(100deg, rgba(32, 177, 183, .28), rgba(31, 91, 173, .23), rgba(89, 69, 182, .16));
+  box-shadow: 0 42px 0 rgba(25, 173, 175, .06), 0 90px 0 rgba(65, 79, 180, .07);
+}
+.app-shell .predictor-peacock-page::after {
+  top: 650px;
+  height: 570px;
+  transform: rotate(-12deg);
+  background: linear-gradient(105deg, rgba(20, 133, 158, .12), rgba(83, 66, 175, .17), rgba(167, 56, 164, .14));
+}
+.app-shell .predictor-peacock-page > * {
+  position: relative;
+  z-index: 1;
+}
+/* Transparent outer page only; do not target the predictor's internal cards. */
+.app-shell .predictor-peacock-page > :first-child {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* HISTORY: deep peacock-blue backdrop with visible, smooth flowing bands. */
+.app-shell .history-wave-page {
+  background:
+    radial-gradient(ellipse at 2% 8%, rgba(45, 190, 190, .19), transparent 42%),
+    radial-gradient(ellipse at 96% 13%, rgba(62, 94, 193, .29), transparent 47%),
+    radial-gradient(ellipse at 92% 92%, rgba(165, 62, 157, .24), transparent 48%),
+    linear-gradient(125deg, #10204c 0%, #193a73 33%, #20215f 64%, #281747 100%) !important;
+}
+.app-shell .history-wave-page::before {
+  top: -370px;
+  height: 690px;
+  background: linear-gradient(105deg, rgba(49, 201, 193, .65), rgba(46, 150, 204, .42) 46%, rgba(65, 84, 198, .23) 82%) !important;
+  box-shadow: 0 44px 0 rgba(39, 179, 189, .12), 0 89px 0 rgba(48, 116, 198, .09);
+}
+.app-shell .history-wave-page::after {
+  top: 500px;
+  height: 680px;
+  background: linear-gradient(112deg, rgba(65, 67, 178, .42), rgba(112, 62, 189, .43) 50%, rgba(227, 69, 151, .41)) !important;
+  box-shadow: 0 43px 0 rgba(121, 69, 190, .13), 0 90px 0 rgba(223, 63, 151, .13);
+}
+/* Dark, legible glass instead of the previous pale panels. */
+.app-shell .history-wave-page :is(
+  .stat-card, .history-card, .prediction-card, .history-summary-card,
+  .history-entry, .history-record, .prediction-history-card,
+  .summary-card, .history-stat-card, .prediction-stat-card,
+  .history-detail-card, .history-metric, .metric-card
+) {
+  background: linear-gradient(130deg, rgba(29, 43, 92, .72), rgba(35, 29, 79, .70), rgba(62, 35, 99, .60)) !important;
+  border: 1px solid rgba(176, 195, 245, .34) !important;
+  color: #f5f3ff !important;
+  box-shadow: 0 18px 45px rgba(7, 10, 39, .22), inset 0 1px rgba(255,255,255,.13);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+}
+.app-shell .history-wave-page :is(h1,h2,h3,h4,strong) { color: #f9f6ff !important; }
+.app-shell .history-wave-page :is(p,small,.subtitle,.muted) { color: #dce4ff; }
+.app-shell .history-wave-page :is(.stat-card, .history-card, .prediction-card, .history-summary-card, .history-entry, .history-record, .prediction-history-card, .summary-card, .history-stat-card, .prediction-stat-card, .history-detail-card, .history-metric, .metric-card) :is(p,small,span) { color: #dce4ff !important; }
+@media (max-width: 760px) {
+  .app-shell .predictor-peacock-page::before { top: -450px; }
+  .app-shell .history-wave-page::before { top: -390px; }
+  .app-shell .history-wave-page::after { top: 630px; }
+}
+
+/* NIGHT AURORA: Book Recommendations, animated snow, sidebar-tone predictor */
+.app-shell .books-wave-page {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: calc(100vh - 68px);
+  background: radial-gradient(ellipse at 0% 0%, rgba(25,124,156,.20), transparent 48%),
+    radial-gradient(ellipse at 90% 85%, rgba(133,50,164,.23), transparent 48%),
+    linear-gradient(130deg, #0b173c 0%, #111c4a 33%, #1a164c 64%, #26143e 100%) !important;
+}
+.app-shell .books-wave-page::before {
+  top: -385px; height: 670px;
+  background: linear-gradient(100deg, rgba(22,156,173,.32), rgba(50,86,187,.30), rgba(110,65,180,.23)) !important;
+  box-shadow: 0 44px 0 rgba(33,130,176,.09), 0 92px 0 rgba(73,65,176,.08) !important;
+  animation: booksWaveDrift 18s ease-in-out infinite alternate;
+}
+.app-shell .books-wave-page::after {
+  top: 610px; height: 690px;
+  background: linear-gradient(110deg, rgba(26,90,161,.25), rgba(89,62,180,.38), rgba(201,60,144,.31)) !important;
+  box-shadow: 0 44px 0 rgba(96,62,185,.11), 0 90px 0 rgba(199,65,155,.09) !important;
+  animation: booksWaveDrift 24s ease-in-out infinite alternate-reverse;
+}
+@keyframes booksWaveDrift { from { transform: translateX(-3%) rotate(-7deg); } to { transform: translateX(4%) rotate(-11deg); } }
+.app-shell .books-wave-page :is(h1,h2,h3,h4) { color: #f6f1ff !important; text-shadow: none !important; }
+.app-shell .books-wave-page :is(p,.subtitle,.page-subtitle) { color: #cbd5f4 !important; }
+.app-shell .books-wave-page :is(input[type="text"],input[type="search"],.search-bar,.search-box,.book-search) {
+  background: rgba(21,26,65,.64) !important;
+  border: 1px solid rgba(179,184,244,.29) !important;
+  color: #f5f2ff !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.10), 0 12px 30px rgba(5,8,33,.13) !important;
+}
+.app-shell .books-wave-page input::placeholder { color: #adb9dd !important; }
+.app-shell .books-wave-page :is(.book-card,.books-card,.book-item,.book-tile,.recommendation-card) {
+  background: linear-gradient(145deg,rgba(31,35,82,.83),rgba(46,29,85,.79)) !important;
+  border: 1px solid rgba(180,170,239,.27) !important;
+  color: #f7f4ff !important;
+  box-shadow: 0 18px 40px rgba(4,7,30,.25),inset 0 1px rgba(255,255,255,.12) !important;
+}
+.app-shell .books-wave-page :is(.book-card,.books-card,.book-item,.book-tile,.recommendation-card) :is(h3,h4,strong) { color: #f8f5ff !important; }
+.app-shell .books-wave-page :is(.book-card,.books-card,.book-item,.book-tile,.recommendation-card) :is(p,span,small) { color: #d1d3ef !important; }
+.app-shell .books-snowfall {
+  position: absolute !important; inset: 0; overflow: hidden; z-index: 0 !important;
+  pointer-events: none; user-select: none;
+}
+.app-shell .books-snowfall span {
+  position: absolute; top: -8%; left: var(--snow-left);
+  color: rgba(235,249,255,.72) !important;
+  font-size: var(--snow-size); line-height: 1;
+  filter: drop-shadow(0 0 7px rgba(143,224,255,.52));
+  animation: booksSnowfall var(--snow-duration) linear infinite;
+  animation-delay: var(--snow-delay);
+}
+@keyframes booksSnowfall {
+  0% { transform: translate3d(0,-35px,0) rotate(0deg); opacity: 0; }
+  12% { opacity: .70; }
+  88% { opacity: .70; }
+  100% { transform: translate3d(85px,115vh,0) rotate(240deg); opacity: 0; }
+}
+.app-shell .books-wave-page > :not(.books-snowfall) { position: relative; z-index: 1; }
+/* Predictor: same ink-indigo / peacock / plum palette as the sidebar; inner cards untouched. */
+.app-shell .predictor-peacock-page {
+  background: radial-gradient(ellipse at 0% 0%,rgba(29,79,143,.30),transparent 48%),
+    radial-gradient(ellipse at 100% 88%,rgba(115,41,151,.29),transparent 52%),
+    linear-gradient(155deg,#0e173d 0%,#121742 37%,#1b1645 68%,#29143d 100%) !important;
+}
+.app-shell .predictor-peacock-page::before {
+  background: linear-gradient(100deg,rgba(32,78,149,.18),rgba(53,57,145,.16),rgba(111,55,156,.14)) !important;
+  box-shadow: 0 42px 0 rgba(53,70,150,.06),0 90px 0 rgba(90,58,146,.06) !important;
+}
+.app-shell .predictor-peacock-page::after {
+  background: linear-gradient(105deg,rgba(25,70,130,.13),rgba(79,50,145,.17),rgba(133,42,136,.15)) !important;
+}
+@media (prefers-reduced-motion:reduce) {
+  .app-shell .books-snowfall span,.app-shell .books-wave-page::before,.app-shell .books-wave-page::after { animation: none !important; }
+}
+.app-shell .books-snowfall span:nth-child(1) { --snow-left: 48%; --snow-size: 16px; --snow-duration: 24s; --snow-delay: -13s; }
+.app-shell .books-snowfall span:nth-child(2) { --snow-left: 85%; --snow-size: 23px; --snow-duration: 17s; --snow-delay: -26s; }
+.app-shell .books-snowfall span:nth-child(3) { --snow-left: 25%; --snow-size: 15px; --snow-duration: 28s; --snow-delay: -12s; }
+.app-shell .books-snowfall span:nth-child(4) { --snow-left: 62%; --snow-size: 22px; --snow-duration: 21s; --snow-delay: -25s; }
+.app-shell .books-snowfall span:nth-child(5) { --snow-left: 2%; --snow-size: 14px; --snow-duration: 14s; --snow-delay: -11s; }
+.app-shell .books-snowfall span:nth-child(6) { --snow-left: 39%; --snow-size: 21px; --snow-duration: 25s; --snow-delay: -24s; }
+.app-shell .books-snowfall span:nth-child(7) { --snow-left: 76%; --snow-size: 13px; --snow-duration: 18s; --snow-delay: -10s; }
+.app-shell .books-snowfall span:nth-child(8) { --snow-left: 16%; --snow-size: 20px; --snow-duration: 29s; --snow-delay: -23s; }
+.app-shell .books-snowfall span:nth-child(9) { --snow-left: 53%; --snow-size: 12px; --snow-duration: 22s; --snow-delay: -9s; }
+.app-shell .books-snowfall span:nth-child(10) { --snow-left: 90%; --snow-size: 19px; --snow-duration: 15s; --snow-delay: -22s; }
+.app-shell .books-snowfall span:nth-child(11) { --snow-left: 30%; --snow-size: 11px; --snow-duration: 26s; --snow-delay: -8s; }
+.app-shell .books-snowfall span:nth-child(12) { --snow-left: 67%; --snow-size: 18px; --snow-duration: 19s; --snow-delay: -21s; }
+.app-shell .books-snowfall span:nth-child(13) { --snow-left: 7%; --snow-size: 10px; --snow-duration: 30s; --snow-delay: -7s; }
+.app-shell .books-snowfall span:nth-child(14) { --snow-left: 44%; --snow-size: 17px; --snow-duration: 23s; --snow-delay: -20s; }
+.app-shell .books-snowfall span:nth-child(15) { --snow-left: 81%; --snow-size: 9px; --snow-duration: 16s; --snow-delay: -6s; }
+.app-shell .books-snowfall span:nth-child(16) { --snow-left: 21%; --snow-size: 16px; --snow-duration: 27s; --snow-delay: -19s; }
+.app-shell .books-snowfall span:nth-child(17) { --snow-left: 58%; --snow-size: 23px; --snow-duration: 20s; --snow-delay: -5s; }
+.app-shell .books-snowfall span:nth-child(18) { --snow-left: 95%; --snow-size: 15px; --snow-duration: 13s; --snow-delay: -18s; }
+.app-shell .books-snowfall span:nth-child(19) { --snow-left: 35%; --snow-size: 22px; --snow-duration: 24s; --snow-delay: -4s; }
+.app-shell .books-snowfall span:nth-child(20) { --snow-left: 72%; --snow-size: 14px; --snow-duration: 17s; --snow-delay: -17s; }
+.app-shell .books-snowfall span:nth-child(21) { --snow-left: 12%; --snow-size: 21px; --snow-duration: 28s; --snow-delay: -3s; }
+.app-shell .books-snowfall span:nth-child(22) { --snow-left: 49%; --snow-size: 13px; --snow-duration: 21s; --snow-delay: -16s; }
+.app-shell .books-snowfall span:nth-child(23) { --snow-left: 86%; --snow-size: 20px; --snow-duration: 14s; --snow-delay: -2s; }
+.app-shell .books-snowfall span:nth-child(24) { --snow-left: 26%; --snow-size: 12px; --snow-duration: 25s; --snow-delay: -15s; }
+.app-shell .books-snowfall span:nth-child(25) { --snow-left: 63%; --snow-size: 19px; --snow-duration: 18s; --snow-delay: -1s; }
+.app-shell .books-snowfall span:nth-child(26) { --snow-left: 3%; --snow-size: 11px; --snow-duration: 29s; --snow-delay: -14s; }
+.app-shell .books-snowfall span:nth-child(27) { --snow-left: 40%; --snow-size: 18px; --snow-duration: 22s; --snow-delay: 0s; }
+.app-shell .books-snowfall span:nth-child(28) { --snow-left: 77%; --snow-size: 10px; --snow-duration: 15s; --snow-delay: -13s; }
+
+
+/* Extra snow on Predictor and Prediction History, with deeper sidebar-inspired navy */
+.app-shell .predictor-peacock-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: calc(100vh - 68px);
+  background:
+    radial-gradient(ellipse at 4% 3%, rgba(24, 57, 119, .22), transparent 47%),
+    radial-gradient(ellipse at 95% 92%, rgba(89, 30, 123, .21), transparent 54%),
+    linear-gradient(145deg, #080f2a 0%, #0d1234 38%, #141138 72%, #1b1032 100%) !important;
+}
+.app-shell .predictor-peacock-page::before {
+  background: linear-gradient(100deg, rgba(22, 57, 113, .13), rgba(40, 42, 113, .13), rgba(80, 40, 125, .10)) !important;
+}
+.app-shell .predictor-peacock-page::after {
+  background: linear-gradient(110deg, rgba(16, 49, 99, .10), rgba(59, 39, 118, .13), rgba(95, 36, 114, .11)) !important;
+}
+.app-shell .predictor-peacock-page > :not(.books-snowfall),
+.app-shell .history-wave-page > :not(.books-snowfall) {
+  position: relative;
+  z-index: 1;
+}
+.app-shell .predictor-peacock-page > .books-snowfall,
+.app-shell .history-wave-page > .books-snowfall {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+/* Preserve all existing predictor controls and card backgrounds. */
+
+/* Visible falling snowflakes on Productivity Predictor */
+
+.app-shell .predictor-peacock-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.app-shell .predictor-peacock-page > .books-snowfall {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  pointer-events: none !important;
+  user-select: none;
+}
+
+.app-shell .predictor-peacock-page > .books-snowfall span {
+  display: block !important;
+  color: rgba(231, 247, 255, 0.88) !important;
+  text-shadow: 0 0 9px rgba(130, 211, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .predictor-peacock-page > .books-snowfall span {
+    animation: none !important;
+  }
+}
+/* ==========================================
+   STUDYSPARK AI — SIDEBAR SNOWFLAKES
+   ========================================== */
+
+.app-shell .sidebar {
+  position: fixed;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Snowflake layer */
+.app-shell .sidebar::before {
+  content: "";
+  position: absolute;
+  inset: -100% 0 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #ffffff 98%, transparent),
+    radial-gradient(3px 3px at 80px 110px, #d6ecff 98%, transparent),
+    radial-gradient(2px 2px at 150px 70px, #ffffff 98%, transparent),
+    radial-gradient(3px 3px at 210px 180px, #b5eaff 98%, transparent),
+    radial-gradient(2px 2px at 50px 230px, #e6d8ff 98%, transparent),
+    radial-gradient(2px 2px at 180px 310px, #ffffff 98%, transparent);
+
+  background-size: 240px 360px;
+  opacity: 0.7;
+
+  animation: sidebarSnowfall 18s linear infinite;
+}
+
+/* Second snow layer for depth */
+.app-shell .sidebar::after {
+  content: "";
+  position: absolute;
+  inset: -100% 0 0;
+  z-index: 1;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(2px 2px at 45px 90px, #ffffff 98%, transparent),
+    radial-gradient(2px 2px at 130px 190px, #d5c6ff 98%, transparent),
+    radial-gradient(3px 3px at 200px 260px, #a9eaff 98%, transparent),
+    radial-gradient(2px 2px at 95px 330px, #ffffff 98%, transparent);
+
+  background-size: 240px 420px;
+  opacity: 0.45;
+
+  animation: sidebarSnowfall 27s linear infinite;
+}
+
+/* Keep sidebar content above snowflakes */
+.app-shell .sidebar > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes sidebarSnowfall {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(50%);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .sidebar::before,
+  .app-shell .sidebar::after {
+    animation: none;
+  }
+}
+
+/* =========================================================
+   STUDYSPARK AI — DARKER PAGE BACKGROUNDS
+   Add AFTER existing App.css rules.
+   Matches the darker Book Recommendations palette.
+   Keeps snowflakes, glass cards, sidebar and interactions.
+   ========================================================= */
+
+/* Shared backdrop: Overview, Study Materials, Quizzes,
+   Flashcards, Recommendations, Study Music, etc. */
+.app-shell:not([data-theme="light"]) .main-content {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(25, 124, 156, .12), transparent 48%),
+    radial-gradient(ellipse at 90% 85%, rgba(133, 50, 164, .16), transparent 48%),
+    linear-gradient(130deg, #0b173c 0%, #111c4a 33%, #1a164c 64%, #26143e 100%) !important;
+}
+
+/* The shared waves are the bright shapes visible in screenshots.
+   Reduce their brightness without changing the page content. */
+.app-shell:not([data-theme="light"]) .aurora-wave--teal {
+  background: linear-gradient(110deg,
+    rgba(22, 156, 173, .38), rgba(50, 86, 187, .32) 65%, rgba(110, 65, 180, .17)) !important;
+  box-shadow: 0 35px 0 rgba(33, 130, 176, .07),
+              0 85px 0 rgba(73, 65, 176, .07) !important;
+}
+.app-shell:not([data-theme="light"]) .aurora-wave--blue {
+  background: linear-gradient(100deg,
+    rgba(20, 54, 164, .015), rgba(34, 99, 231, .24), rgba(43, 150, 205, .20)) !important;
+}
+.app-shell:not([data-theme="light"]) .aurora-wave--purple {
+  background: linear-gradient(95deg,
+    rgba(103, 57, 166, .38), rgba(75, 64, 180, .26), rgba(42, 67, 173, .02)) !important;
+}
+.app-shell:not([data-theme="light"]) .aurora-wave--pink {
+  background: linear-gradient(100deg,
+    rgba(156, 46, 127, .04), rgba(166, 57, 151, .31), rgba(178, 87, 138, .23)) !important;
+  box-shadow: 0 -24px 0 rgba(112, 57, 166, .11) !important;
+}
+
+/* Prediction History has its own brighter wave system. */
+.app-shell:not([data-theme="light"]) .history-wave-page {
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(25, 124, 156, .14), transparent 48%),
+    radial-gradient(ellipse at 90% 85%, rgba(133, 50, 164, .18), transparent 48%),
+    linear-gradient(130deg, #0b173c 0%, #111c4a 33%, #1a164c 64%, #26143e 100%) !important;
+}
+.app-shell:not([data-theme="light"]) .history-wave-page::before {
+  background: linear-gradient(100deg,
+    rgba(22, 156, 173, .32), rgba(50, 86, 187, .30), rgba(110, 65, 180, .23)) !important;
+  box-shadow: 0 44px 0 rgba(33, 130, 176, .09),
+              0 92px 0 rgba(73, 65, 176, .08) !important;
+}
+.app-shell:not([data-theme="light"]) .history-wave-page::after {
+  background: linear-gradient(110deg,
+    rgba(26, 90, 161, .25), rgba(89, 62, 180, .38), rgba(201, 60, 144, .31)) !important;
+  box-shadow: 0 44px 0 rgba(96, 62, 185, .11),
+              0 90px 0 rgba(199, 65, 155, .09) !important;
+}
+
+
+/* Profile dropdown logout button */
+.app-shell .topbar .account-dropdown .account-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 13px;
+  color: #ffc0dc;
+  font-weight: 700;
+  background: rgba(190, 75, 138, 0.09);
+  border: 1px solid rgba(255, 175, 211, 0.12);
+  border-radius: 10px;
+  transition: background 180ms ease, color 180ms ease;
+}
+.app-shell .topbar .account-dropdown .account-logout-btn:hover {
+  color: #fff;
+  background: rgba(201, 80, 146, 0.28);
+}
+.app-shell .topbar .account-dropdown .account-logout-btn:focus-visible {
+  outline: 2px solid #cba8ff;
+  outline-offset: 2px;
+}
+
+/* Paste at the very end of frontend/src/App.css */
+.app-shell .main-content > header.topbar {
+  position: relative !important;
+  z-index: 1000 !important;
+  overflow: visible !important;
+  isolation: isolate;
+}
+.app-shell .topbar .account-menu {
+  position: relative;
+  z-index: 1001 !important;
+}
+.app-shell .topbar .account-dropdown {
+  position: absolute !important;
+  z-index: 1002 !important;
+  visibility: visible;
+  opacity: 1;
+}
+/* StudySpark AI — animated snowflakes in the top navigation bar.
+   Paste at the very END of frontend/src/App.css. No TSX edits required. */
+.app-shell .main-content > header.topbar {
+  position: relative !important;
+  isolation: isolate;
+  overflow: visible !important; /* Keep the account/logout dropdown visible */
+  z-index: 1000 !important;
+}
+
+.app-shell .main-content > header.topbar::before,
+.app-shell .main-content > header.topbar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .7;
+  background-repeat: repeat;
+  background-size: 270px 140px;
+  -webkit-mask-image: linear-gradient(#000, #000);
+  mask-image: linear-gradient(#000, #000);
+}
+
+/* Tiny snow crystals; drifting gently across the navbar */
+.app-shell .main-content > header.topbar::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='270' height='140' viewBox='0 0 270 140'%3E%3Cg fill='%23c6e9ff' opacity='.85' font-family='Arial,sans-serif'%3E%3Ctext x='32' y='22' font-size='14'%3E%E2%9D%84%3C/text%3E%3Ctext x='184' y='61' font-size='11'%3E%E2%9D%84%3C/text%3E%3Ctext x='110' y='103' font-size='15'%3E%E2%9D%84%3C/text%3E%3C/g%3E%3C/svg%3E");
+  animation: ss-navbar-snow-drift 19s linear infinite;
+}
+.app-shell .main-content > header.topbar::after {
+  background-image: radial-gradient(circle, rgba(221,241,255,.95) 1.3px, transparent 2px), radial-gradient(circle, rgba(189,184,255,.8) 1px, transparent 2px);
+  background-size: 105px 65px, 155px 85px;
+  background-position: 20px 10px, 76px 36px;
+  opacity: .55;
+  animation: ss-navbar-snow-drift 28s linear infinite reverse;
+}
+@keyframes ss-navbar-snow-drift {
+  from { background-position: 0 -140px; }
+  to { background-position: 90px 140px; }
+}
+/* Keep all navbar actions above the flakes */
+.app-shell .main-content > header.topbar > * {
+  position: relative;
+  z-index: 1;
+}
+.app-shell .topbar .account-menu { z-index: 1001 !important; }
+.app-shell .topbar .account-dropdown { z-index: 1002 !important; }
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .main-content > header.topbar::before,
+  .app-shell .main-content > header.topbar::after { animation: none; }
+}
+
+
+
+/* ================================================================
+   MAGICAL GLOWING PARTICLES - GLOBAL STUDYSPARK DASHBOARD
+   Includes navbar, sidebar, predictor, history, music, and all tabs.
+   Added after existing rules to supersede old snowflake decorations.
+   ================================================================ */
+
+/* Remove old snow overlays without changing page layout. */
+.app-shell .books-snowfall { display: none !important; }
+.app-shell .sidebar::before,
+.app-shell .sidebar::after,
+.app-shell .main-content > header.topbar::before,
+.app-shell .main-content > header.topbar::after {
+  content: none !important;
+  animation: none !important;
+}
+/* The old aurora animation can be kept by deleting this rule. */
+.app-shell .aurora-wave-scene { display: none !important; }
+
+.app-shell .ss-magical-particles {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1100 !important;
+  overflow: hidden;
+  pointer-events: none !important;
+  user-select: none;
+  contain: layout style;
+}
+.app-shell .ss-magical-particle {
+  position: absolute;
+  left: var(--particle-x);
+  bottom: -25px;
+  width: var(--particle-size);
+  height: var(--particle-size);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff 0%, #e0ceff 23%, #9885ff 58%, transparent 100%);
+  box-shadow: 0 0 9px 2px rgba(158,134,255,.68), 0 0 22px 5px rgba(109,92,255,.24);
+  opacity: 0;
+  animation: ss-magical-rise var(--particle-duration) linear var(--particle-delay) infinite;
+  will-change: transform, opacity;
+}
+.app-shell .ss-magical-particle:nth-child(3n) {
+  background: radial-gradient(circle, #fff, #9ff3ff 40%, transparent 100%);
+  box-shadow: 0 0 9px 2px rgba(109,229,255,.7), 0 0 23px 5px rgba(68,172,255,.22);
+}
+.app-shell .ss-magical-particle:nth-child(7n) {
+  width: 3px;
+  height: 3px;
+  box-shadow: 0 0 8px 2px rgba(255,255,255,.75);
+}
+@keyframes ss-magical-rise {
+  0% { transform: translate3d(0, 0, 0) scale(.45); opacity: 0; }
+  12% { opacity: .8; }
+  48% { transform: translate3d(var(--particle-drift), -53vh, 0) scale(1.12); opacity: .95; }
+  86% { opacity: .65; }
+  100% { transform: translate3d(calc(var(--particle-drift) * -.6), -115vh, 0) scale(.5); opacity: 0; }
+}
+/* The particle layer never captures clicks; account dropdown remains usable. */
+.app-shell .main-content > header.topbar { overflow: visible !important; }
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .ss-magical-particle { animation: none !important; opacity: .28; transform: translateY(-40vh); }
+}
+
+
+/* ==========================================
+   STUDYSPARK AI — PREMIUM TYPOGRAPHY
+   SPACING & LAYOUT ENHANCEMENTS
+   ========================================== */
+
+:root {
+  --premium-heading: #f9f5ff;
+  --premium-body: #e8e0f5;
+  --premium-muted: #bdb3d6;
+}
+
+/* GLOBAL TYPOGRAPHY */
+
+.app-shell {
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: 0.1px;
+}
+
+.app-shell h1,
+.app-shell h2,
+.app-shell h3 {
+  font-family: "Manrope", sans-serif;
+  color: var(--premium-heading);
+  letter-spacing: -0.6px;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  padding: 30px 16px 22px;
+}
+
+.brand {
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+}
+
+.sidebar-label {
+  margin: 34px 12px 16px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.navigation {
+  gap: 9px;
+}
+
+.nav-item {
+  min-height: 47px;
+  padding: 12px 13px;
+  gap: 13px;
+  border-radius: 13px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.nav-item.active {
+  font-weight: 800;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+}
+
+/* SIDEBAR MOTIVATIONAL CARD */
+
+.help-card {
+  padding: 20px 17px;
+  border-radius: 18px;
+}
+
+.help-card h3 {
+  margin: 12px 0 8px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.help-card p {
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+/* NAVBAR */
+
+.topbar {
+  min-height: 76px;
+  padding-inline: 4%;
+  gap: 20px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+}
+
+.topbar-right {
+  gap: 14px;
+  font-size: 12px;
+}
+
+.theme-toggle {
+  min-height: 39px;
+  padding: 9px 15px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* MAIN CONTENT */
+
+.page {
+  max-width: 1450px;
+  padding: 38px 4% 75px;
+}
+
+.page-intro {
+  margin: 12px 0 28px;
+}
+
+.page-intro h1 {
+  font-size: clamp(29px, 3vw, 36px);
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  line-height: 1.25;
+}
+
+.page-intro p {
+  max-width: 680px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--premium-muted);
+}
+
+/* SECTION HEADINGS */
+
+.section-heading h2,
+.panel-title-row h2 {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.section-heading p {
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* INTERACTIVE BUTTONS */
+
+.primary-button,
+.secondary-button {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1px;
+}
+
+.primary-button {
+  min-height: 45px;
+  padding: 12px 20px;
+}
+
+/* GLASS CARDS */
+
+.tool-card {
+  min-height: 175px;
+  padding: 22px;
+  border-radius: 20px;
+}
+
+.tool-title {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.tool-text {
+  margin-top: 9px;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 25px 18px 55px;
+  }
+
+  .page-intro h1 {
+    font-size: 27px;
+  }
+
+  .topbar {
+    min-height: 66px;
+    padding-inline: 16px;
+  }
+
+  .topbar-right {
+    gap: 8px;
+  }
+}
+
+
+/* Compact horizontal Study Music header */
+.study-music-section > .section-heading.compact {
+  display: inline-flex !important;
+  width: auto !important;
+  margin: 0 24px 10px 0 !important;
+  vertical-align: middle;
+  text-align: left !important;
+}
+
+.study-music-section > .section-heading.compact > div {
+  align-items: flex-start !important;
+}
+
+.study-music-section .section-heading h2 {
+  font-size: 25px !important;
+  margin: 0 !important;
+  line-height: 1.1 !important;
+}
+
+.study-music-section .section-heading p {
+  font-size: 11px !important;
+  margin: 2px 0 0 !important;
+  text-align: left !important;
+}
+
+.study-music-section > .study-music-switcher {
+  display: inline-flex !important;
+  width: auto !important;
+  margin: 0 0 10px !important;
+  vertical-align: middle;
+  gap: 8px !important;
+}
+
+.study-music-section .study-music-switcher__button {
+  padding: 8px 14px !important;
+  min-height: 36px !important;
+}
+
+
+/* PREMIUM STUDY MUSIC HEADER */
+
+.study-music-section .section-heading.compact h2 {
+  font-family: "Manrope", sans-serif !important;
+  font-size: 34px !important;
+  font-weight: 800 !important;
+  letter-spacing: -1.2px !important;
+  line-height: 1.15 !important;
+  margin: 2px 0 5px !important;
+  background: linear-gradient(90deg, #ffffff, #c4a2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.study-music-section .section-heading.compact p {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  color: #c5b9e2 !important;
+}
+
+.study-music-section .section-kicker {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+}
+
+.study-music-section > .study-music-switcher {
+  gap: 12px !important;
+}
+
+.study-music-switcher__button {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  padding: 11px 18px !important;
+}

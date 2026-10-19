@@ -1,0 +1,109 @@
+
+/* MAGICAL GLOWING PARTICLES */
+
+.ss-magical-particles {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none !important;
+  z-index: 1500 !important;
+  isolation: isolate;
+  contain: layout style;
+}
+
+.ss-magical-particle {
+  position: absolute;
+  left: var(--particle-x);
+  bottom: -30px;
+
+  width: var(--particle-size);
+  height: var(--particle-size);
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle at 35% 35%,
+    #ffffff 0%,
+    #e0ceff 23%,
+    #9885ff 58%,
+    rgba(108, 75, 245, 0) 100%
+  );
+
+  box-shadow:
+    0 0 9px 2px rgba(158, 134, 255, .65),
+    0 0 22px 5px rgba(109, 92, 255, .22);
+
+  opacity: 0;
+  will-change: transform, opacity;
+
+  animation:
+    ss-magical-rise
+    var(--particle-duration)
+    linear
+    var(--particle-delay)
+    infinite;
+}
+
+/* Cyan particles */
+.ss-magical-particle:nth-child(3n) {
+  background: radial-gradient(
+    circle,
+    #ffffff,
+    #9ff3ff 40%,
+    rgba(80, 197, 255, 0)
+  );
+
+  box-shadow:
+    0 0 9px 2px rgba(109, 229, 255, .7),
+    0 0 23px 5px rgba(68, 172, 255, .22);
+}
+
+/* Tiny white sparkles */
+.ss-magical-particle:nth-child(7n) {
+  width: 3px;
+  height: 3px;
+  box-shadow: 0 0 8px 2px rgba(255,255,255,.75);
+}
+
+@keyframes ss-magical-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(.45);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: .8;
+  }
+
+  48% {
+    transform:
+      translate3d(var(--particle-drift), -53vh, 0)
+      scale(1.12);
+    opacity: .95;
+  }
+
+  86% {
+    opacity: .65;
+  }
+
+  100% {
+    transform:
+      translate3d(
+        calc(var(--particle-drift) * -.6),
+        -115vh,
+        0
+      )
+      scale(.5);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-magical-particle {
+    animation: none !important;
+    opacity: .35;
+    transform: translateY(-40vh);
+  }
+}

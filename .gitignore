@@ -14,3 +14,22 @@ build/
 
 *.bak
 frontend/src_backup_*/
+
+# Local databases and secrets
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+!.env.example
+
+# Python environments
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+build/
