@@ -1,4 +1,3 @@
-
 import { useState, type FormEvent } from "react";
 import "./Auth.css";
 
@@ -28,20 +27,17 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${API}/api/auth/${mode}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...(mode === "register" ? { name: name.trim() } : {}),
-            email: email.trim().toLowerCase(),
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${API}/api/auth/${mode}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...(mode === "register" ? { name: name.trim() } : {}),
+          email: email.trim().toLowerCase(),
+          password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -67,23 +63,45 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
     }
   }
 
+  function changeMode(nextMode: "login" | "register") {
+    setMode(nextMode);
+    setError("");
+  }
+
   return (
     <main className="ss-auth-page">
-      <section className="ss-auth-card">
+      <section
+        className={`ss-auth-card ${
+          mode === "register" ? "ss-auth-card-register" : ""
+        }`}
+      >
+        {/* Brand */}
         <div className="ss-auth-brand">
           <div className="ss-auth-logo">S</div>
-          <span>
-            StudySpark <strong>AI</strong>
-          </span>
+
+          <div>
+            <span>
+              StudySpark <strong>AI</strong>
+            </span>
+
+            <span className="ss-auth-tagline">
+              Smart Learning, Smarter You
+            </span>
+          </div>
         </div>
 
+        {/* Heading */}
         <div className="ss-auth-heading">
           <span className="ss-auth-eyebrow">
             YOUR PERSONAL LEARNING SPACE
           </span>
+
           <h1>
-            {mode === "login" ? "Welcome back." : "Start learning smarter."}
+            {mode === "login"
+              ? "Welcome back."
+              : "Start learning smarter."}
           </h1>
+
           <p>
             {mode === "login"
               ? "Sign in to continue your learning journey."
@@ -91,14 +109,13 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           </p>
         </div>
 
+        {/* Login / registration switch */}
         <div className="ss-auth-switch">
           <button
             type="button"
             className={mode === "login" ? "active" : ""}
-            onClick={() => {
-              setMode("login");
-              setError("");
-            }}
+            onClick={() => changeMode("login")}
+            aria-pressed={mode === "login"}
           >
             Sign in
           </button>
@@ -106,19 +123,19 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
           <button
             type="button"
             className={mode === "register" ? "active" : ""}
-            onClick={() => {
-              setMode("register");
-              setError("");
-            }}
+            onClick={() => changeMode("register")}
+            aria-pressed={mode === "register"}
           >
             Create account
           </button>
         </div>
 
+        {/* Authentication form */}
         <form onSubmit={handleSubmit} className="ss-auth-form">
           {mode === "register" && (
             <label>
               Full name
+
               <input
                 type="text"
                 value={name}
@@ -133,6 +150,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
           <label>
             Email address
+
             <input
               type="email"
               value={email}
@@ -145,6 +163,7 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
 
           <label>
             Password
+
             <input
               type="password"
               value={password}
@@ -174,10 +193,14 @@ export default function Auth({ onAuthSuccess }: AuthProps) {
               : mode === "login"
                 ? "Sign in to StudySpark"
                 : "Create my account"}
-            {!loading && <span aria-hidden="true">→</span>}
+
+            {!loading && (
+              <span aria-hidden="true">→</span>
+            )}
           </button>
         </form>
 
+        {/* Footer */}
         <p className="ss-auth-footer">
           Your learning workspace, all in one place.
         </p>

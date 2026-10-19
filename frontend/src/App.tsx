@@ -1,5 +1,4 @@
-﻿
-import { Fragment } from 'react'
+﻿import { Fragment } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -11,6 +10,9 @@ import Predict from "./components/Predict";
 import Auth from "./components/Auth";
 import PredictionHistory from "./components/PredictionHistory"
 import BookRecommendations from "./components/BookRecommendations";
+import MusicPlayer from './components/MusicPlayer'
+import PopularMusic from "./components/PopularMusic";
+import { handleSpotifyCallback } from './services/spotify';
 
 type Tab =
 
@@ -18,6 +20,7 @@ type Tab =
   | 'Productivity Predictor'
   | 'Prediction History'
   | 'Book Recommendations'
+  | 'Study Music'
   | 'Study Materials'
   | 'Quizzes'
   | 'Flashcards'
@@ -291,6 +294,49 @@ useEffect(() => {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [musicSection, setMusicSection] = useState<"sounds" | "popular">(
+  "sounds");
+
+  const [spotifyAuthLoading, setSpotifyAuthLoading] = useState(window.location.pathname === '/callback');
+  const [spotifyAuthError, setSpotifyAuthError] = useState('');
+
+  useEffect(() => {
+    if (window.location.pathname !== '/callback') {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function processSpotifyCallback() {
+     try {
+      const success = await handleSpotifyCallback()
+
+      if (!success) {
+        throw new Error(
+          'No Spotify authorization code was received. Please try connecting again.',
+        )
+      }
+     } catch (error) {
+      if (!cancelled) {
+        setSpotifyAuthError(
+          error instanceof Error
+            ? error.message
+            : 'Spotify login failed.'
+        );
+      }
+     } finally {
+      if (!cancelled) {
+        setSpotifyAuthLoading(false);
+      }
+     }
+    }
+
+    void processSpotifyCallback();
+
+    return () => {
+     cancelled = true;
+    };
+  }, []);
 
   const [generatedResults, setGeneratedResults] = useState<
     Record<StudyAction, string>
@@ -324,6 +370,7 @@ useEffect(() => {
     { name: 'Productivity Predictor', icon: 'sparkles' },
     { name: 'Prediction History', icon: 'file' },
     { name: 'Book Recommendations', icon: 'book' },
+    { name: 'Study Music', icon: 'music'},
     { name: 'Study Materials', icon: 'book' },
     { name: 'Quizzes', icon: 'brain' },
     { name: 'Flashcards', icon: 'cards' },
@@ -660,7 +707,39 @@ useEffect(() => {
 if (!authUser) {
   return <Auth onAuthSuccess={handleAuthSuccess} />;
 }
+  if (window.location.pathname === '/callback') {
+  if (spotifyAuthLoading) {
+    return (
+      <div className="spotify-callback-screen">
+        <h2>🎵 Connecting to Spotify...</h2>
+        <p>Preparing your music experience.</p>
+      </div>
+    );
+  }
 
+  if (spotifyAuthError) {
+    return (
+      <div className="spotify-callback-screen">
+        <h2>Couldn't connect to Spotify</h2>
+        <p>{spotifyAuthError}</p>
+        <button onClick={() => window.location.assign('/')}>
+          Return to StudySpark AI
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="spotify-callback-screen">
+      <h2>🎉 Spotify connected!</h2>
+      <p>You can return to StudySpark AI.</p>
+      <button onClick={() => window.location.assign('/')}>
+        Continue to StudySpark AI
+      </button>
+    </div>
+  );
+ }
+ 
   return (
     <div className="app-shell" data-theme={theme}>
       <aside className="sidebar">
@@ -1550,6 +1629,40 @@ if (!authUser) {
           </div>
         )}
 
+        {/* STUDY MUSIC PAGE */}
+        <div className="page" style={{display: activeTab === "Study Music" ? "block" : "none",}}>
+          <section className="study-music-section">
+            <div className="section-heading compact">
+              <div>
+                <span className="section-kicker">YOUR FOCUS SPACE</span>
+                <h2>Study Music</h2>
+                <p>Find your rhythm, relax, and focus on your studies.</p>
+              </div>
+            </div>
+
+            <div className="study-music-switcher">
+              <button type="button"
+                  className={ musicSection === "sounds" ? "study-music-switcher__button is-active": "study-music-switcher__button"}
+                  onClick={() => setMusicSection("sounds")}
+                  aria-pressed={musicSection === "sounds"}> 🎧 Study Sounds
+              </button>
+
+              <button type="button" className={musicSection === "popular" ? "study-music-switcher__button is-active": "study-music-switcher__button"}
+                 onClick={() => setMusicSection("popular")}
+                 aria-pressed={musicSection === "popular"}> 🎵 Popular Music
+              </button>
+            </div>
+
+            <div style={{ display: musicSection === "sounds" ? "block" : "none" }}>
+              <MusicPlayer />
+            </div>
+
+            <div style={{ display: musicSection === "popular" ? "block" : "none" }}>
+              <PopularMusic />
+            </div>
+          </section>
+        </div>
+
         {/* RECOMMENDATIONS */}
         {activeTab === 'Recommendations' && (
           <div className="page">
@@ -1604,4 +1717,3 @@ if (!authUser) {
 }
 
 export default App
-
