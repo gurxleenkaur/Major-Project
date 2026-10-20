@@ -1,5 +1,6 @@
 from productivity_routes import productivity_bp
 from auth_routes import auth_bp
+from progress_tracker_routes import progress_tracker_bp
 import json
 import os
 import re
@@ -63,6 +64,7 @@ CORS(
 
 app.register_blueprint(productivity_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(progress_tracker_bp)
 # Leave room for multipart form overhead; enforce the 10 MB PDF limit
 # against the uploaded file itself in the upload route below.
 app.config["MAX_CONTENT_LENGTH"] = 11 * 1024 * 1024
