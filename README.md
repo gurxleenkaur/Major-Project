@@ -55,3 +55,28 @@ Open the Vite URL displayed in the terminal, usually `http://localhost:5173`.
 The frontend connects to Flask at `http://127.0.0.1:5000`.
 
 **Note:** This project does not include LifeWise AI integration or an authentication layer.
+
+## Progress Tracker module (integrated)
+
+The LifeWise Progress Tracker is available as a separate **Progress Tracker** navigation tab immediately below **Prediction History**.
+
+### Included features
+- Neon-glass study dashboard and weekly focus-performance bars
+- Adjustable Pomodoro focus timer with sound cues
+- Study task creation, completion, and deletion
+- Recent study sessions, daily focus summary, and configurable weekly goal
+
+### Backend
+The existing Flask application registers `progress_tracker_routes.py` as a blueprint. Tracker data uses a separate local SQLite database (`backend/progress_tracker.db`) and does not reuse or modify the StudySpark authentication/prediction database.
+
+### Run on Windows
+1. Start the backend using the existing backend environment and project instructions:
+   `cd backend`
+   `python -m flask --app main run --host 127.0.0.1 --port 5000 --debug`
+2. In a second terminal:
+   `cd frontend`
+   `npm install`
+   `npm run dev`
+3. Sign in to StudySpark and select **Progress Tracker** in the sidebar.
+
+The local tracker database is created automatically the first time the backend starts. Do not commit `.env`, local databases, virtual environments, or `node_modules`.
