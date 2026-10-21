@@ -9,7 +9,6 @@ import './App.css'
 import Predict from "./components/Predict";
 import Auth from "./components/Auth";
 import PredictionHistory from "./components/PredictionHistory"
-import ProgressTracker from "./components/ProgressTracker"
 import BookRecommendations from "./components/BookRecommendations";
 import ProgressTracker from "./components/ProgressTracker"
 import MusicPlayer from './components/MusicPlayer'
@@ -21,7 +20,6 @@ type Tab =
   | 'Overview'
   | 'Productivity Predictor'
   | 'Prediction History'
-  | 'Progress Tracker'
   | 'Book Recommendations'
   | 'Progress Tracker'
   | 'Study Music'
@@ -435,7 +433,6 @@ useEffect(() => {
   
     { name: 'Productivity Predictor', icon: 'sparkles' },
     { name: 'Prediction History', icon: 'file' },
-    { name: 'Progress Tracker', icon: 'timer' },
     { name: 'Book Recommendations', icon: 'book' },
     { name: 'Progress Tracker', icon: 'timer' },
     { name: 'Study Music', icon: 'music'},
@@ -988,9 +985,6 @@ if (!authUser) {
           <div className="history-wave-page">
             <PredictionHistory />
           </div>
-        )}
-        {activeTab === 'Progress Tracker' && (
-          <ProgressTracker />
         )}
         {activeTab === 'Book Recommendations' && (
           <div className="books-wave-page">
