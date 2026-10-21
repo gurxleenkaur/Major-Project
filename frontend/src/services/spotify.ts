@@ -13,9 +13,14 @@ const SCOPES = [
   'user-read-email',
   'streaming',
   'user-read-playback-state',
+  'user-read-currently-playing',
   'user-modify-playback-state',
   'user-read-recently-played',
 ].join(' ');
+
+// --------------------------------------------------
+// TYPES
+// --------------------------------------------------
 
 export type SpotifyTrack = {
   id: string;
@@ -60,6 +65,23 @@ type RecentlyPlayedResponse = {
   items?: SpotifyRecentlyPlayedTrack[];
 };
 
+type QueueResponse = {
+  currently_playing?: SpotifyTrack | null;
+  queue?: SpotifyTrack[];
+};
+
+// --------------------------------------------------
+// DUPLICATE-REQUEST PROTECTION
+// --------------------------------------------------
+
+// Prevents simultaneous queue requests for the same URI
+// within this browser tab.
+const tracksBeingQueued = new Set<string>();
+
+// --------------------------------------------------
+// AUTHENTICATION HELPERS
+// --------------------------------------------------
+
 function randomString(length: number): string {
   const chars =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -75,16 +97,22 @@ function randomString(length: number): string {
 async function createChallenge(
   verifier: string,
 ): Promise<string> {
-  const data = new TextEncoder().encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(verifier),
+  );
 
   return btoa(
     String.fromCharCode(...new Uint8Array(digest)),
   )
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
-    .replace(/=+$/, '');
+    .replace(/=+$/g, '');
 }
+
+// --------------------------------------------------
+// SPOTIFY LOGIN
+// --------------------------------------------------
 
 export async function loginWithSpotify(): Promise<void> {
   if (!CLIENT_ID) {
@@ -95,7 +123,6 @@ export async function loginWithSpotify(): Promise<void> {
 
   const verifier = randomString(64);
   const state = randomString(16);
-
   const challenge = await createChallenge(verifier);
 
   sessionStorage.setItem('spotify_code_verifier', verifier);
@@ -116,12 +143,16 @@ export async function loginWithSpotify(): Promise<void> {
   );
 }
 
-export async function handleSpotifyCallback(): Promise<boolean> {
-  const currentUrl = new URL(window.location.href);
+// --------------------------------------------------
+// SPOTIFY CALLBACK
+// --------------------------------------------------
 
-  const code = currentUrl.searchParams.get('code');
-  const returnedState = currentUrl.searchParams.get('state');
-  const error = currentUrl.searchParams.get('error');
+export async function handleSpotifyCallback(): Promise<boolean> {
+  const url = new URL(window.location.href);
+
+  const code = url.searchParams.get('code');
+  const returnedState = url.searchParams.get('state');
+  const error = url.searchParams.get('error');
 
   if (error) {
     throw new Error(`Spotify authorization failed: ${error}`);
@@ -131,8 +162,13 @@ export async function handleSpotifyCallback(): Promise<boolean> {
     return false;
   }
 
-  const expectedState = sessionStorage.getItem('spotify_auth_state');
-  const verifier = sessionStorage.getItem('spotify_code_verifier');
+  const expectedState = sessionStorage.getItem(
+    'spotify_auth_state',
+  );
+
+  const verifier = sessionStorage.getItem(
+    'spotify_code_verifier',
+  );
 
   if (
     !expectedState ||
@@ -169,10 +205,10 @@ export async function handleSpotifyCallback(): Promise<boolean> {
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
+    const errorBody = await response.text();
 
     throw new Error(
-      `Spotify token exchange failed (${response.status}): ${errorText}`,
+      `Spotify token exchange failed (${response.status}): ${errorBody}`,
     );
   }
 
@@ -191,19 +227,33 @@ export async function handleSpotifyCallback(): Promise<boolean> {
   sessionStorage.removeItem('spotify_code_verifier');
   sessionStorage.removeItem('spotify_auth_state');
 
-  window.history.replaceState({}, document.title, '/');
+  window.history.replaceState(
+    {},
+    document.title,
+    '/',
+  );
 
   return true;
 }
 
+// --------------------------------------------------
+// ACCESS TOKEN
+// --------------------------------------------------
+
 export function getSpotifyAccessToken(): string | null {
-  const token = sessionStorage.getItem('spotify_access_token');
+  const token = sessionStorage.getItem(
+    'spotify_access_token',
+  );
 
   const expiresAt = Number(
     sessionStorage.getItem('spotify_token_expires_at'),
   );
 
-  if (!token || !expiresAt || Date.now() >= expiresAt) {
+  if (
+    !token ||
+    !expiresAt ||
+    Date.now() >= expiresAt
+  ) {
     sessionStorage.removeItem('spotify_access_token');
     sessionStorage.removeItem('spotify_token_expires_at');
 
@@ -213,52 +263,121 @@ export function getSpotifyAccessToken(): string | null {
   return token;
 }
 
+// --------------------------------------------------
+// LOGOUT
+// --------------------------------------------------
+
 export function logoutSpotify(): void {
-  sessionStorage.removeItem('spotify_access_token');
-  sessionStorage.removeItem('spotify_token_expires_at');
-  sessionStorage.removeItem('spotify_code_verifier');
-  sessionStorage.removeItem('spotify_auth_state');
+  [
+    'spotify_access_token',
+    'spotify_token_expires_at',
+    'spotify_code_verifier',
+    'spotify_auth_state',
+  ].forEach((key) => {
+    sessionStorage.removeItem(key);
+  });
+
+  tracksBeingQueued.clear();
 }
 
-async function spotifyRequest<T>(endpoint: string): Promise<T> {
+// --------------------------------------------------
+// COMMON SPOTIFY API REQUEST
+// --------------------------------------------------
+
+async function spotifyRequest<T>(
+  endpoint: string,
+  init: RequestInit = {},
+): Promise<T> {
   const token = getSpotifyAccessToken();
 
   if (!token) {
     throw new Error(
-      'Your Spotify session has expired. Please connect again.',
+      'Your Spotify session has expired. Please reconnect.',
     );
   }
 
+  const headers = new Headers(init.headers);
+
+  headers.set('Authorization', `Bearer ${token}`);
+
+  if (init.body && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+
   const response = await fetch(`${API_BASE}${endpoint}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    ...init,
+    headers,
   });
 
-  if (!response.ok) {
-    const errorBody = await response.text();
+  // Read the response body only once.
+  const responseText = await response.text();
 
+  if (!response.ok) {
     if (response.status === 401) {
       logoutSpotify();
 
       throw new Error(
-        'Your Spotify session has expired. Please connect again.',
+        'Your Spotify session has expired. Please reconnect.',
       );
     }
 
     if (response.status === 403) {
       throw new Error(
-        'Spotify did not allow this request. Check your account permissions.',
+        'Spotify refused this request. Check your account eligibility, playback permissions, and player status.',
+      );
+    }
+
+    if (response.status === 404) {
+      throw new Error(
+        'Spotify could not find an active playback device. Wait for the StudySpark player to connect, then try again.',
+      );
+    }
+
+    if (response.status === 429) {
+      throw new Error(
+        'Spotify is receiving too many requests. Wait a moment and try again.',
       );
     }
 
     throw new Error(
-      `Spotify request failed (${response.status}): ${errorBody}`,
+      `Spotify API error ${response.status} for ${endpoint}: ${
+        responseText || response.statusText || 'No response body'
+      }`,
     );
   }
 
-  return (await response.json()) as T;
+  // Successful playback commands frequently return HTTP 204.
+  if (
+    response.status === 204 ||
+    !responseText.trim()
+  ) {
+    return undefined as T;
+  }
+
+  const method = (init.method ?? 'GET').toUpperCase();
+
+  // Our playback commands expect no return value.
+  // Do not attempt to parse their successful plain-text responses.
+  if (
+    ['POST', 'PUT', 'DELETE'].includes(method) &&
+    !responseText.trim().startsWith('{') &&
+    !responseText.trim().startsWith('[')
+  ) {
+    return undefined as T;
+  }
+
+  try {
+    return JSON.parse(responseText) as T;
+  } catch {
+    throw new Error(
+      `Spotify returned an unexpected response for ${endpoint}. HTTP status: ${response.status}.`,
+    );
+  }
 }
+
+// --------------------------------------------------
+// GET A TRACK
+// --------------------------------------------------
 
 export async function getSpotifyTrack(
   trackId: string,
@@ -267,6 +386,10 @@ export async function getSpotifyTrack(
     `/tracks/${encodeURIComponent(trackId)}`,
   );
 }
+
+// --------------------------------------------------
+// SEARCH SPOTIFY TRACKS
+// --------------------------------------------------
 
 export async function searchSpotifyTracks(
   query: string,
@@ -288,23 +411,140 @@ export async function searchSpotifyTracks(
   return data.tracks?.items ?? [];
 }
 
-/**
- * Retrieves the current user's recently played Spotify tracks.
- *
- * This reads listening history; it does not start playback.
- */
+// --------------------------------------------------
+// RECENTLY PLAYED TRACKS
+// --------------------------------------------------
+
 export async function getRecentlyPlayedTracks(
   limit = 10,
 ): Promise<SpotifyRecentlyPlayedTrack[]> {
-  const safeLimit = Math.max(1, Math.min(50, Math.floor(limit)));
+  const safeLimit = Math.max(
+    1,
+    Math.min(50, Math.floor(limit)),
+  );
 
   const params = new URLSearchParams({
     limit: String(safeLimit),
   });
 
-  const data = await spotifyRequest<RecentlyPlayedResponse>(
-    `/me/player/recently-played?${params.toString()}`,
-  );
+  const data =
+    await spotifyRequest<RecentlyPlayedResponse>(
+      `/me/player/recently-played?${params.toString()}`,
+    );
 
   return data.items ?? [];
+}
+
+// --------------------------------------------------
+// GET SPOTIFY QUEUE
+// --------------------------------------------------
+
+export async function getSpotifyQueue(): Promise<SpotifyTrack[]> {
+  const data = await spotifyRequest<QueueResponse>(
+    '/me/player/queue',
+  );
+
+  return data.queue ?? [];
+}
+
+// --------------------------------------------------
+// ACTIVATE THE STUDYSPARK PLAYBACK DEVICE
+// --------------------------------------------------
+
+export async function activateSpotifyDevice(
+  deviceId: string,
+): Promise<void> {
+  if (!deviceId) {
+    throw new Error(
+      'Spotify player is not ready. Wait for the player to initialize.',
+    );
+  }
+
+  await spotifyRequest<void>('/me/player', {
+    method: 'PUT',
+    body: JSON.stringify({
+      device_ids: [deviceId],
+      play: false,
+    }),
+  });
+}
+
+// --------------------------------------------------
+// ADD TRACK TO SPOTIFY QUEUE
+// --------------------------------------------------
+
+export async function addSpotifyTrackToQueue(
+  uri: string,
+  deviceId?: string,
+): Promise<void> {
+  if (!uri.startsWith('spotify:track:')) {
+    throw new Error('Invalid Spotify track URI.');
+  }
+
+  if (tracksBeingQueued.has(uri)) {
+    return;
+  }
+
+  tracksBeingQueued.add(uri);
+
+  try {
+    // Check the current Spotify queue before adding.
+    const data = await spotifyRequest<QueueResponse>(
+      '/me/player/queue',
+    );
+
+    // Do not add the currently playing track.
+    if (data.currently_playing?.uri === uri) {
+      return;
+    }
+
+    // Do not add a track already in the queue.
+    if (data.queue?.some((track) => track.uri === uri)) {
+      return;
+    }
+
+    const params = new URLSearchParams({ uri });
+
+    if (deviceId) {
+      params.set('device_id', deviceId);
+    }
+
+    await spotifyRequest(
+      `/me/player/queue?${params.toString()}`,
+      {
+        method: 'POST',
+      },
+    );
+  } finally {
+    tracksBeingQueued.delete(uri);
+  }
+}
+
+// --------------------------------------------------
+// START PLAYING A TRACK
+// --------------------------------------------------
+
+export async function startSpotifyTrack(
+  uri: string,
+  deviceId: string,
+): Promise<void> {
+  if (!uri || !uri.startsWith('spotify:track:')) {
+    throw new Error('Invalid Spotify track URI.');
+  }
+
+  if (!deviceId) {
+    throw new Error(
+      'No Spotify playback device is available. Wait for the StudySpark player to connect.',
+    );
+  }
+
+  await spotifyRequest<void>(
+    `/me/player/play?device_id=${encodeURIComponent(deviceId)}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({
+        uris: [uri],
+      }),
+    },
+  );
 }

@@ -1,0 +1,242 @@
+.progress-tracker-shell{font-family:'DM Sans',sans-serif;color:#f4f2ff;background:radial-gradient(ellipse at 8% 0%,#242044 0,transparent 36%),radial-gradient(ellipse at 100% 12%,#17233b 0,transparent 32%),#0b0b15;min-height:100%;border-radius:18px;overflow:hidden}
+.progress-tracker-shell .app-shell{min-height:100vh}.progress-tracker-shell .topbar{height:70px;border-bottom:1px solid #ffffff12;background:#0d0d18d9;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,64px);backdrop-filter:blur(18px)}.progress-tracker-shell .brand{display:flex;align-items:center;gap:12px}.progress-tracker-shell .brand-mark{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(140deg,#a78bfa,#6366f1);font:800 15px Manrope;color:#fff;box-shadow:0 8px 28px #8b5cf633}.progress-tracker-shell .brand strong{font:800 16px Manrope;letter-spacing:-.5px}.progress-tracker-shell .brand strong span{color:#a78bfa}.progress-tracker-shell .brand small{display:block;font-size:9px;letter-spacing:1.8px;color:#85839d;margin-top:3px}.progress-tracker-shell .top-date{display:flex;align-items:center;gap:9px;color:#aaa8c0;font-size:12px}.progress-tracker-shell .live-dot, .progress-tracker-shell .timer-foot i{width:7px;height:7px;border-radius:50%;background:#5ee0b0;box-shadow:0 0 12px #5ee0b077}.progress-tracker-shell .local-pill, .progress-tracker-shell .tiny-pill{font-size:9px;letter-spacing:1px;border:1px solid #ffffff17;border-radius:20px;padding:7px 10px;color:#a6a3c0;margin-left:10px}.progress-tracker-shell .dashboard{max-width:1500px;margin:auto;padding:26px clamp(16px,3.2vw,48px) 15px}.progress-tracker-shell .welcome-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:21px;gap:15px}.progress-tracker-shell .eyebrow, .progress-tracker-shell .section-kicker{font-size:9px;font-weight:800;letter-spacing:1.8px;color:#a78bfa;margin:0 0 8px}.progress-tracker-shell .welcome-row h1{font:800 clamp(25px,2.7vw,34px) Manrope;letter-spacing:-1.4px;margin:0}.progress-tracker-shell .welcome-row h1 em{font-style:normal;color:#a78bfa}.progress-tracker-shell .subtitle{font-size:12px;color:#85839c;margin:7px 0 0}.progress-tracker-shell .sound-toggle{border:1px solid #a78bfa44;background:#a78bfa12;color:#c9baff;padding:10px 14px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap}.progress-tracker-shell .sound-toggle span{font-size:16px;margin-right:7px}.progress-tracker-shell .sound-toggle.sound-on{background:#4ade8014;color:#80e8b3;border-color:#4ade8044}.progress-tracker-shell .alert{padding:9px 13px;border-radius:9px;font-size:11px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}.progress-tracker-shell .alert .error{background:#fb71851c;color:#fda4af;border:1px solid #fb718533}.progress-tracker-shell .success{background:#4ade8014;color:#86efac;border:1px solid #4ade8030}.progress-tracker-shell .stats-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:14px}.progress-tracker-shell .stat-card, .progress-tracker-shell .panel{background:linear-gradient(145deg,#171725f5,#12121f);border:1px solid #ffffff10;border-radius:15px;box-shadow:0 8px 24px #00000016}.progress-tracker-shell .stat-card{padding:14px 17px;min-width:0}.progress-tracker-shell .stat-head{display:flex;align-items:center;justify-content:space-between;color:#9290ac;font-size:9px;font-weight:800;letter-spacing:.8px;gap:6px}.progress-tracker-shell .stat-head i{font-style:normal;width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#a78bfa18;color:#b8a4ff;font-size:16px}.progress-tracker-shell .stat-card>strong{display:block;font:800 25px Manrope;letter-spacing:-1px;margin:7px 0 3px}.progress-tracker-shell .stat-card>small{font-size:10px;color:#77758f;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.progress-tracker-shell .main-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(330px,.82fr);gap:14px;align-items:start}.progress-tracker-shell .left-stack, .progress-tracker-shell .right-stack{display:grid;gap:14px;min-width:0}.progress-tracker-shell .panel{padding:18px;min-width:0}.progress-tracker-shell .section-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.progress-tracker-shell .section-top h2{font:750 16px Manrope;letter-spacing:-.4px;margin:0;color:#f4f2ff}.progress-tracker-shell .section-top p{font-size:10px;color:#84819e;margin:5px 0 0}.progress-tracker-shell .section-kicker{display:block;font-size:8px;margin-bottom:5px;color:#a78bfa}.progress-tracker-shell .status-chip{font-size:8px;font-weight:800;letter-spacing:1px;padding:7px 9px;border-radius:20px;background:#a78bfa16;color:#c5b7ff;white-space:nowrap}.progress-tracker-shell .status-chip.running{color:#6ee7b7;background:#34d39916}.progress-tracker-shell .status-chip.paused{color:#fcd34d;background:#fbbf2416}.progress-tracker-shell .timer-layout{display:grid;grid-template-columns:minmax(190px,.95fr) minmax(210px,1fr);gap:20px;align-items:center;margin:7px 0 8px}.progress-tracker-shell .timer-circle{width:min(100%,260px);aspect-ratio:1;border-radius:50%;padding:8px;display:grid;place-items:center;margin:4px auto 0;box-shadow:0 0 45px #8b5cf61a}.progress-tracker-shell .timer-face{width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 25%,#27223e,#12121e 70%);border:1px solid #ffffff12;display:flex;align-items:center;justify-content:center;flex-direction:column}.progress-tracker-shell .timer-face strong{font:800 clamp(35px,4.2vw,50px) Manrope;letter-spacing:-2px;font-variant-numeric:tabular-nums;margin:7px 0}.progress-tracker-shell .timer-mode{font-size:8px;letter-spacing:1.7px;color:#b8a4ff;font-weight:800}.progress-tracker-shell .timer-face small{font-size:8px;letter-spacing:1px;color:#77758f}.progress-tracker-shell .timer-settings{display:grid;gap:9px;min-width:0}.progress-tracker-shell .mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#0b0b15;border:1px solid #ffffff0e;border-radius:10px}.progress-tracker-shell .mode-switch .mode-switch button.selected{background:#a78bfa22;color:#d1c5ff}.progress-tracker-shell .timer-settings label{font-size:9px;color:#9693ae;font-weight:700;display:grid;grid-template-columns:1fr 1.15fr;align-items:center;gap:8px}.progress-tracker-shell .timer-settings input, .progress-tracker-shell .timer-settings select, .progress-tracker-shell .task-form-row input, .progress-tracker-shell .task-form-row select, .progress-tracker-shell .add-task-form>input, .progress-tracker-shell .goal-line input{width:100%;min-width:0;border:1px solid #ffffff14;background:#0d0d18;color:#e9e7f8;border-radius:8px;padding:9px 10px;font-size:10px;outline:none}.progress-tracker-shell .timer-settings input:focus, .progress-tracker-shell .timer-settings select:focus, .progress-tracker-shell .add-task-form input:focus{border-color:#a78bfa88}.progress-tracker-shell .timer-buttons{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:2px}.progress-tracker-shell .btn-primary, .progress-tracker-shell .btn-quiet{border:0;border-radius:9px;padding:10px 12px;font-size:10px;font-weight:800;white-space:nowrap}.progress-tracker-shell .btn-primary{background:linear-gradient(110deg,#8b5cf6,#6366f1);color:#fff;box-shadow:0 6px 18px #8b5cf625}.progress-tracker-shell .btn-primary:hover{filter:brightness(1.1)}.progress-tracker-shell .btn-quiet{background:#ffffff0b;border:1px solid #ffffff14;color:#b0acc8}.progress-tracker-shell .finish-link{background:transparent;border:0;color:#8b88a4;font-size:9px;padding:2px}.progress-tracker-shell .finish-link:hover{color:#fda4af}.progress-tracker-shell .timer-foot{border-top:1px solid #ffffff0c;padding-top:11px;display:flex;justify-content:space-between;gap:8px;color:#77758f;font-size:8px}.progress-tracker-shell .timer-foot span{display:flex;align-items:center;gap:5px}.progress-tracker-shell .timer-foot i{width:5px;height:5px}.progress-tracker-shell .analytics-card{padding-bottom:14px}.progress-tracker-shell .week-total{color:#b5a3ff;font-size:10px;font-weight:700;white-space:nowrap}.progress-tracker-shell .week-bars{height:93px;display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin:9px 5px 12px}.progress-tracker-shell .day-bar{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}.progress-tracker-shell .bar-area{height:72px;width:100%;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(to top,#ffffff03,transparent);border-radius:6px 6px 2px 2px}.progress-tracker-shell .bar-area span{width:min(24px,70%);min-height:4px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#a78bfa,#6652c9);transition:height .3s}.progress-tracker-shell .bar-area span.today-bar{background:linear-gradient(180deg,#5eead4,#0d9488)}.progress-tracker-shell .day-bar small{font-size:9px;color:#7e7b99}.progress-tracker-shell .goal-line{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 9px}.progress-tracker-shell .goal-line>div strong{display:block;font-size:10px}.progress-tracker-shell .goal-line>div span{display:block;font-size:9px;color:#85819d;margin-top:4px}.progress-tracker-shell .goal-line form{display:flex;gap:5px;width:130px}.progress-tracker-shell .goal-line input{padding:7px;width:65px}.progress-tracker-shell .goal-line .progress-track{height:5px;border-radius:9px;background:#ffffff0c;overflow:hidden}.progress-tracker-shell .progress-track>div{height:100%;border-radius:9px;background:linear-gradient(90deg,#8b5cf6,#5eead4);transition:width .4s}.progress-tracker-shell .task-count{width:37px;height:37px;display:flex;align-items:center;justify-content:center;flex-direction:column;border-radius:11px;background:#a78bfa18;color:#c7b8ff;font-weight:800;font-size:14px;flex-shrink:0}.progress-tracker-shell .task-count small{font-size:7px;color:#928ba9;font-weight:600}.progress-tracker-shell .add-task-form{display:grid;gap:7px;margin:15px 0 10px}.progress-tracker-shell .add-task-form>input{padding:10px 11px}.progress-tracker-shell .task-form-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}.progress-tracker-shell .task-form-row input, .progress-tracker-shell .task-form-row select{padding:9px 10px}.progress-tracker-shell .task-form-row .add-btn{padding:9px 13px}.progress-tracker-shell .task-list{display:grid;max-height:218px;overflow:auto;scrollbar-width:thin;scrollbar-color:#39344f transparent}.progress-tracker-shell .task-item{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #ffffff0b;min-width:0}.progress-tracker-shell .task-check{width:18px;height:18px;border:1px solid #57516f;border-radius:6px;background:transparent;color:white;display:grid;place-items:center;flex-shrink:0;font-size:11px}.progress-tracker-shell .task-check.checked{background:#5fbb98;border-color:#5fbb98}.progress-tracker-shell .task-copy{min-width:0;flex:1}.progress-tracker-shell .task-copy strong{display:block;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e9e7f8}.progress-tracker-shell .task-copy span{display:block;font-size:8px;color:#7f7b98;margin-top:4px}.progress-tracker-shell .is-done .task-copy strong{text-decoration:line-through;color:#79758f}.progress-tracker-shell .delete-task{border:0;background:transparent;color:#706b89;font-size:17px;padding:3px 5px}.progress-tracker-shell .delete-task:hover{color:#fb7185}.progress-tracker-shell .empty-tasks{text-align:center;padding:19px 8px}.progress-tracker-shell .empty-tasks>span{color:#b5a3ff;font-size:20px}.progress-tracker-shell .empty-tasks strong{display:block;font-size:10px;margin-top:6px}.progress-tracker-shell .empty-tasks p, .progress-tracker-shell .empty-recent{font-size:9px;color:#77758f}.progress-tracker-shell .task-bottom{display:flex;gap:16px;padding-top:11px;color:#85819d;font-size:9px}.progress-tracker-shell .task-bottom span{display:flex;align-items:center;gap:6px}.progress-tracker-shell .green-dot, .progress-tracker-shell .purple-dot{width:6px;height:6px;border-radius:50%;background:#5ee0b0}.progress-tracker-shell .purple-dot{background:#a78bfa}.progress-tracker-shell .recent-card{padding-bottom:13px}.progress-tracker-shell .recent-item{display:flex;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #ffffff0b}.progress-tracker-shell .recent-icon{width:30px;height:30px;display:grid;place-items:center;background:#a78bfa18;border-radius:9px;color:#b6a4ff;font-size:16px}.progress-tracker-shell .recent-copy{flex:1;min-width:0}.progress-tracker-shell .recent-copy strong{display:block;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.progress-tracker-shell .recent-copy span{display:block;font-size:8px;color:#807c99;margin-top:4px;text-transform:capitalize}.progress-tracker-shell .recent-item>b{font-size:10px;color:#d3caff;white-space:nowrap}.progress-tracker-shell .recent-foot{display:flex;gap:8px;align-items:flex-start;background:#a78bfa0e;color:#9690b1;border-radius:9px;padding:10px;margin-top:11px;font-size:9px;line-height:1.5}.progress-tracker-shell .recent-foot span{color:#c4b5fd}.progress-tracker-shell .footer{display:flex;justify-content:space-between;gap:10px;padding:16px 2px 0;color:#5f5c77;font-size:9px}.progress-tracker-shell .footer b{color:#a78bfa;padding:0 4px}
+@media(min-width:1400px) and (min-height:850px){.progress-tracker-shell .dashboard{padding-top:32px}.progress-tracker-shell .panel{padding:20px}.progress-tracker-shell .timer-circle{width:270px}.progress-tracker-shell .task-list{max-height:245px}}
+@media(max-width:1050px){.progress-tracker-shell .main-grid{grid-template-columns:minmax(0,1fr) minmax(300px,.85fr)}.progress-tracker-shell .timer-layout{grid-template-columns:1fr}.progress-tracker-shell .timer-circle{width:205px}.progress-tracker-shell .timer-settings{max-width:340px;width:100%;margin:auto}.progress-tracker-shell .timer-foot{flex-wrap:wrap}.progress-tracker-shell .stats-row{gap:8px}.progress-tracker-shell .stat-card{padding:12px}.progress-tracker-shell .stat-card>strong{font-size:22px}}
+@media(max-width:760px){.progress-tracker-shell .topbar{height:62px;padding:0 16px}.progress-tracker-shell .top-date{font-size:0}.progress-tracker-shell .top-date .live-dot{font-size:initial}.progress-tracker-shell .local-pill{display:none}.progress-tracker-shell .dashboard{padding:20px 13px}.progress-tracker-shell .welcome-row{align-items:flex-start}.progress-tracker-shell .welcome-row h1{font-size:27px}.progress-tracker-shell .sound-toggle{padding:9px;font-size:0}.progress-tracker-shell .sound-toggle span{font-size:17px;margin:0}.progress-tracker-shell .stats-row{grid-template-columns:repeat(2,minmax(0,1fr))}.progress-tracker-shell .main-grid{grid-template-columns:1fr}.progress-tracker-shell .timer-layout{grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:12px}.progress-tracker-shell .timer-circle{width:100%;max-width:220px}.progress-tracker-shell .timer-face strong{font-size:clamp(27px,7vw,42px)}.progress-tracker-shell .panel{padding:14px}.progress-tracker-shell .footer{flex-direction:column}.progress-tracker-shell .timer-foot{font-size:8px}}
+@media(max-width:470px){.progress-tracker-shell .timer-layout{grid-template-columns:1fr}.progress-tracker-shell .timer-circle{width:220px}.progress-tracker-shell .timer-settings{max-width:none}.progress-tracker-shell .section-top h2{font-size:15px}.progress-tracker-shell .stat-card>small{font-size:9px}.progress-tracker-shell .task-form-row{grid-template-columns:minmax(0,1fr) auto}}
+@media(max-height:820px) and (min-width:761px){.progress-tracker-shell .dashboard{padding-top:16px}.progress-tracker-shell .welcome-row{margin-bottom:13px}.progress-tracker-shell .stats-row{margin-bottom:10px}.progress-tracker-shell .stat-card{padding:10px 14px}.progress-tracker-shell .stat-card>strong{font-size:22px;margin:5px 0 2px}.progress-tracker-shell .panel{padding:14px}.progress-tracker-shell .main-grid, .progress-tracker-shell .left-stack, .progress-tracker-shell .right-stack{gap:10px}.progress-tracker-shell .timer-circle{width:min(100%,218px)}.progress-tracker-shell .timer-layout{gap:15px}.progress-tracker-shell .timer-settings{gap:7px}.progress-tracker-shell .week-bars{height:78px;margin:6px 5px 8px}.progress-tracker-shell .bar-area{height:58px}.progress-tracker-shell .task-list{max-height:165px}.progress-tracker-shell .footer{padding-top:10px}}
+.progress-tracker-shell .duration-control{display:grid;grid-template-columns:1fr 1.15fr;align-items:center;gap:8px;font-size:9px;color:#9693ae;font-weight:700}.progress-tracker-shell .minute-stepper{display:grid;grid-template-columns:30px minmax(0,1fr) 30px;align-items:center;gap:5px;border:1px solid #ffffff14;background:#0d0d18;border-radius:9px;padding:4px}.progress-tracker-shell .minute-stepper .minute-stepper button:hover:not(:disabled){background:#a78bfa2b}.progress-tracker-shell .minute-stepper strong{text-align:center;color:#f4f2ff;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}.progress-tracker-shell .minute-stepper strong small{font-size:8px;color:#8985a4;font-weight:600}
+
+
+/* Glassmorphism refresh */
+
+.progress-tracker-shell .topbar{background:rgba(12,15,31,.58);border-bottom:1px solid rgba(255,255,255,.12);backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%);}
+.progress-tracker-shell .stat-card, .progress-tracker-shell .panel{background:linear-gradient(135deg,rgba(255,255,255,.105),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.15);box-shadow:0 18px 48px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);}
+.progress-tracker-shell .stat-card{border-radius:18px}.progress-tracker-shell .panel{border-radius:20px}.progress-tracker-shell .main-grid{grid-template-columns:minmax(0,1.03fr) minmax(340px,.97fr);gap:17px}.progress-tracker-shell .left-stack, .progress-tracker-shell .right-stack{gap:17px}.progress-tracker-shell .analytics-card{min-height:340px;padding:22px}.progress-tracker-shell .week-bars{height:170px;margin:22px 8px 18px;gap:14px}.progress-tracker-shell .bar-area{height:140px;border:1px solid rgba(255,255,255,.035);background:rgba(255,255,255,.025);border-radius:9px 9px 3px 3px}.progress-tracker-shell .bar-area span{width:min(34px,68%);box-shadow:0 0 18px rgba(167,139,250,.2)}.progress-tracker-shell .bar-area span.today-bar{box-shadow:0 0 18px rgba(94,234,212,.25)}.progress-tracker-shell .day-bar small{font-size:11px}.progress-tracker-shell .compact-timer{padding:17px 19px}.progress-tracker-shell .compact-clock{display:flex;justify-content:center;margin:14px 0 12px}.progress-tracker-shell .compact-clock-ring{width:154px;aspect-ratio:1;border-radius:50%;padding:6px;display:grid;place-items:center;box-shadow:0 0 34px rgba(165,243,252,.12)}.progress-tracker-shell .compact-clock-face{width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:rgba(12,16,34,.82);border:1px solid rgba(255,255,255,.15)}.progress-tracker-shell .compact-clock-face strong{font:800 38px Manrope;letter-spacing:-1.7px;font-variant-numeric:tabular-nums;color:#f3f6ff}.progress-tracker-shell .compact-clock-face small{font-size:8px;letter-spacing:1.5px;color:#a5f3fc;margin-top:4px}.progress-tracker-shell .compact-duration{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto 10px;color:#c6c5df;font-size:10px}.progress-tracker-shell .compact-duration .minute-stepper{width:145px}.progress-tracker-shell .compact-actions{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}.progress-tracker-shell .compact-actions .btn-primary, .progress-tracker-shell .compact-actions .btn-quiet{min-width:94px;padding:10px 15px}.progress-tracker-shell .compact-actions .finish-link{padding:8px 5px}.progress-tracker-shell .compact-subject{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;margin-top:11px;color:#aaa9c7;font-size:9px}.progress-tracker-shell .compact-subject input{width:100%;min-width:0;border:1px solid rgba(255,255,255,.13);background:rgba(8,11,25,.45);color:#f4f2ff;border-radius:9px;padding:9px 10px;font-size:10px;outline:none}.progress-tracker-shell .compact-subject input:focus{border-color:#a5f3fc88}.progress-tracker-shell .timer-foot{margin-top:11px}.progress-tracker-shell .task-date-input{color-scheme:dark;min-width:0;cursor:pointer}.progress-tracker-shell .task-date-input::-webkit-calendar-picker-indicator{opacity:1;cursor:pointer;filter:invert(.8) sepia(.25) saturate(1.5);padding:2px}.progress-tracker-shell .task-form-row .task-date-input{min-width:0;width:100%;padding:9px 7px}.progress-tracker-shell .add-task-form input, .progress-tracker-shell .task-form-row select, .progress-tracker-shell .goal-line input{background:rgba(8,11,25,.48);border-color:rgba(255,255,255,.13)}.progress-tracker-shell .btn-primary{background:linear-gradient(115deg,rgba(139,92,246,.96),rgba(79,105,235,.96));box-shadow:0 7px 24px rgba(99,102,241,.22)}.progress-tracker-shell .sound-toggle{background:rgba(167,139,250,.14);border-color:rgba(196,181,253,.3);backdrop-filter:blur(12px)}
+@media(max-width:1050px){.progress-tracker-shell .main-grid{grid-template-columns:minmax(0,1fr) minmax(300px,.9fr)}.progress-tracker-shell .analytics-card{min-height:300px}.progress-tracker-shell .week-bars{height:130px}.progress-tracker-shell .bar-area{height:105px}}
+@media(max-width:760px){.progress-tracker-shell .main-grid{grid-template-columns:1fr}.progress-tracker-shell .analytics-card{min-height:0}.progress-tracker-shell .week-bars{height:120px;margin:14px 5px 12px}.progress-tracker-shell .bar-area{height:95px}.progress-tracker-shell .compact-clock-ring{width:145px}.progress-tracker-shell .compact-timer{padding:15px}.progress-tracker-shell .task-form-row .task-date-input{padding:9px 5px}}
+
+/* Compact two-row glass planner and balanced left-column history */
+.progress-tracker-shell .left-stack, .progress-tracker-shell .right-stack{min-width:0}
+.progress-tracker-shell .recent-card{padding:18px 20px}
+.progress-tracker-shell .recent-card .recent-item{padding:9px 0}
+.progress-tracker-shell .recent-card .recent-foot{font-size:10px}
+.progress-tracker-shell .compact-planner-form{gap:7px;margin:12px 0 9px}
+.progress-tracker-shell .planner-input-row{display:grid;gap:7px;min-width:0}
+.progress-tracker-shell .planner-input-row input, .progress-tracker-shell .planner-input-row select{min-width:0;width:100%;padding:9px 10px;font-size:10px;border-radius:9px}
+.progress-tracker-shell .planner-input-row-main{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+.progress-tracker-shell .planner-input-row-meta{grid-template-columns:minmax(0,1.1fr) minmax(72px,.65fr) auto;align-items:stretch}
+.progress-tracker-shell .planner-input-row-meta .add-btn{white-space:nowrap;padding:8px 12px;font-size:10px}
+.progress-tracker-shell .tasks-card .task-list{max-height:190px}
+@media(max-width:1050px){.progress-tracker-shell .analytics-card{min-height:280px}.progress-tracker-shell .week-bars{height:125px}.progress-tracker-shell .bar-area{height:100px}.progress-tracker-shell .recent-card{padding:15px}}
+@media(max-width:760px){.progress-tracker-shell .planner-input-row-main{grid-template-columns:minmax(0,1fr) minmax(0,.8fr)}.progress-tracker-shell .planner-input-row-meta{grid-template-columns:minmax(0,1fr) minmax(70px,.6fr) auto}.progress-tracker-shell .planner-input-row-meta .add-btn{padding:8px 9px}.progress-tracker-shell .recent-card{padding:14px}}
+@media(max-width:430px){.progress-tracker-shell .planner-input-row-main{grid-template-columns:1fr}.progress-tracker-shell .planner-input-row-meta{grid-template-columns:minmax(0,1fr) minmax(70px,.6fr)}.progress-tracker-shell .planner-input-row-meta .add-btn{grid-column:1/-1}.progress-tracker-shell .recent-card .recent-copy span{font-size:8px}}
+
+
+/* Premium Neon Glass — targeted controls and planner repair */
+
+
+.progress-tracker-shell .stat-card, .progress-tracker-shell .panel{
+  background: linear-gradient(145deg, rgba(22, 31, 59, .86), rgba(10, 16, 34, .82)) !important;
+  border: 1px solid rgba(148, 163, 255, .17) !important;
+  box-shadow: 0 14px 42px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.045), 0 0 24px rgba(0,234,255,.025) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+.progress-tracker-shell .stat-card:hover, .progress-tracker-shell .panel:hover{ border-color: rgba(0,234,255,.30) !important; }
+/* Fix all planner controls: nested inputs were not covered by the old direct-child selectors. */
+.progress-tracker-shell .tasks-card .compact-planner-form{ display: grid; gap: 8px; margin: 13px 0 10px; width: 100%; }
+.progress-tracker-shell .tasks-card .planner-input-row{ display: grid; gap: 8px; width: 100%; min-width: 0; }
+.progress-tracker-shell .tasks-card .planner-input-row-main{ grid-template-columns: minmax(0, 1.2fr) minmax(0, .9fr); }
+.progress-tracker-shell .tasks-card .planner-input-row-meta{ grid-template-columns: minmax(0, 1fr) minmax(82px, .62fr) auto; align-items: stretch; }
+.progress-tracker-shell .tasks-card .planner-input-row input, .progress-tracker-shell .tasks-card .planner-input-row select{
+  display: block; width: 100%; min-width: 0; height: 38px; box-sizing: border-box;
+  padding: 0 10px; border-radius: 9px;
+  background: rgba(4, 9, 24, .94) !important;
+  color: #eef4ff !important;
+  border: 1px solid rgba(148, 163, 255, .23) !important;
+  font: 500 11px 'DM Sans', sans-serif;
+  color-scheme: dark;
+}
+.progress-tracker-shell .tasks-card .planner-input-row input::placeholder{ color: #a8b4ce !important; opacity: 1 !important; }
+.progress-tracker-shell .tasks-card .planner-input-row input:focus, .progress-tracker-shell .tasks-card .planner-input-row select:focus{
+  outline: none; border-color: var(--lw-neon-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0,234,255,.09), 0 0 16px rgba(0,234,255,.06);
+}
+.progress-tracker-shell .tasks-card .planner-input-row input[type="date"]{ color-scheme: dark; accent-color: var(--lw-neon-cyan); }
+.progress-tracker-shell .tasks-card .planner-input-row input[type="date"]::-webkit-calendar-picker-indicator{ filter: invert(1); opacity: .85; cursor: pointer; }
+.progress-tracker-shell .tasks-card .planner-input-row select option{ background: #0b1227; color: #eef4ff; }
+.progress-tracker-shell .tasks-card .planner-input-row .add-btn{
+  min-width: 92px; height: 38px; padding: 0 12px; white-space: nowrap;
+  border: 1px solid rgba(0,234,255,.35); border-radius: 9px;
+  background: linear-gradient(110deg, rgba(0,234,255,.18), rgba(139,92,246,.42)) !important;
+  color: #f4fbff !important; box-shadow: 0 0 18px rgba(0,234,255,.07);
+}
+.progress-tracker-shell .tasks-card .task-list{ min-width: 0; }
+.progress-tracker-shell .tasks-card .task-copy strong{ color: #eef4ff; }
+.progress-tracker-shell .tasks-card .task-copy span{ color: #a5b1cb; }
+.progress-tracker-shell .recent-card .recent-copy span{ color: #a5b1cb; }
+.progress-tracker-shell .btn-primary{ border: 1px solid rgba(0,234,255,.22); }
+@media (max-width: 1050px) {
+  .progress-tracker-shell .tasks-card .planner-input-row-meta{ grid-template-columns: minmax(0,1fr) minmax(76px,.62fr) auto; }
+  .progress-tracker-shell .tasks-card .planner-input-row .add-btn{ min-width: 86px; padding: 0 8px; font-size: 9px; }
+}
+@media (max-width: 430px) {
+  .progress-tracker-shell .tasks-card .planner-input-row-main{ grid-template-columns: minmax(0,1fr); }
+  .progress-tracker-shell .tasks-card .planner-input-row-meta{ grid-template-columns: minmax(0,1fr) minmax(76px,.7fr); }
+  .progress-tracker-shell .tasks-card .planner-input-row-meta .add-btn{ grid-column: 1 / -1; width: 100%; }
+}
+
+
+/* ===== LifeWise Neon Glass Edition ===== */
+
+
+.progress-tracker-shell .topbar{
+  background: rgba(6, 10, 24, .82);
+  border-bottom: 1px solid rgba(70,245,255,.2);
+  box-shadow: 0 8px 34px rgba(0,0,0,.18);
+}
+.progress-tracker-shell .brand-mark{
+  background: linear-gradient(135deg, #35efff, #756bff 52%, #ff5bd6);
+  color: #06101c;
+  box-shadow: 0 0 22px rgba(70,245,255,.32), 0 0 38px rgba(255,91,214,.12);
+}
+.progress-tracker-shell .brand strong span{ color: var(--neon-cyan); text-shadow: 0 0 16px rgba(70,245,255,.35); }
+.progress-tracker-shell .brand small{ color: #8295b9; }
+.progress-tracker-shell .live-dot, .progress-tracker-shell .timer-foot i{
+  background: var(--neon-lime);
+  box-shadow: 0 0 12px rgba(164,255,207,.85);
+}
+.progress-tracker-shell .local-pill, .progress-tracker-shell .tiny-pill{
+  border-color: rgba(70,245,255,.22);
+  color: #a7c6df;
+  background: rgba(70,245,255,.035);
+}
+.progress-tracker-shell .eyebrow, .progress-tracker-shell .section-kicker{ color: var(--neon-cyan); }
+.progress-tracker-shell .welcome-row h1{ text-shadow: 0 0 28px rgba(70,245,255,.08); }
+.progress-tracker-shell .welcome-row h1 em{
+  background: linear-gradient(90deg, var(--neon-cyan), #8b9cff 55%, var(--neon-pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 12px rgba(70,245,255,.18));
+}
+.progress-tracker-shell .subtitle{ color: #93a5c7; }
+.progress-tracker-shell .sound-toggle{
+  color: #aafaff;
+  border-color: rgba(70,245,255,.36);
+  background: linear-gradient(120deg, rgba(70,245,255,.09), rgba(107,140,255,.1));
+  box-shadow: inset 0 0 18px rgba(70,245,255,.025), 0 0 18px rgba(70,245,255,.04);
+  transition: .2s ease;
+}
+.progress-tracker-shell .sound-toggle:hover{ box-shadow: 0 0 22px rgba(70,245,255,.15); transform: translateY(-1px); }
+.progress-tracker-shell .sound-toggle.sound-on{ color: #a4ffcf; border-color: rgba(164,255,207,.4); }
+.progress-tracker-shell .stat-card, .progress-tracker-shell .panel{
+  background: linear-gradient(145deg, rgba(19, 28, 54, .88), rgba(10, 15, 32, .91));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 14px 36px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.035);
+  backdrop-filter: blur(18px);
+  transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+.progress-tracker-shell .stat-card{ position: relative; overflow: hidden; }
+.progress-tracker-shell .stat-card:before{
+  content: ""; position: absolute; left: 17px; right: 17px; top: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(70,245,255,.55), transparent);
+}
+.progress-tracker-shell .stat-card:hover, .progress-tracker-shell .panel:hover{
+  border-color: rgba(70,245,255,.34);
+  box-shadow: 0 16px 42px rgba(0,0,0,.3), 0 0 24px rgba(70,245,255,.045), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.progress-tracker-shell .stat-head{ color: #9aaccd; }
+.progress-tracker-shell .stat-head i{
+  color: var(--neon-cyan);
+  background: rgba(70,245,255,.08);
+  border: 1px solid rgba(70,245,255,.16);
+  box-shadow: 0 0 16px rgba(70,245,255,.06);
+}
+.progress-tracker-shell .stat-card>strong{ color: #f4fbff; }
+.progress-tracker-shell .stat-card>small{ color: #8b9aba; }
+.progress-tracker-shell .section-top h2{ color: #f2f8ff; }
+.progress-tracker-shell .status-chip{ background: rgba(107,140,255,.12); color: #b9c7ff; border: 1px solid rgba(107,140,255,.18); }
+.progress-tracker-shell .status-chip.running{ color: #a4ffcf; background: rgba(52,211,153,.09); border-color: rgba(164,255,207,.2); }
+.progress-tracker-shell .status-chip.paused{ color: #ffe49b; background: rgba(251,191,36,.09); border-color: rgba(251,191,36,.2); }
+.progress-tracker-shell .timer-circle, .progress-tracker-shell .compact-clock-ring{
+  filter: drop-shadow(0 0 18px rgba(70,245,255,.14));
+}
+.progress-tracker-shell .timer-face, .progress-tracker-shell .compact-clock-face{
+  background: radial-gradient(circle at 45% 20%, #172b48, #0a1021 68%);
+  border: 1px solid rgba(70,245,255,.17);
+  box-shadow: inset 0 0 28px rgba(70,245,255,.045);
+}
+.progress-tracker-shell .timer-mode{ color: var(--neon-cyan); }
+.progress-tracker-shell .timer-face strong, .progress-tracker-shell .compact-clock-face strong{ text-shadow: 0 0 20px rgba(70,245,255,.18); }
+.progress-tracker-shell .mode-switch{ background: rgba(4,8,20,.8); border-color: rgba(115,229,255,.13); }
+.progress-tracker-shell .mode-switch button.selected{
+  background: linear-gradient(110deg, rgba(70,245,255,.16), rgba(107,140,255,.18));
+  color: #b6fbff;
+  box-shadow: inset 0 0 0 1px rgba(70,245,255,.16), 0 0 15px rgba(70,245,255,.045);
+}
+.progress-tracker-shell .timer-settings input, .progress-tracker-shell .timer-settings select, .progress-tracker-shell .task-form-row input, .progress-tracker-shell .task-form-row select, .progress-tracker-shell .add-task-form>input, .progress-tracker-shell .goal-line input{
+  background: rgba(5,10,24,.78);
+  border-color: rgba(115,229,255,.17);
+  color: #e8f5ff;
+}
+.progress-tracker-shell .timer-settings input:focus, .progress-tracker-shell .timer-settings select:focus, .progress-tracker-shell .task-form-row input:focus, .progress-tracker-shell .task-form-row select:focus, .progress-tracker-shell .add-task-form input:focus, .progress-tracker-shell .goal-line input:focus{
+  border-color: rgba(70,245,255,.65);
+  box-shadow: 0 0 0 3px rgba(70,245,255,.07), 0 0 16px rgba(70,245,255,.06);
+}
+.progress-tracker-shell .btn-primary{
+  background: linear-gradient(105deg, #19cce8, #627dff 58%, #a45bff);
+  color: #07101e;
+  box-shadow: 0 7px 22px rgba(57,197,255,.19), inset 0 1px 0 rgba(255,255,255,.3);
+  transition: .2s ease;
+}
+.progress-tracker-shell .btn-primary:hover{ filter: brightness(1.12); transform: translateY(-1px); box-shadow: 0 9px 26px rgba(57,197,255,.27); }
+.progress-tracker-shell .btn-quiet{ background: rgba(255,255,255,.035); border-color: rgba(115,229,255,.17); color: #b5c9e8; }
+.progress-tracker-shell .week-total{ color: var(--neon-cyan); }
+.progress-tracker-shell .bar-area span{
+  background: linear-gradient(180deg, #58f5ff, #6677ff 70%, #a85bff);
+  box-shadow: 0 0 12px rgba(70,245,255,.14);
+}
+.progress-tracker-shell .bar-area span.today-bar{
+  background: linear-gradient(180deg, #a4ffcf, #27dcb5);
+  box-shadow: 0 0 13px rgba(164,255,207,.2);
+}
+.progress-tracker-shell .day-bar small{ color: #91a1c2; }
+.progress-tracker-shell .goal-line 
+.progress-track{ background: rgba(255,255,255,.07); }
+.progress-tracker-shell .progress-track>div{
+  background: linear-gradient(90deg, #21d9ef, #657cff 55%, #ff5bd6);
+  box-shadow: 0 0 13px rgba(70,245,255,.35);
+}
+.progress-tracker-shell .task-count, .progress-tracker-shell .recent-icon{
+  color: var(--neon-cyan);
+  background: rgba(70,245,255,.075);
+  border: 1px solid rgba(70,245,255,.15);
+}
+.progress-tracker-shell .task-count small{ color: #9aaccd; }
+.progress-tracker-shell .task-check{ border-color: rgba(115,229,255,.35); }
+.progress-tracker-shell .task-check.checked{
+  background: #29d8b2; border-color: #29d8b2; color: #06151a;
+  box-shadow: 0 0 12px rgba(41,216,178,.22);
+}
+.progress-tracker-shell .task-copy strong, .progress-tracker-shell .recent-copy strong{ color: #eaf4ff; }
+.progress-tracker-shell .task-copy span, .progress-tracker-shell .recent-copy span{ color: #8b9aba; }
+.progress-tracker-shell .delete-task:hover{ color: var(--neon-pink); text-shadow: 0 0 12px rgba(255,91,214,.35); }
+.progress-tracker-shell .green-dot{ background: var(--neon-lime); box-shadow: 0 0 8px rgba(164,255,207,.5); }
+.progress-tracker-shell .purple-dot{ background: var(--neon-pink); box-shadow: 0 0 8px rgba(255,91,214,.5); }
+.progress-tracker-shell .recent-item>b{ color: #aafaff; }
+.progress-tracker-shell .recent-foot{ background: linear-gradient(100deg, rgba(70,245,255,.06), rgba(255,91,214,.035)); border: 1px solid rgba(115,229,255,.09); color: #a6b7d7; }
+.progress-tracker-shell .recent-foot span{ color: var(--neon-pink); }
+.progress-tracker-shell .footer{ color: #7587a9; }
+.progress-tracker-shell .footer b{ color: var(--neon-cyan); }
+.progress-tracker-shell .alert.error{ background: rgba(255,91,126,.09); border-color: rgba(255,91,126,.28); }
+.progress-tracker-shell .alert.success{ background: rgba(164,255,207,.07); border-color: rgba(164,255,207,.22); color: #a4ffcf; }
+@media (prefers-reduced-motion: no-preference) {
+  .progress-tracker-shell .live-dot{ animation: neon-pulse 2.4s ease-in-out infinite; }
+  @keyframes neon-pulse { 0%,100% { opacity: 1; } 50% { opacity: .48; } }
+}
+@media (max-width: 760px) {
+  .progress-tracker-shell .stat-card, .progress-tracker-shell .panel{ border-radius: 14px; }
+  .progress-tracker-shell .welcome-row h1 em{ filter: none; }
+}

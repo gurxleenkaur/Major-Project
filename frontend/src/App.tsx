@@ -10,6 +10,7 @@ import Predict from "./components/Predict";
 import Auth from "./components/Auth";
 import PredictionHistory from "./components/PredictionHistory"
 import BookRecommendations from "./components/BookRecommendations";
+import ProgressTracker from "./components/ProgressTracker"
 import MusicPlayer from './components/MusicPlayer'
 import PopularMusic from "./components/PopularMusic";
 import { handleSpotifyCallback } from './services/spotify';
@@ -20,6 +21,7 @@ type Tab =
   | 'Productivity Predictor'
   | 'Prediction History'
   | 'Book Recommendations'
+  | 'Progress Tracker'
   | 'Study Music'
   | 'Study Materials'
   | 'Quizzes'
@@ -340,7 +342,16 @@ useEffect(() => {
     }
   }, [theme])
 
-  const [activeTab, setActiveTab] = useState<Tab>('Productivity Predictor')
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+  const savedTab = localStorage.getItem('studyspark-return-tab')
+
+  if (savedTab === 'Study Music') {
+    localStorage.removeItem('studyspark-return-tab')
+    return 'Study Music'
+  }
+
+  return 'Productivity Predictor'
+})
   const [topic, setTopic] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [studyContent, setStudyContent] = useState('')
@@ -423,6 +434,7 @@ useEffect(() => {
     { name: 'Productivity Predictor', icon: 'sparkles' },
     { name: 'Prediction History', icon: 'file' },
     { name: 'Book Recommendations', icon: 'book' },
+    { name: 'Progress Tracker', icon: 'timer' },
     { name: 'Study Music', icon: 'music'},
     { name: 'Overview', icon: 'home' },
     { name: 'Study Materials', icon: 'book' },
@@ -978,6 +990,9 @@ if (!authUser) {
           <div className="books-wave-page">
             <BookRecommendations />
           </div>
+        )}
+        {activeTab === 'Progress Tracker' && (
+          <ProgressTracker />
         )}
 
 

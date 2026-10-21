@@ -1,0 +1,1104 @@
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import './ProgressTracker.css';
+
+const API =
+  import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api';
+
+type Session = {
+  id: number;
+  subject: string;
+  planned_minutes: number;
+  duration_minutes: number;
+  status: 'completed' | 'interrupted';
+  started_at: string;
+  ended_at: string;
+};
+
+type Task = {
+  id: number;
+  title: string;
+  subject: string;
+  deadline: string | null;
+  estimated_minutes: number;
+  is_completed: number;
+  created_at: string;
+  completed_at: string | null;
+};
+
+type Goal = {
+  id: number;
+  week_start: string;
+  goal_minutes: number;
+};
+
+type Daily = {
+  date: string;
+  day: string;
+  minutes: number;
+  sessions: number;
+};
+
+type Report = {
+  total_minutes: number;
+  total_hours: number;
+  completed_sessions: number;
+  all_sessions: number;
+  goal_minutes: number;
+  goal_progress_percent: number;
+  tasks_total: number;
+  tasks_completed: number;
+  task_completion_percent: number;
+  daily: Daily[];
+  insight: string;
+};
+
+async function api<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
+  const response = await fetch(`${API}${path}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    },
+  });
+
+  const body = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      body.error || `Request failed (${response.status})`,
+    );
+  }
+
+  return body as T;
+}
+
+const fmt = (n: number) =>
+  n >= 60
+    ? `${Math.floor(n / 60)}h ${n % 60}m`
+    : `${n}m`;
+
+function ProgressTracker() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [report, setReport] = useState<Report | null>(null);
+
+  const [summary, setSummary] = useState({
+    today_minutes: 0,
+    pending_tasks: 0,
+    completed_tasks: 0,
+  });
+
+  const [goal, setGoal] = useState(600);
+  const [goalDraft, setGoalDraft] = useState('600');
+
+  const [title, setTitle] = useState('');
+  const [taskSubject, setTaskSubject] = useState('Computer Science');
+  const [taskMinutes, setTaskMinutes] = useState(30);
+  const [taskDeadline, setTaskDeadline] = useState('');
+
+  const [subject, setSubject] = useState('Computer Science');
+  const [focusMinutes, setFocusMinutes] = useState(25);
+  const [remaining, setRemaining] = useState(1500);
+
+  const [state, setState] = useState<
+    'ready' | 'running' | 'paused'
+  >('ready');
+
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+
+  const endRef = useRef<number | null>(null);
+  const startRef = useRef<string | null>(null);
+  const audioRef = useRef<AudioContext | null>(null);
+  const finishedRef = useRef(false);
+
+  const refresh = useCallback(async () => {
+    try {
+      setError('');
+
+      const [t, s, g, r, m] = await Promise.all([
+        api<Task[]>('/tasks'),
+        api<Session[]>('/sessions?limit=500'),
+        api<Goal>('/goals/current'),
+        api<Report>('/reports/weekly'),
+        api<{
+          today_minutes: number;
+          pending_tasks: number;
+          completed_tasks: number;
+        }>('/reports/summary'),
+      ]);
+
+      setTasks(t);
+      setSessions(s);
+      setGoal(g.goal_minutes);
+      setGoalDraft(String(g.goal_minutes));
+      setReport(r);
+      setSummary(m);
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Could not connect to backend.',
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
+
+  const playTone = useCallback(async () => {
+    try {
+      const AC =
+        window.AudioContext ||
+        (
+          window as Window & {
+            webkitAudioContext?: typeof AudioContext;
+          }
+        ).webkitAudioContext;
+
+      if (!AC) return;
+
+      let ctx = audioRef.current;
+
+      if (!ctx) {
+        ctx = new AC();
+        audioRef.current = ctx;
+      }
+
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
+
+      [0, 0.18, 0.36].forEach((delay, i) => {
+        const osc = ctx!.createOscillator();
+        const gain = ctx!.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.value = [880, 1175, 1480][i];
+
+        gain.gain.setValueAtTime(
+          0.0001,
+          ctx!.currentTime + delay,
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.16,
+          ctx!.currentTime + delay + 0.02,
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          ctx!.currentTime + delay + 0.15,
+        );
+
+        osc.connect(gain);
+        gain.connect(ctx!.destination);
+
+        osc.start(ctx!.currentTime + delay);
+        osc.stop(ctx!.currentTime + delay + 0.17);
+      });
+    } catch {
+      setNotice(
+        'Sound is blocked by the browser. Click Enable sound and check your device volume.',
+      );
+    }
+  }, []);
+
+  const beep = useCallback(async () => {
+    await playTone();
+    setSoundEnabled(true);
+  }, [playTone]);
+
+  const saveSession = useCallback(
+    async (
+      status: 'completed' | 'interrupted',
+      planned: number,
+    ) => {
+      const started =
+        startRef.current ||
+        new Date(Date.now() - planned * 60000).toISOString();
+
+      const elapsed =
+        status === 'completed'
+          ? planned
+          : Math.min(
+              planned,
+              Math.max(
+                0,
+                Math.floor(
+                  (Date.now() - new Date(started).getTime()) /
+                    60000,
+                ),
+              ),
+            );
+
+      try {
+        await api('/sessions', {
+          method: 'POST',
+          body: JSON.stringify({
+            subject: subject.trim() || 'General study',
+            planned_minutes: planned,
+            duration_minutes: elapsed,
+            status,
+            started_at: started,
+            ended_at: new Date().toISOString(),
+          }),
+        });
+
+        startRef.current = null;
+
+        await refresh();
+      } catch (e) {
+        setError(
+          e instanceof Error
+            ? e.message
+            : 'Could not save session.',
+        );
+      }
+    },
+    [refresh, subject],
+  );
+
+  useEffect(() => {
+    if (state !== 'running' || endRef.current === null) {
+      return;
+    }
+
+    const tick = () => {
+      const left = Math.max(
+        0,
+        Math.ceil((endRef.current! - Date.now()) / 1000),
+      );
+
+      setRemaining(left);
+
+      if (left === 0 && !finishedRef.current) {
+        finishedRef.current = true;
+        endRef.current = null;
+
+        setState('ready');
+
+        void saveSession('completed', focusMinutes);
+        void beep();
+
+        setNotice('Focus session complete! Great work.');
+        setRemaining(focusMinutes * 60);
+      }
+    };
+
+    tick();
+
+    const id = window.setInterval(tick, 200);
+
+    return () => window.clearInterval(id);
+  }, [state, focusMinutes, saveSession, beep]);
+
+  const start = async () => {
+    if (soundEnabled) {
+      await playTone();
+    } else {
+      await beep();
+    }
+
+    finishedRef.current = false;
+
+    if (state === 'paused') {
+      endRef.current = Date.now() + remaining * 1000;
+      setState('running');
+      return;
+    }
+
+    setRemaining(focusMinutes * 60);
+    endRef.current = Date.now() + focusMinutes * 60000;
+    startRef.current = new Date().toISOString();
+
+    setState('running');
+    setNotice('');
+  };
+
+  const pause = () => {
+    if (endRef.current !== null) {
+      void beep();
+
+      setRemaining(
+        Math.max(
+          0,
+          Math.ceil((endRef.current - Date.now()) / 1000),
+        ),
+      );
+
+      endRef.current = null;
+      setState('paused');
+    }
+  };
+
+  const reset = () => {
+    void playTone();
+
+    endRef.current = null;
+    finishedRef.current = false;
+
+    setState('ready');
+
+    if (startRef.current) {
+      void saveSession('interrupted', focusMinutes);
+    }
+
+    startRef.current = null;
+    setRemaining(focusMinutes * 60);
+  };
+
+  const finishEarly = async () => {
+    await playTone();
+
+    endRef.current = null;
+    setState('ready');
+
+    if (startRef.current) {
+      await saveSession('interrupted', focusMinutes);
+    }
+
+    startRef.current = null;
+    setRemaining(focusMinutes * 60);
+
+    setNotice(
+      'Timer stopped. Focus session saved as interrupted if it had started.',
+    );
+  };
+
+  const adjustDuration = (delta: number) => {
+    if (state === 'running') return;
+
+    const next = Math.max(
+      1,
+      Math.min(180, focusMinutes + delta),
+    );
+
+    setFocusMinutes(next);
+    setRemaining(next * 60);
+  };
+
+  const addTask = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!title.trim()) return;
+
+    setBusy(true);
+
+    try {
+      await api('/tasks', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: title.trim(),
+          subject: taskSubject,
+          deadline: taskDeadline || null,
+          estimated_minutes: taskMinutes,
+        }),
+      });
+
+      setTitle('');
+      setTaskDeadline('');
+      setNotice('Task added. You’ve got this!');
+
+      await refresh();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Could not add task.',
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggle = async (t: Task) => {
+    try {
+      await api(`/tasks/${t.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          is_completed: !t.is_completed,
+        }),
+      });
+
+      await refresh();
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Could not update task.',
+      );
+    }
+  };
+
+  const remove = async (id: number) => {
+    try {
+      await api(`/tasks/${id}`, {
+        method: 'DELETE',
+      });
+
+      await refresh();
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Could not delete task.',
+      );
+    }
+  };
+
+  const updateGoal = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const g = await api<Goal>('/goals/current', {
+        method: 'PUT',
+        body: JSON.stringify({
+          goal_minutes: Number(goalDraft),
+        }),
+      });
+
+      setGoal(g.goal_minutes);
+
+      await refresh();
+
+      setNotice('Weekly goal updated.');
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Could not update goal.',
+      );
+    }
+  };
+
+  const seconds = remaining;
+
+  const timeText = `${String(
+    Math.floor(seconds / 60),
+  ).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+
+  const progress = Math.max(
+    0,
+    Math.min(
+      100,
+      100 - (remaining / (focusMinutes * 60)) * 100,
+    ),
+  );
+
+  const pending = tasks.filter((t) => !t.is_completed);
+
+  const today = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const todaySessions = sessions.filter(
+    (s) =>
+      new Date(s.started_at).toDateString() ===
+      new Date().toDateString(),
+  );
+
+  return (
+    <div className="progress-tracker-shell">
+      <div className="app-shell">
+        <header className="topbar">
+          <div className="brand">
+            <div className="brand-mark">LW</div>
+
+            <div>
+              <strong>
+                LifeWise <span>AI</span>
+              </strong>
+              <small>FOCUS &amp; PROGRESS</small>
+            </div>
+          </div>
+
+          <div className="top-date">
+            <span className="live-dot" />
+            {today}
+            <span className="local-pill">LOCAL WORKSPACE</span>
+          </div>
+        </header>
+
+        <main className="dashboard">
+          <section className="welcome-row">
+            <div>
+              <p className="eyebrow">
+                YOUR PERSONAL STUDY SPACE
+              </p>
+
+              <h1>
+                Make today <em>count.</em>
+              </h1>
+
+              <p className="subtitle">
+                Small focused steps. Real progress.
+              </p>
+            </div>
+
+            <button
+              className={`sound-toggle ${
+                soundEnabled ? 'sound-on' : ''
+              }`}
+              onClick={() => {
+                if (soundEnabled) {
+                  void playTone();
+                  setSoundEnabled(false);
+                } else {
+                  void beep();
+                }
+              }}
+            >
+              <span>♫</span>
+              {soundEnabled
+                ? 'Sound on · click to mute'
+                : 'Enable sound'}
+            </button>
+          </section>
+
+          {error && (
+            <div className="alert error">
+              {error}
+              <button onClick={() => setError('')}>
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          {notice && (
+            <div className="alert success">
+              {notice}
+              <button onClick={() => setNotice('')}>×</button>
+            </div>
+          )}
+
+          <section className="stats-row">
+            <Stat
+              icon="◷"
+              label="FOCUS TODAY"
+              value={fmt(summary.today_minutes)}
+              foot={`${todaySessions.length} sessions today`}
+            />
+
+            <Stat
+              icon="✓"
+              label="TASKS DONE"
+              value={`${summary.completed_tasks}`}
+              foot={`${summary.pending_tasks} still in your queue`}
+            />
+
+            <Stat
+              icon="↗"
+              label="WEEKLY PROGRESS"
+              value={`${report?.goal_progress_percent ?? 0}%`}
+              foot={`${fmt(report?.total_minutes ?? 0)} of ${fmt(goal)}`}
+            />
+
+            <Stat
+              icon="✦"
+              label="FOCUS SESSIONS"
+              value={`${report?.completed_sessions ?? 0}`}
+              foot="Completed this week"
+            />
+          </section>
+
+          <section className="main-grid">
+            <div className="left-stack">
+              <section className="panel analytics-card">
+                <div className="section-top">
+                  <div>
+                    <span className="section-kicker">
+                      YOUR CONSISTENCY
+                    </span>
+                    <h2>This week at a glance</h2>
+                  </div>
+
+                  <span className="week-total">
+                    {fmt(report?.total_minutes ?? 0)} total
+                  </span>
+                </div>
+
+                <div className="week-bars">
+                  {(report?.daily ?? []).map((d) => (
+                    <div className="day-bar" key={d.date}>
+                      <div className="bar-area">
+                        <span
+                          className={
+                            new Date(d.date).toDateString() ===
+                            new Date().toDateString()
+                              ? 'today-bar'
+                              : ''
+                          }
+                          style={{
+                            height: `${
+                              Math.max(
+                                5,
+                                Math.min(
+                                  100,
+                                  (d.minutes /
+                                    Math.max(
+                                      1,
+                                      ...(report?.daily ?? []).map(
+                                        (x) => x.minutes,
+                                      ),
+                                    )) *
+                                    100,
+                                ),
+                              )
+                            }%`,
+                          }}
+                          title={`${d.minutes} minutes`}
+                        />
+                      </div>
+
+                      <small>{d.day.slice(0, 1)}</small>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="goal-line">
+                  <div>
+                    <strong>Weekly study goal</strong>
+                    <span>
+                      {fmt(report?.total_minutes ?? 0)} completed
+                      {' / '}
+                      {fmt(goal)} target
+                    </span>
+                  </div>
+
+                  <form onSubmit={updateGoal}>
+                    <input
+                      aria-label="Weekly goal minutes"
+                      type="number"
+                      min="1"
+                      max="10080"
+                      value={goalDraft}
+                      onChange={(e) =>
+                        setGoalDraft(e.target.value)
+                      }
+                    />
+
+                    <button type="submit">Update</button>
+                  </form>
+                </div>
+
+                <div className="progress-track">
+                  <div
+                    style={{
+                      width: `${Math.min(
+                        100,
+                        report?.goal_progress_percent ?? 0,
+                      )}%`,
+                    }}
+                  />
+                </div>
+              </section>
+
+              <section className="panel recent-card">
+                <div className="section-top">
+                  <div>
+                    <span className="section-kicker">
+                      KEEP THE MOMENTUM
+                    </span>
+                    <h2>Recent sessions</h2>
+                  </div>
+
+                  <span className="tiny-pill">
+                    {sessions.length} saved
+                  </span>
+                </div>
+
+                {sessions.slice(0, 3).map((s) => (
+                  <div className="recent-item" key={s.id}>
+                    <div className="recent-icon">◷</div>
+
+                    <div className="recent-copy">
+                      <strong>{s.subject}</strong>
+                      <span>
+                        {formatSessionDate(s.started_at)}
+                        {' · '}
+                        {s.status}
+                      </span>
+                    </div>
+
+                    <b>{fmt(s.duration_minutes)}</b>
+                  </div>
+                ))}
+
+                {sessions.length === 0 && (
+                  <p className="empty-recent">
+                    Your completed focus sessions will appear here.
+                  </p>
+                )}
+
+                <div className="recent-foot">
+                  <span>✨</span>
+                  {report?.insight ??
+                    'Every focused minute adds up.'}
+                </div>
+              </section>
+            </div>
+
+            <div className="right-stack">
+              <section className="panel timer-card compact-timer">
+                <div className="section-top">
+                  <div>
+                    <span className="section-kicker">
+                      FOCUS MODE
+                    </span>
+                    <h2>Focus timer</h2>
+                  </div>
+
+                  <span className={`status-chip ${state}`}>
+                    {state === 'running'
+                      ? '● LIVE'
+                      : state === 'paused'
+                        ? 'Ⅱ PAUSED'
+                        : '● READY'}
+                  </span>
+                </div>
+
+                <div className="compact-clock">
+                  <div
+                    className="compact-clock-ring"
+                    style={{
+                      background: `conic-gradient(from -90deg, #a5f3fc ${progress}%, rgba(255,255,255,.10) ${progress}% 100%)`,
+                    }}
+                  >
+                    <div className="compact-clock-face">
+                      <strong>{timeText}</strong>
+                      <small>
+                        {state === 'running'
+                          ? 'FOCUSING'
+                          : state === 'paused'
+                            ? 'PAUSED'
+                            : 'READY'}
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="compact-duration">
+                  <span>Session length</span>
+
+                  <div className="minute-stepper">
+                    <button
+                      type="button"
+                      disabled={
+                        state === 'running' || focusMinutes <= 1
+                      }
+                      onClick={() => adjustDuration(-1)}
+                      aria-label="Decrease focus by one minute"
+                    >
+                      −
+                    </button>
+
+                    <strong>
+                      {focusMinutes} <small>min</small>
+                    </strong>
+
+                    <button
+                      type="button"
+                      disabled={
+                        state === 'running' ||
+                        focusMinutes >= 180
+                      }
+                      onClick={() => adjustDuration(1)}
+                      aria-label="Increase focus by one minute"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="compact-actions">
+                  {state === 'running' ? (
+                    <button
+                      className="btn-primary"
+                      onClick={pause}
+                    >
+                      Ⅱ Pause
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-primary"
+                      onClick={() => void start()}
+                    >
+                      {state === 'paused'
+                        ? '▶ Resume'
+                        : '▶ Start'}
+                    </button>
+                  )}
+
+                  <button
+                    className="btn-quiet"
+                    onClick={reset}
+                  >
+                    ↺ Reset
+                  </button>
+
+                  <button
+                    className="finish-link"
+                    onClick={() => void finishEarly()}
+                  >
+                    Finish early
+                  </button>
+                </div>
+
+                <div className="compact-subject">
+                  <label htmlFor="study-subject">
+                    Studying
+                  </label>
+
+                  <input
+                    id="study-subject"
+                    value={subject}
+                    disabled={state === 'running'}
+                    onChange={(e) =>
+                      setSubject(e.target.value)
+                    }
+                    placeholder="Subject or topic"
+                  />
+                </div>
+
+                <div className="timer-foot">
+                  <span>
+                    <i /> Session tracking on
+                  </span>
+
+                  <span>
+                    ♫ {soundEnabled
+                      ? 'Sound ready'
+                      : 'Enable sound above'}
+                  </span>
+                </div>
+              </section>
+
+              <section className="panel tasks-card">
+                <div className="section-top">
+                  <div>
+                    <span className="section-kicker">
+                      PLAN YOUR NEXT WIN
+                    </span>
+                    <h2>Today&apos;s tasks</h2>
+                    <p>
+                      {pending.length} tasks waiting for you
+                    </p>
+                  </div>
+
+                  <div className="task-count">
+                    {tasks.filter((t) => t.is_completed).length}
+                    <small>done</small>
+                  </div>
+                </div>
+
+                <form
+                  className="add-task-form compact-planner-form"
+                  onSubmit={addTask}
+                >
+                  <div className="planner-input-row planner-input-row-main">
+                    <input
+                      required
+                      value={title}
+                      onChange={(e) =>
+                        setTitle(e.target.value)
+                      }
+                      placeholder="Task name"
+                      aria-label="Task title"
+                    />
+
+                    <input
+                      value={taskSubject}
+                      onChange={(e) =>
+                        setTaskSubject(e.target.value)
+                      }
+                      placeholder="Subject"
+                      aria-label="Task subject"
+                    />
+                  </div>
+
+                  <div className="planner-input-row planner-input-row-meta">
+                    <input
+                      className="task-date-input"
+                      type="date"
+                      value={taskDeadline}
+                      onChange={(e) =>
+                        setTaskDeadline(e.target.value)
+                      }
+                      onClick={(e) => {
+                        try {
+                          e.currentTarget.showPicker();
+                        } catch {
+                          // The browser may not support showPicker().
+                        }
+                      }}
+                      aria-label="Task due date"
+                      title="Choose a due date"
+                    />
+
+                    <select
+                      value={taskMinutes}
+                      onChange={(e) =>
+                        setTaskMinutes(Number(e.target.value))
+                      }
+                      aria-label="Estimated minutes"
+                    >
+                      {[15, 30, 45, 60, 90, 120].map((n) => (
+                        <option key={n} value={n}>
+                          {n} min
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      className="btn-primary add-btn"
+                      disabled={busy}
+                    >
+                      {busy ? 'Adding…' : '+ Add task'}
+                    </button>
+                  </div>
+                </form>
+
+                <div className="task-list">
+                  {tasks.slice(0, 5).map((t) => (
+                    <div
+                      className={`task-item ${
+                        t.is_completed ? 'is-done' : ''
+                      }`}
+                      key={t.id}
+                    >
+                      <button
+                        className={`task-check ${
+                          t.is_completed ? 'checked' : ''
+                        }`}
+                        onClick={() => void toggle(t)}
+                        aria-label={
+                          t.is_completed
+                            ? 'Mark incomplete'
+                            : 'Mark complete'
+                        }
+                      >
+                        {t.is_completed ? '✓' : ''}
+                      </button>
+
+                      <div className="task-copy">
+                        <strong>{t.title}</strong>
+                        <span>
+                          {t.subject || 'General'}
+                          {' · '}
+                          {t.estimated_minutes} min
+                        </span>
+                      </div>
+
+                      <button
+                        className="delete-task"
+                        onClick={() => void remove(t.id)}
+                        aria-label="Delete task"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+
+                  {tasks.length === 0 && (
+                    <div className="empty-tasks">
+                      <span>✦</span>
+                      <strong>
+                        Your next win starts here
+                      </strong>
+                      <p>
+                        Add one small task to get moving.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="task-bottom">
+                  <span>
+                    <b className="green-dot" />
+                    {tasks.filter((t) => t.is_completed).length}
+                    {' completed'}
+                  </span>
+
+                  <span>
+                    <b className="purple-dot" />
+                    {pending.length} pending
+                  </span>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <footer className="footer">
+            <span>
+              ✦ LifeWise AI <b>·</b> Build a routine that works for you
+            </span>
+
+            <span>
+              Local dashboard · Your progress, your pace
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function formatSessionDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  const weekday = new Intl.DateTimeFormat('en-US', {
+    weekday: 'long',
+  }).format(date);
+
+  const monthDay = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+  }).format(date);
+
+  return `${weekday}, ${monthDay}`;
+}
+
+function Stat({
+  icon,
+  label,
+  value,
+  foot,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+  foot: string;
+}) {
+  return (
+    <div className="stat-card">
+      <div className="stat-head">
+        <span>{label}</span>
+        <i>{icon}</i>
+      </div>
+
+      <strong>{value}</strong>
+      <small>{foot}</small>
+    </div>
+  );
+}
+
+export default ProgressTracker;

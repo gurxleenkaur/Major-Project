@@ -1,5 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+
 import './SpotifyWebPlayback.css';
+
+import {
+  addSpotifyTrackToQueue,
+  getSpotifyQueue,
+  startSpotifyTrack,
+} from '../services/spotify';
 
 interface SpotifyTrack {
   id: string;
@@ -17,16 +29,20 @@ interface SpotifyPlayerState {
   duration: number;
   track_window: {
     current_track: SpotifyTrack | null;
+    next_tracks?: SpotifyTrack[];
+    previous_tracks?: SpotifyTrack[];
   };
 }
 
 interface SpotifyPlayer {
   connect(): Promise<boolean>;
   disconnect(): void;
+
   addListener(
     event: string,
     callback: (data: any) => void,
   ): boolean;
+
   getCurrentState(): Promise<SpotifyPlayerState | null>;
   setVolume(volume: number): Promise<void>;
   pause(): Promise<void>;
@@ -44,9 +60,12 @@ declare global {
       Player: new (options: {
         name: string;
         volume: number;
-        getOAuthToken: (callback: (token: string) => void) => void;
+        getOAuthToken: (
+          callback: (token: string) => void,
+        ) => void;
       }) => SpotifyPlayer;
     };
+
     onSpotifyWebPlaybackSDKReady?: () => void;
   }
 }
@@ -54,39 +73,418 @@ declare global {
 interface Props {
   accessToken: string;
   trackUri?: string;
+
+  onTrackEnded?: (
+    currentTrack: SpotifyTrack,
+  ) => Promise<string | null>;
+
+  onDeviceReady?: (
+    deviceId: string | null,
+  ) => void;
 }
 
 const SDK_URL = 'https://sdk.scdn.co/spotify-player.js';
 
+// Desired number of upcoming songs.
+const TARGET_QUEUE_SIZE = 5;
+
+// Replenish when the queue contains fewer than this many songs.
+const MIN_QUEUE_SIZE = 5;
+
+// Avoid excessive attempts when recommendations cannot be found.
+const MAX_RECOMMENDATION_ATTEMPTS = 15;
+
+// --------------------------------------------------
+// QUEUE HELPERS
+// --------------------------------------------------
+
+// Remove duplicate tracks from the list.
+function uniqueTracks(
+  tracks: SpotifyTrack[],
+): SpotifyTrack[] {
+  const seen = new Set<string>();
+
+  return tracks.filter((track) => {
+    if (!track.uri || seen.has(track.uri)) {
+      return false;
+    }
+
+    seen.add(track.uri);
+    return true;
+  });
+}
+
+// Remove the currently playing track from Up Next.
+function filterUpcomingTracks(
+  tracks: SpotifyTrack[],
+  currentTrackUri?: string | null,
+): SpotifyTrack[] {
+  const unique = uniqueTracks(tracks);
+
+  if (!currentTrackUri) {
+    return unique;
+  }
+
+  return unique.filter(
+    (track) => track.uri !== currentTrackUri,
+  );
+}
+
 export default function SpotifyWebPlayback({
   accessToken,
   trackUri,
+  onTrackEnded,
+  onDeviceReady,
 }: Props) {
   const playerRef = useRef<SpotifyPlayer | null>(null);
+
   const tokenRef = useRef(accessToken);
   const deviceIdRef = useRef<string | null>(null);
-  const requestNumberRef = useRef(0);
-  const previousTrackUriRef = useRef<string | null | undefined>(null);
+
+  const previousTrackUriRef =
+    useRef<string | null | undefined>(null);
+
   const isSeekingRef = useRef(false);
+
+  const lastKnownTrackRef =
+    useRef<SpotifyTrack | null>(null);
+
+  const onTrackEndedRef = useRef(onTrackEnded);
+  const onDeviceReadyRef = useRef(onDeviceReady);
+
+  const volumeRef = useRef(70);
 
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(true);
   const [volume, setVolume] = useState(70);
+
   const [currentTrack, setCurrentTrack] =
     useState<SpotifyTrack | null>(null);
+
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+
   const [message, setMessage] = useState(
     'Loading Spotify player...',
   );
 
-  // Keep the most recent token available to the SDK.
+  const [queue, setQueue] = useState<SpotifyTrack[]>([]);
+  const [showQueue, setShowQueue] = useState(true);
+  const [queueLoading, setQueueLoading] = useState(false);
+
+  // Prevent simultaneous automatic replenishment.
+  const replenishingRef = useRef(false);
+
+  // Prevent repeatedly processing the same playback track.
+  const replenishedTracksRef = useRef<Set<string>>(
+    new Set(),
+  );
+
+  // Prevent overlapping additions for the same URI.
+  const addingUrisRef = useRef<Set<string>>(new Set());
+
+  // Prevent concurrent queue refreshes.
+  const queueRefreshInFlightRef = useRef(false);
+
+  // Keep refs synchronized with the latest props and state.
   useEffect(() => {
     tokenRef.current = accessToken;
   }, [accessToken]);
 
-  // Initialize Spotify once per access-token session.
-  // Track changes do not recreate the player.
+  useEffect(() => {
+    volumeRef.current = volume;
+  }, [volume]);
+
+  useEffect(() => {
+    onTrackEndedRef.current = onTrackEnded;
+  }, [onTrackEnded]);
+
+  useEffect(() => {
+    onDeviceReadyRef.current = onDeviceReady;
+  }, [onDeviceReady]);
+
+  // --------------------------------------------------
+  // REFRESH QUEUE
+  // --------------------------------------------------
+
+ const refreshQueue = useCallback(async () => {
+  if (!tokenRef.current) {
+    setQueue([]);
+    return;
+  }
+
+  if (queueRefreshInFlightRef.current) {
+    return;
+  }
+
+  queueRefreshInFlightRef.current = true;
+  setQueueLoading(true);
+
+  try {
+    const tracks = await getSpotifyQueue();
+
+    // Get the latest playback state from Spotify.
+    const player = playerRef.current;
+    const state = await player?.getCurrentState();
+
+    const playingTrack =
+      state?.track_window.current_track ??
+      lastKnownTrackRef.current;
+
+    if (playingTrack) {
+      lastKnownTrackRef.current = playingTrack;
+      setCurrentTrack(playingTrack);
+    }
+
+    // Remove duplicate tracks and the currently playing song.
+    const upcomingTracks = filterUpcomingTracks(
+      tracks,
+      playingTrack?.uri ?? null,
+    );
+
+    setQueue(upcomingTracks);
+  } catch (error) {
+    setMessage(
+      error instanceof Error
+        ? error.message
+        : 'Could not load Spotify queue.',
+    );
+  } finally {
+    queueRefreshInFlightRef.current = false;
+    setQueueLoading(false);
+  }
+}, []);
+
+  // Listen for queue updates originating elsewhere in StudySpark.
+  useEffect(() => {
+  let timer: number | undefined;
+
+  const refresh = () => {
+    if (timer !== undefined) {
+      window.clearTimeout(timer);
+    }
+
+    // Let Spotify update its native queue before fetching it.
+    timer = window.setTimeout(() => {
+      void refreshQueue();
+    }, 500);
+  };
+
+  window.addEventListener(
+    'studyspark:spotify-queue-updated',
+    refresh,
+  );
+
+  return () => {
+    window.removeEventListener(
+      'studyspark:spotify-queue-updated',
+      refresh,
+    );
+
+    if (timer !== undefined) {
+      window.clearTimeout(timer);
+    }
+  };
+}, [refreshQueue]);
+
+  // --------------------------------------------------
+  // AUTOMATIC QUEUE REPLENISHMENT
+  // --------------------------------------------------
+
+  const replenishQueue = useCallback(
+    async (track: SpotifyTrack) => {
+      if (
+        replenishingRef.current ||
+        !deviceIdRef.current ||
+        !tokenRef.current ||
+        !track.uri
+      ) {
+        return;
+      }
+
+      if (replenishedTracksRef.current.has(track.uri)) {
+        return;
+      }
+
+      replenishingRef.current = true;
+      replenishedTracksRef.current.add(track.uri);
+
+      try {
+        const deviceId = deviceIdRef.current;
+
+        if (!deviceId) {
+          return;
+        }
+
+        // Read Spotify's actual upcoming queue.
+        let nativeQueue = filterUpcomingTracks(
+  await getSpotifyQueue(),
+  track.uri,
+);
+
+setQueue(nativeQueue);
+
+        // No replenishment is needed if the queue is full.
+        if (nativeQueue.length >= MIN_QUEUE_SIZE) {
+          return;
+        }
+
+        const queuedUris = new Set(
+          nativeQueue.map((queuedTrack) => queuedTrack.uri),
+        );
+
+        // Keep asking for recommendations until the queue
+        // reaches its target or suitable recommendations run out.
+        let attempts = 0;
+
+        while (
+          nativeQueue.length < TARGET_QUEUE_SIZE &&
+          attempts < MAX_RECOMMENDATION_ATTEMPTS
+        ) {
+          attempts++;
+
+          const recommendation =
+            await onTrackEndedRef.current?.(track);
+
+          if (!recommendation) {
+            break;
+          }
+
+          // Never queue the currently playing track.
+          if (
+            recommendation === track.uri ||
+            recommendation === `spotify:track:${track.id}`
+          ) {
+            continue;
+          }
+
+          // Never queue the same URI twice.
+          if (queuedUris.has(recommendation)) {
+            continue;
+          }
+
+          // Avoid simultaneous additions for the same URI.
+          if (addingUrisRef.current.has(recommendation)) {
+            continue;
+          }
+
+          addingUrisRef.current.add(recommendation);
+
+          try {
+            await addSpotifyTrackToQueue(
+              recommendation,
+              deviceId,
+            );
+          } finally {
+            addingUrisRef.current.delete(recommendation);
+          }
+
+          // Read the queue again because Spotify, not the
+          // React component, owns the actual queue.
+          nativeQueue = filterUpcomingTracks(
+  await getSpotifyQueue(),
+  lastKnownTrackRef.current?.uri ?? track.uri,
+);
+
+setQueue(nativeQueue);
+
+          // Rebuild the set from the latest native queue.
+          queuedUris.clear();
+
+          for (const queuedTrack of nativeQueue) {
+            queuedUris.add(queuedTrack.uri);
+          }
+
+          // If Spotify did not add the requested track,
+          // avoid retrying that same recommendation indefinitely.
+          if (!queuedUris.has(recommendation)) {
+            queuedUris.add(recommendation);
+          }
+        }
+
+        setQueue(nativeQueue);
+
+        window.dispatchEvent(
+          new CustomEvent('studyspark:spotify-queue-updated'),
+        );
+
+        if (nativeQueue.length >= TARGET_QUEUE_SIZE) {
+          setMessage('Upcoming queue is ready.');
+        } else if (nativeQueue.length > 0) {
+          setMessage(
+            `Queue updated: ${nativeQueue.length} upcoming songs.`,
+          );
+        } else {
+          setMessage(
+            'No suitable recommendations were found.',
+          );
+        }
+      } catch (error) {
+        // Allow a later attempt if the operation failed.
+        replenishedTracksRef.current.delete(track.uri);
+
+        setMessage(
+          error instanceof Error
+            ? error.message
+            : 'Could not replenish the Spotify queue.',
+        );
+      } finally {
+        replenishingRef.current = false;
+      }
+    },
+    [],
+  );
+
+  // --------------------------------------------------
+  // PLAY A SIMILAR TRACK IF THE QUEUE IS EMPTY
+  // --------------------------------------------------
+
+  const playSimilar = useCallback(
+    async (track: SpotifyTrack) => {
+      try {
+        setMessage(
+          'Queue is empty — finding a similar song...',
+        );
+
+        const uri =
+          await onTrackEndedRef.current?.(track);
+
+        const deviceId = deviceIdRef.current;
+
+        if (!uri || !deviceId) {
+          setMessage(
+            'Queue is empty and no similar song was found.',
+          );
+          return;
+        }
+
+        if (uri === track.uri) {
+          setMessage(
+            'No different recommendation was found.',
+          );
+          return;
+        }
+
+        await startSpotifyTrack(uri, deviceId);
+
+        previousTrackUriRef.current = uri;
+
+        setMessage('Playing a similar song.');
+      } catch (error) {
+        setMessage(
+          error instanceof Error
+            ? error.message
+            : 'Could not play a similar song.',
+        );
+      }
+    },
+    [],
+  );
+
+  // --------------------------------------------------
+  // INITIALIZE SPOTIFY WEB PLAYBACK SDK
+  // --------------------------------------------------
+
   useEffect(() => {
     let cancelled = false;
     let player: SpotifyPlayer | null = null;
@@ -94,24 +492,33 @@ export default function SpotifyWebPlayback({
 
     if (!accessToken) {
       setReady(false);
-      setMessage('Spotify token missing. Please reconnect.');
+      setMessage(
+        'Spotify token missing. Please reconnect.',
+      );
+
+      onDeviceReadyRef.current?.(null);
+
       return;
     }
 
     setReady(false);
     setMessage('Loading Spotify Web Playback SDK...');
 
-    const previousCallback =
+    const oldReadyCallback =
       window.onSpotifyWebPlaybackSDKReady;
 
-    const initializePlayer = () => {
-      if (cancelled || !window.Spotify?.Player || player) {
+    const initialize = () => {
+      if (
+        cancelled ||
+        !window.Spotify?.Player ||
+        player
+      ) {
         return;
       }
 
       player = new window.Spotify.Player({
         name: 'StudySpark Music',
-        volume: volume / 100,
+        volume: volumeRef.current / 100,
         getOAuthToken: (callback) => {
           callback(tokenRef.current);
         },
@@ -125,8 +532,13 @@ export default function SpotifyWebPlayback({
           if (cancelled) return;
 
           deviceIdRef.current = data.device_id;
+
+          onDeviceReadyRef.current?.(data.device_id);
+
           setReady(true);
           setMessage('Spotify player ready.');
+
+          void refreshQueue();
         },
       );
 
@@ -137,67 +549,50 @@ export default function SpotifyWebPlayback({
 
           if (deviceIdRef.current === data.device_id) {
             deviceIdRef.current = null;
+            onDeviceReadyRef.current?.(null);
           }
 
           setReady(false);
+
           setMessage(
-            'Spotify playback device went offline. Waiting for reconnection...',
+            'Spotify playback device went offline.',
           );
         },
       );
 
-      player.addListener(
+      for (const event of [
         'initialization_error',
-        (data: { message: string }) => {
-          if (!cancelled) {
-            setMessage(
-              `Player initialization error: ${data.message}`,
-            );
-          }
-        },
-      );
-
-      player.addListener(
         'authentication_error',
-        (data: { message: string }) => {
-          if (!cancelled) {
-            setMessage(
-              `Spotify authentication error: ${data.message}`,
-            );
-          }
-        },
-      );
-
-      player.addListener(
         'account_error',
-        (data: { message: string }) => {
+        'playback_error',
+      ]) {
+        player.addListener(
+          event,
+          (data: { message: string }) => {
+            if (!cancelled) {
+              setMessage(
+                `${event.replace(/_/g, ' ')}: ${data.message}`,
+              );
+            }
+          },
+        );
+      }
+
+      player.addListener(
+        'autoplay_failed',
+        () => {
           if (!cancelled) {
             setMessage(
-              `Spotify account error: ${data.message}`,
+              'Press Play to allow browser playback.',
             );
           }
         },
       );
 
-      player.addListener(
-        'playback_error',
-        (data: { message: string }) => {
-          if (!cancelled) {
-            setMessage(`Playback error: ${data.message}`);
-          }
-        },
-      );
+      // ----------------------------------------------
+      // PLAYBACK STATE CHANGES
+      // ----------------------------------------------
 
-      player.addListener('autoplay_failed', () => {
-        if (!cancelled) {
-          setMessage(
-            'Playback was blocked. Press Play to continue.',
-          );
-        }
-      });
-
-      // Spotify sends updates when playback state changes.
-      // The timer effect below fills in the seconds between updates.
       player.addListener(
         'player_state_changed',
         (state: SpotifyPlayerState | null) => {
@@ -205,18 +600,41 @@ export default function SpotifyWebPlayback({
 
           if (!state) {
             setPaused(true);
-            setPosition(0);
-            setDuration(0);
-            setCurrentTrack(null);
             return;
           }
 
+          const track = state.track_window.current_track;
+
+          if (track) {
+            lastKnownTrackRef.current = track;
+
+            // Reset replenishment eligibility when a new
+            // track becomes the current track.
+            if (
+              previousTrackUriRef.current !== track.uri
+            ) {
+              previousTrackUriRef.current = track.uri;
+
+              replenishedTracksRef.current.delete(track.uri);
+            }
+          }
+
+          setCurrentTrack(track);
           setPaused(state.paused);
           setDuration(state.duration);
-          setCurrentTrack(state.track_window.current_track);
 
           if (!isSeekingRef.current) {
             setPosition(state.position);
+          }
+
+          // Replenish near the end of the current track.
+          if (
+            track &&
+            !state.paused &&
+            state.duration > 0 &&
+            state.position >= state.duration - 5000
+          ) {
+            void replenishQueue(track);
           }
         },
       );
@@ -226,15 +644,13 @@ export default function SpotifyWebPlayback({
       void player
         .connect()
         .then((success) => {
-          if (cancelled) return;
-
-          if (!success) {
+          if (!cancelled && !success) {
             setMessage(
-              'Spotify could not connect. Check your account and browser.',
+              'Spotify could not connect. Check your browser and account.',
             );
           }
         })
-        .catch((error: unknown) => {
+        .catch((error) => {
           if (!cancelled) {
             setMessage(
               error instanceof Error
@@ -246,29 +662,32 @@ export default function SpotifyWebPlayback({
     };
 
     if (window.Spotify?.Player) {
-      initializePlayer();
+      initialize();
     } else {
-      const script = document.querySelector<HTMLScriptElement>(
-        `script[src="${SDK_URL}"]`,
-      );
+      let script =
+        document.querySelector<HTMLScriptElement>(
+          `script[src="${SDK_URL}"]`,
+        );
 
       window.onSpotifyWebPlaybackSDKReady = () => {
-        previousCallback?.();
-        initializePlayer();
+        oldReadyCallback?.();
+        initialize();
       };
 
       if (!script) {
-        const newScript = document.createElement('script');
-        newScript.src = SDK_URL;
-        newScript.async = true;
+        script = document.createElement('script');
+        script.src = SDK_URL;
+        script.async = true;
 
-        newScript.onerror = () => {
+        script.onerror = () => {
           if (!cancelled) {
-            setMessage('Could not load the Spotify SDK.');
+            setMessage(
+              'Could not load the Spotify SDK.',
+            );
           }
         };
 
-        document.body.appendChild(newScript);
+        document.body.appendChild(script);
       }
 
       timeoutId = window.setTimeout(() => {
@@ -287,112 +706,101 @@ export default function SpotifyWebPlayback({
         window.clearTimeout(timeoutId);
       }
 
-      // Invalidate playback requests still in progress.
-      requestNumberRef.current += 1;
-
       if (playerRef.current === player) {
         playerRef.current = null;
       }
 
       player?.disconnect();
-      deviceIdRef.current = null;
 
-      if (
-        window.onSpotifyWebPlaybackSDKReady &&
-        window.onSpotifyWebPlaybackSDKReady !== previousCallback
-      ) {
-        window.onSpotifyWebPlaybackSDKReady = previousCallback;
-      }
+      deviceIdRef.current = null;
+      onDeviceReadyRef.current?.(null);
     };
 
-    // Intentionally initialize only for the access-token session.
+    // The player instance is created once per token session.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
-  // Keep the displayed timer synchronized with Spotify's actual
-  // playback position. Spotify's state-change event is not a
-  // once-per-second timer, so poll the current state while playing.
+  // --------------------------------------------------
+  // POLL CURRENT PLAYBACK POSITION
+  // --------------------------------------------------
+
   useEffect(() => {
     if (!ready || paused || !playerRef.current) {
       return;
     }
 
     let cancelled = false;
-    let timerId: number | undefined;
+    let timer: number | undefined;
 
-    const syncPlaybackPosition = async () => {
-      const player = playerRef.current;
-
-      if (!player || cancelled) return;
-
+    const poll = async () => {
       try {
-        const state = await player.getCurrentState();
+        const state =
+          await playerRef.current?.getCurrentState();
 
-        if (cancelled || !state) return;
+        if (!cancelled && state) {
+          const track = state.track_window.current_track;
 
-        setPaused(state.paused);
-        setDuration(state.duration);
-        setCurrentTrack(state.track_window.current_track);
+          if (track) {
+            lastKnownTrackRef.current = track;
+          }
 
-        if (!isSeekingRef.current) {
-          setPosition(state.position);
+          setCurrentTrack(track);
+          setPaused(state.paused);
+          setDuration(state.duration);
+
+          if (!isSeekingRef.current) {
+            setPosition(state.position);
+          }
         }
       } catch {
-        // Ignore a temporary state-read failure.
-        // The next tick or Spotify event can restore synchronization.
+        // Retry on the next poll.
       }
 
       if (!cancelled) {
-        timerId = window.setTimeout(
-          syncPlaybackPosition,
-          1000,
-        );
+        timer = window.setTimeout(poll, 1000);
       }
     };
 
-    void syncPlaybackPosition();
+    void poll();
 
     return () => {
       cancelled = true;
 
-      if (timerId !== undefined) {
-        window.clearTimeout(timerId);
+      if (timer !== undefined) {
+        window.clearTimeout(timer);
       }
     };
   }, [ready, paused]);
 
-  // Load the selected track on the existing player.
+  // --------------------------------------------------
+  // PLAY A SELECTED SPOTIFY TRACK
+  // --------------------------------------------------
+
   useEffect(() => {
-    if (!trackUri || !ready || !deviceIdRef.current || !accessToken) {
+    if (
+      !trackUri ||
+      !ready ||
+      !deviceIdRef.current ||
+      !accessToken ||
+      previousTrackUriRef.current === trackUri
+    ) {
       return;
     }
 
-    if (previousTrackUriRef.current === trackUri) {
-      return;
-    }
-
-    const requestNumber = ++requestNumberRef.current;
     let cancelled = false;
 
-    async function loadTrack() {
+    async function load() {
       try {
         const player = playerRef.current;
         const deviceId = deviceIdRef.current;
 
         if (!player || !deviceId) {
-          throw new Error('Spotify device is not ready.');
+          throw new Error(
+            'Spotify device is not ready.',
+          );
         }
-
-        setMessage('Loading selected song...');
 
         await player.activateElement();
-
-        if (
-          cancelled ||
-          requestNumber !== requestNumberRef.current
-        ) {
-          return;
-        }
 
         const response = await fetch(
           `https://api.spotify.com/v1/me/player/play?device_id=${encodeURIComponent(deviceId)}`,
@@ -409,64 +817,62 @@ export default function SpotifyWebPlayback({
         );
 
         if (!response.ok) {
-          const errorText = await response.text();
+          const body = await response.text();
 
           throw new Error(
-            `Could not play track (${response.status}): ${errorText}`,
+            `Could not play track (${response.status}): ${body}`,
           );
         }
 
-        if (
-          cancelled ||
-          requestNumber !== requestNumberRef.current
-        ) {
-          return;
-        }
+        if (cancelled) return;
 
         previousTrackUriRef.current = trackUri;
-        setMessage('Track sent to Spotify player.');
+
+        // Allow the selected track to trigger replenishment.
+        if (trackUri) {
+  replenishedTracksRef.current.delete(trackUri);
+}
+
+        setMessage('Playing selected song.');
+
+        void refreshQueue();
       } catch (error) {
-        if (
-          !cancelled &&
-          requestNumber === requestNumberRef.current
-        ) {
+        if (!cancelled) {
           setMessage(
             error instanceof Error
               ? error.message
-              : 'Could not load the selected song.',
+              : 'Could not load selected song.',
           );
         }
       }
     }
 
-    void loadTrack();
+    void load();
 
     return () => {
       cancelled = true;
     };
-  }, [ready, trackUri, accessToken]);
+  }, [
+    ready,
+    trackUri,
+    accessToken,
+    refreshQueue,
+  ]);
 
-  async function changeVolume(value: number) {
-    const nextValue = Math.max(0, Math.min(100, value));
-
-    setVolume(nextValue);
-
-    try {
-      await playerRef.current?.setVolume(nextValue / 100);
-    } catch {
-      setMessage('Could not change volume.');
-    }
-  }
+  // --------------------------------------------------
+  // PLAYER CONTROLS
+  // --------------------------------------------------
 
   async function togglePlayback() {
     const player = playerRef.current;
 
-    if (!player || !currentTrack) {
-      setMessage('Select a song and wait for it to load first.');
+    if (!player) {
+      setMessage('Spotify player is not ready yet.');
       return;
     }
 
     try {
+      await player.activateElement();
       await player.togglePlay();
     } catch (error) {
       setMessage(
@@ -480,24 +886,102 @@ export default function SpotifyWebPlayback({
   async function previousTrack() {
     const player = playerRef.current;
 
-    if (!player || !currentTrack) return;
+    if (!player || !ready) {
+      setMessage('Spotify player is not ready yet.');
+      return;
+    }
 
     try {
       await player.previousTrack();
-    } catch {
-      setMessage('Could not play the previous track.');
+
+      setMessage('Playing previous track.');
+
+      window.setTimeout(
+        () => void refreshQueue(),
+        700,
+      );
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'Could not play previous track.',
+      );
     }
   }
 
   async function nextTrack() {
     const player = playerRef.current;
 
-    if (!player || !currentTrack) return;
+    const current =
+      currentTrack ?? lastKnownTrackRef.current;
+
+    if (!player || !ready) {
+      setMessage('Spotify player is not ready yet.');
+      return;
+    }
 
     try {
-      await player.nextTrack();
+      setMessage('Checking Spotify queue...');
+
+      const nativeQueue = filterUpcomingTracks(
+  await getSpotifyQueue(),
+  currentTrack?.uri ??
+    lastKnownTrackRef.current?.uri ??
+    null,
+);
+
+setQueue(nativeQueue);
+
+      if (nativeQueue.length > 0) {
+        await player.nextTrack();
+
+        setMessage('Skipping to next queued song.');
+      } else if (current) {
+        await playSimilar(current);
+      } else {
+        await player.nextTrack();
+
+        setMessage('Skipped to next track.');
+      }
+
+      window.setTimeout(
+        () => void refreshQueue(),
+        900,
+      );
+    } catch (error) {
+      try {
+        await player.nextTrack();
+
+        setMessage(
+          'Skipped using Spotify player controls.',
+        );
+      } catch (fallbackError) {
+        setMessage(
+          fallbackError instanceof Error
+            ? fallbackError.message
+            : error instanceof Error
+              ? error.message
+              : 'Could not play next track.',
+        );
+      }
+    }
+  }
+
+  async function changeVolume(value: number) {
+    const nextVolume = Math.max(
+      0,
+      Math.min(100, value),
+    );
+
+    setVolume(nextVolume);
+    volumeRef.current = nextVolume;
+
+    try {
+      await playerRef.current?.setVolume(
+        nextVolume / 100,
+      );
     } catch {
-      setMessage('Could not play the next track.');
+      setMessage('Could not change volume.');
     }
   }
 
@@ -519,18 +1003,17 @@ export default function SpotifyWebPlayback({
     }
   }
 
-  function formatTime(milliseconds: number) {
-    const safeMilliseconds = Math.max(
-      0,
-      Number.isFinite(milliseconds) ? milliseconds : 0,
-    );
+  function time(ms: number): string {
+    const total = Math.floor(Math.max(0, ms) / 1000);
 
-    const seconds = Math.floor(safeMilliseconds / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-
-    return `${minutes}:${String(remainingSeconds).padStart(2, '0')}`;
+    return `${Math.floor(total / 60)}:${String(
+      total % 60,
+    ).padStart(2, '0')}`;
   }
+
+  // --------------------------------------------------
+  // PLAYER UI
+  // --------------------------------------------------
 
   return (
     <section className="spotify-web-player">
@@ -539,11 +1022,14 @@ export default function SpotifyWebPlayback({
           <span className="spotify-player-label">
             STUDYSPARK MUSIC
           </span>
+
           <h3>Spotify Player</h3>
         </div>
 
         <span
-          className={`spotify-status ${ready ? 'ready' : ''}`}
+          className={`spotify-status ${
+            ready ? 'ready' : ''
+          }`}
         >
           {ready ? 'Connected' : 'Connecting'}
         </span>
@@ -573,7 +1059,8 @@ export default function SpotifyWebPlayback({
           <span>
             {currentTrack?.artists
               ?.map((artist) => artist.name)
-              .join(', ') ?? 'Select a Spotify track to begin'}
+              .join(', ') ??
+              'Select a Spotify track to begin'}
           </span>
 
           {currentTrack && (
@@ -595,9 +1082,9 @@ export default function SpotifyWebPlayback({
             isSeekingRef.current = true;
             setPosition(Number(event.target.value));
           }}
-          onPointerUp={(event) => {
-            void seekTo(Number(event.currentTarget.value));
-          }}
+          onPointerUp={(event) =>
+            void seekTo(Number(event.currentTarget.value))
+          }
           onKeyUp={(event) => {
             if (
               event.key.startsWith('Arrow') ||
@@ -617,8 +1104,8 @@ export default function SpotifyWebPlayback({
         />
 
         <div className="spotify-time">
-          <span>{formatTime(position)}</span>
-          <span>{formatTime(duration)}</span>
+          <span>{time(position)}</span>
+          <span>{time(duration)}</span>
         </div>
       </div>
 
@@ -626,7 +1113,7 @@ export default function SpotifyWebPlayback({
         <button
           type="button"
           onClick={() => void previousTrack()}
-          disabled={!ready || !currentTrack}
+          disabled={!ready}
           aria-label="Previous track"
         >
           |◀
@@ -636,7 +1123,7 @@ export default function SpotifyWebPlayback({
           type="button"
           className="spotify-play-button"
           onClick={() => void togglePlayback()}
-          disabled={!ready || !currentTrack}
+          disabled={!ready}
           aria-label={paused ? 'Play' : 'Pause'}
         >
           {paused ? '▶' : 'Ⅱ'}
@@ -645,7 +1132,7 @@ export default function SpotifyWebPlayback({
         <button
           type="button"
           onClick={() => void nextTrack()}
-          disabled={!ready || !currentTrack}
+          disabled={!ready}
           aria-label="Next track"
         >
           ▶|
@@ -654,10 +1141,16 @@ export default function SpotifyWebPlayback({
 
       <div className="spotify-volume-control">
         <span aria-hidden="true">
-          {volume === 0 ? '🔇' : volume < 50 ? '🔉' : '🔊'}
+          {volume === 0
+            ? '🔇'
+            : volume < 50
+              ? '🔉'
+              : '🔊'}
         </span>
 
-        <label htmlFor="spotify-volume">Volume</label>
+        <label htmlFor="spotify-volume">
+          Volume
+        </label>
 
         <input
           id="spotify-volume"
@@ -675,6 +1168,64 @@ export default function SpotifyWebPlayback({
           {volume}%
         </span>
       </div>
+
+      <div className="spotify-queue-heading">
+        <strong>Up next ({queue.length})</strong>
+
+        <button
+          type="button"
+          onClick={() =>
+            setShowQueue((value) => !value)
+          }
+        >
+          {showQueue ? 'Hide queue' : 'View queue'}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void refreshQueue()}
+          disabled={queueLoading}
+        >
+          {queueLoading ? 'Refreshing…' : 'Refresh'}
+        </button>
+      </div>
+
+      {showQueue && (
+        <div className="spotify-queue-list">
+          {queueLoading && queue.length === 0 ? (
+            <p>Loading queue…</p>
+          ) : queue.length > 0 ? (
+            queue.map((track) => (
+              <div
+                className="spotify-queue-item"
+                key={track.uri}
+              >
+                {track.album?.images?.[0]?.url && (
+                  <img
+                    src={track.album.images[0].url}
+                    alt={`${track.name} album cover`}
+                  />
+                )}
+
+                <div>
+                  <strong>{track.name}</strong>
+
+                  <span>
+                    {track.artists
+                      ?.map((artist) => artist.name)
+                      .join(', ')}
+                  </span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>
+              Your Spotify queue is empty. Add a song using
+              + Queue.
+            </p>
+          )}
+        </div>
+      )}
 
       <p className="spotify-player-message" role="status">
         {message}

@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './PopularMusic.css';
 
 import SpotifyWebPlayback from './SpotifyWebPlayback';
 
 import {
   getSpotifyAccessToken,
+  addSpotifyTrackToQueue,
   getRecentlyPlayedTracks,
   loginWithSpotify,
   logoutSpotify,
@@ -93,7 +95,9 @@ function convertITunesTrack(
   };
 }
 
-function convertSpotifyTrack(track: SpotifyTrack): SpotifySong {
+function convertSpotifyTrack(
+  track: SpotifyTrack,
+): SpotifySong {
   return {
     source: 'spotify',
     id: track.id,
@@ -133,8 +137,6 @@ export default function PopularMusic() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [search, setSearch] = useState('');
 
-  // Keep this selection separate from the search query.
-  // Typing or searching must not clear the currently selected track.
   const [selectedSong, setSelectedSong] =
     useState<SelectedSong | null>(null);
 
@@ -142,19 +144,38 @@ export default function PopularMusic() {
     () => Boolean(getSpotifyAccessToken()),
   );
 
-  const [itunesResults, setItunesResults] = useState<ITunesSong[]>([]);
-  const [spotifyResults, setSpotifyResults] = useState<SpotifySong[]>([]);
+  const [spotifyDeviceId, setSpotifyDeviceId] =
+    useState<string | null>(null);
 
-  const [recentlyPlayed, setRecentlyPlayed] = useState<SpotifySong[]>([]);
-  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [itunesResults, setItunesResults] =
+    useState<ITunesSong[]>([]);
+
+  const [spotifyResults, setSpotifyResults] =
+    useState<SpotifySong[]>([]);
+
+  const [recentlyPlayed, setRecentlyPlayed] =
+    useState<SpotifySong[]>([]);
+
+  const [isLoadingHistory, setIsLoadingHistory] =
+    useState(false);
+
   const [historyError, setHistoryError] = useState('');
-
   const [musicError, setMusicError] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  const [failedImages, setFailedImages] = useState<Set<string>>(
-    () => new Set(),
-  );
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [playingSongId, setPlayingSongId] =
+    useState<string | null>(null);
+
+  const [previewError, setPreviewError] = useState('');
+  const [queueMessage, setQueueMessage] = useState('');
+
+  const [queueingTrackId, setQueueingTrackId] =
+    useState<string | null>(null);
+
+  const [failedImages, setFailedImages] =
+    useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     setConnected(Boolean(getSpotifyAccessToken()));
@@ -205,63 +226,66 @@ export default function PopularMusic() {
     };
   }, [connected]);
 
-// Load category recommendations from Spotify or iTunes.
-useEffect(() => {
-  if (search.trim()) return;
+  // Load recommendations when browsing categories.
+  useEffect(() => {
+    if (search.trim()) return;
 
-  let cancelled = false;
+    let cancelled = false;
 
-  async function loadRecommendations() {
-    setIsSearching(true);
-    setMusicError("");
+    async function loadRecommendations() {
+      setIsSearching(true);
+      setMusicError('');
 
-    try {
-      const term =
-        categorySearchTerms[activeCategory] ?? "popular songs";
+      try {
+        const term =
+          categorySearchTerms[activeCategory] ?? 'popular songs';
 
-      if (connected) {
-        // Spotify-connected users receive Spotify tracks.
-        const tracks = await searchSpotifyTracks(term);
+        if (connected) {
+          const tracks = await searchSpotifyTracks(term);
 
-        if (cancelled) return;
+          if (cancelled) return;
 
-        setSpotifyResults(tracks.map(convertSpotifyTrack));
-      } else {
-        // Users without Spotify receive iTunes results.
-        const tracks = await searchITunesTracks(term);
+          setSpotifyResults(
+            tracks.map(convertSpotifyTrack),
+          );
+        } else {
+          const tracks = await searchITunesTracks(term);
 
-        if (cancelled) return;
+          if (cancelled) return;
 
-        setItunesResults(
-          tracks.map((track) =>
-            convertITunesTrack(track, activeCategory),
-          ),
-        );
-      }
-    } catch (error) {
-      if (!cancelled) {
-        setMusicError(
-          error instanceof Error
-            ? error.message
-            : "Unable to load music recommendations.",
-        );
-      }
-    } finally {
-      if (!cancelled) {
-        setIsSearching(false);
+          setItunesResults(
+            tracks.map((track) =>
+              convertITunesTrack(track, activeCategory),
+            ),
+          );
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setMusicError(
+            error instanceof Error
+              ? error.message
+              : 'Unable to load music recommendations.',
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsSearching(false);
+        }
       }
     }
-  }
 
-  void loadRecommendations();
+    void loadRecommendations();
 
-  return () => {
-    cancelled = true;
-  };
-}, [connected, activeCategory, search]);
+    return () => {
+      cancelled = true;
+    };
+  }, [connected, activeCategory, search]);
 
   const visibleSongs = useMemo(() => {
-    const results = connected ? spotifyResults : itunesResults;
+    const results = connected
+      ? spotifyResults
+      : itunesResults;
+
     const query = search.trim().toLowerCase();
 
     if (!query) return results;
@@ -271,13 +295,26 @@ useEffect(() => {
         song.title.toLowerCase().includes(query) ||
         song.artist.toLowerCase().includes(query),
     );
-  }, [connected, spotifyResults, itunesResults, search]);
+  }, [
+    connected,
+    spotifyResults,
+    itunesResults,
+    search,
+  ]);
 
   async function handleSpotifyLogin() {
     try {
       setMusicError('');
+
+      localStorage.setItem(
+        'studyspark-return-tab',
+        'Study Music',
+      );
+
       await loginWithSpotify();
     } catch (error) {
+      localStorage.removeItem('studyspark-return-tab');
+
       setMusicError(
         error instanceof Error
           ? error.message
@@ -286,33 +323,80 @@ useEffect(() => {
     }
   }
 
+  async function playITunesPreview(song: ITunesSong) {
+    const audio = previewAudioRef.current;
+
+    if (!audio) return;
+
+    if (!song.previewUrl) {
+      audio.pause();
+      audio.removeAttribute('src');
+
+      setPlayingSongId(null);
+      setPreviewError('Preview unavailable for this song.');
+
+      return;
+    }
+
+    setPreviewError('');
+
+    if (
+      playingSongId === song.id &&
+      !audio.paused
+    ) {
+      audio.pause();
+      setPlayingSongId(null);
+      return;
+    }
+
+    audio.pause();
+    setPlayingSongId(null);
+
+    audio.src = song.previewUrl;
+    audio.load();
+
+    try {
+      await audio.play();
+      setPlayingSongId(song.id);
+    } catch {
+      setPlayingSongId(null);
+
+      setPreviewError(
+        'Could not play this preview. Please try another song.',
+      );
+    }
+  }
+
   async function handleSearch() {
     const query = search.trim();
 
     if (!query) {
-      setMusicError('Enter a song title or artist to search.');
+      setMusicError(
+        'Enter a song title or artist to search.',
+      );
       return;
     }
 
     setIsSearching(true);
     setMusicError('');
 
-    // Do NOT clear selectedSong here.
-    // The existing player should continue showing the selected track.
-
     try {
       if (connected) {
         if (!getSpotifyAccessToken()) {
           setConnected(false);
+
           setMusicError(
             'Your Spotify session expired. Please reconnect.',
           );
+
           return;
         }
 
         const tracks = await searchSpotifyTracks(query);
 
-        setSpotifyResults(tracks.map(convertSpotifyTrack));
+        setSpotifyResults(
+          tracks.map(convertSpotifyTrack),
+        );
 
         if (tracks.length === 0) {
           setMusicError('No Spotify tracks found.');
@@ -344,25 +428,115 @@ useEffect(() => {
   function handleClearSearch() {
     setSearch('');
     setSpotifyResults([]);
+    setItunesResults([]);
     setMusicError('');
     setActiveCategory('All');
     setFailedImages(new Set());
-
-    // Preserve selectedSong so the player remains visible.
   }
 
   function handleDisconnect() {
     logoutSpotify();
 
     setConnected(false);
+    setSpotifyDeviceId(null);
     setSpotifyResults([]);
     setRecentlyPlayed([]);
     setSelectedSong(null);
     setSearch('');
     setMusicError('');
     setHistoryError('');
+    setQueueMessage('');
     setFailedImages(new Set());
     setActiveCategory('All');
+
+    const audio = previewAudioRef.current;
+
+    if (audio) {
+      audio.pause();
+      audio.removeAttribute('src');
+    }
+
+    setPlayingSongId(null);
+  }
+
+  async function handleAddToQueue(song: SpotifySong) {
+    if (!connected) return;
+
+    if (queueingTrackId !== null) return;
+
+    if (!spotifyDeviceId) {
+      setQueueMessage(
+        'Spotify player is still connecting. Wait until its status says Connected, then try again.',
+      );
+      return;
+    }
+
+    setQueueingTrackId(song.id);
+    setQueueMessage('');
+
+    try {
+      await addSpotifyTrackToQueue(
+        song.spotifyUri,
+        spotifyDeviceId,
+      );
+
+      window.dispatchEvent(
+        new CustomEvent('studyspark:spotify-queue-updated'),
+      );
+
+      setQueueMessage(
+  `"${song.title}" was added to the Spotify queue.`,
+);
+    } catch (error) {
+      setQueueMessage(
+        error instanceof Error
+          ? error.message
+          : 'Could not add this song to the Spotify queue.',
+      );
+    } finally {
+      setQueueingTrackId(null);
+    }
+  }
+
+  // Find a different track if the native Spotify queue is empty.
+  async function findSimilarTrack(currentTrack: {
+    id: string;
+    name: string;
+    uri: string;
+    artists: Array<{ name: string }>;
+  }): Promise<string | null> {
+    const artist = currentTrack.artists?.[0]?.name ?? '';
+
+    const queries = [
+      artist ? `artist:${artist}` : '',
+      artist,
+      currentTrack.name,
+    ].filter(Boolean);
+
+    const excludedIds = new Set([
+      currentTrack.id,
+      ...recentlyPlayed.map((song) => song.id),
+    ]);
+
+    for (const query of queries) {
+      try {
+        const candidates = await searchSpotifyTracks(query);
+
+        const match = candidates.find(
+          (track) =>
+            track.id !== currentTrack.id &&
+            !excludedIds.has(track.id),
+        );
+
+        if (match) {
+          return match.uri;
+        }
+      } catch {
+        // Try the next query.
+      }
+    }
+
+    return null;
   }
 
   function handleImageError(imageKey: string) {
@@ -373,85 +547,135 @@ useEffect(() => {
     });
   }
 
-  function selectSong(song: SelectedSong) {
-    setSelectedSong(song);
-    setMusicError('');
-  }
-
-  function renderSongCard(song: SelectedSong, imageKey: string) {
+  function renderSongCard(
+    song: SelectedSong,
+    imageKey: string,
+  ) {
     const selected =
       selectedSong?.source === song.source &&
       selectedSong.id === song.id;
 
+    const isPlaying =
+      song.source === 'itunes' &&
+      playingSongId === song.id;
+
     const showImage =
-      Boolean(song.imageUrl) && !failedImages.has(imageKey);
+      Boolean(song.imageUrl) &&
+      !failedImages.has(imageKey);
 
     return (
-      <button
+      <div
+        className="music-card-wrapper"
         key={imageKey}
-        type="button"
-        className={`music-card ${selected ? 'selected' : ''}`}
-        onClick={() => selectSong(song)}
-        aria-label={`Select ${song.title} by ${song.artist}`}
       >
-        <div className="music-cover">
-          {showImage ? (
-            <img
-              src={song.imageUrl}
-              alt={`${song.title} album cover`}
-              loading="lazy"
-              onError={() => handleImageError(imageKey)}
-            />
-          ) : (
-            <div className="music-cover-placeholder">
-              {song.emoji}
-            </div>
-          )}
+        <button
+          type="button"
+          className={`music-card ${selected ? 'selected' : ''}`}
+          onClick={() => {
+            setSelectedSong(song);
+            setMusicError('');
 
-          <span className="music-card-category">
-            {song.emoji} {song.category}
-          </span>
-        </div>
-
-        <div className="music-card-info">
-          <div className="music-card-text">
-            <h4>{song.title}</h4>
-            <p>{song.artist}</p>
-
-            {song.source === 'spotify' && song.playedAt && (
-              <small>{formatPlayedAt(song.playedAt)}</small>
+            if (song.source === 'itunes') {
+              void playITunesPreview(song);
+            } else {
+              setPreviewError('');
+            }
+          }}
+          aria-label={`${isPlaying ? 'Pause' : 'Play'} ${song.title} by ${song.artist}`}
+        >
+          <div className="music-cover">
+            {showImage ? (
+              <img
+                src={song.imageUrl}
+                alt={`${song.title} album cover`}
+                loading="lazy"
+                onError={() => handleImageError(imageKey)}
+              />
+            ) : (
+              <div className="music-cover-placeholder">
+                {song.emoji}
+              </div>
             )}
           </div>
 
-          <span className="music-play-icon" aria-hidden="true">
-            {selected ? '♫' : '▶'}
-          </span>
-        </div>
-      </button>
+          <div className="music-card-info">
+            <div className="music-card-text">
+              <h4>{song.title}</h4>
+              <p>{song.artist}</p>
+
+              {song.source === 'spotify' &&
+                song.playedAt && (
+                  <small>
+                    {formatPlayedAt(song.playedAt)}
+                  </small>
+                )}
+            </div>
+
+            <span
+              className="music-play-icon"
+              aria-hidden="true"
+            >
+              {isPlaying ? 'Ⅱ' : '▶'}
+            </span>
+          </div>
+        </button>
+
+        {connected && song.source === 'spotify' && (
+          <button
+            type="button"
+            className="music-queue-button"
+            onClick={() => void handleAddToQueue(song)}
+            disabled={
+              queueingTrackId === song.id ||
+              !spotifyDeviceId
+            }
+            aria-label={`Add ${song.title} to Spotify queue`}
+            title={
+              spotifyDeviceId
+                ? 'Add to Spotify queue'
+                : 'Waiting for Spotify player to connect'
+            }
+          >
+            {queueingTrackId === song.id
+              ? 'Adding…'
+              : spotifyDeviceId
+                ? '+ Queue'
+                : 'Connecting…'}
+          </button>
+        )}
+      </div>
     );
   }
 
   const selectedSpotifySong =
-    selectedSong?.source === 'spotify' ? selectedSong : null;
+    selectedSong?.source === 'spotify'
+      ? selectedSong
+      : null;
 
   return (
     <section className="popular-music">
       <header className="music-heading">
         <div>
-          <span className="music-eyebrow">YOUR SOUNDTRACK</span>
+          <span className="music-eyebrow">
+            YOUR SOUNDTRACK
+          </span>
 
           <h2>
             Popular <span>Music</span>
           </h2>
 
-          <p>Find your rhythm. Focus on what matters.</p>
+          <p>
+            Find your rhythm. Focus on what matters.
+          </p>
 
           <div className="spotify-connect-area">
             <button
               type="button"
               className="spotify-connect-button"
               onClick={
-                connected ? handleDisconnect : handleSpotifyLogin
+                connected
+                  ? handleDisconnect
+                  : handleSpotifyLogin
               }
             >
               {connected
@@ -467,7 +691,10 @@ useEffect(() => {
           </div>
         </div>
 
-        <div className="music-heading-icon" aria-hidden="true">
+        <div
+          className="music-heading-icon"
+          aria-hidden="true"
+        >
           🎵
         </div>
       </header>
@@ -482,9 +709,6 @@ useEffect(() => {
           onChange={(event) => {
             setSearch(event.target.value);
             setMusicError('');
-            setSpotifyResults([]);
-
-            // Do NOT clear selectedSong here.
           }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -525,7 +749,22 @@ useEffect(() => {
         </p>
       )}
 
-      <div className="music-categories" aria-label="Music categories">
+      {previewError && (
+        <p className="spotify-error" role="status">
+          {previewError}
+        </p>
+      )}
+
+      {queueMessage && (
+        <p className="spotify-error" role="status">
+          {queueMessage}
+        </p>
+      )}
+
+      <div
+        className="music-categories"
+        aria-label="Music categories"
+      >
         {categories.map((category) => (
           <button
             key={category}
@@ -537,10 +776,9 @@ useEffect(() => {
               setActiveCategory(category);
               setSearch('');
               setSpotifyResults([]);
+              setItunesResults([]);
               setMusicError('');
               setFailedImages(new Set());
-
-              // Keep the current selected song while browsing.
             }}
           >
             {category}
@@ -582,7 +820,10 @@ useEffect(() => {
       ) : visibleSongs.length > 0 ? (
         <div className="music-grid">
           {visibleSongs.map((song) =>
-            renderSongCard(song, `${song.source}-${song.id}`),
+            renderSongCard(
+              song,
+              `${song.source}-${song.id}`,
+            ),
           )}
         </div>
       ) : (
@@ -592,27 +833,50 @@ useEffect(() => {
           <p>Try another search or category.</p>
 
           {search && (
-            <button type="button" onClick={handleClearSearch}>
+            <button
+              type="button"
+              onClick={handleClearSearch}
+            >
               Show recommendations
             </button>
           )}
         </div>
       )}
 
-      {/* The player stays mounted and visible while browsing. */}
+      {/* Keep the player mounted while browsing music. */}
       {connected && (
-        <div className="spotify-player-container" style={{ marginTop: '24px' }}>
+        <div
+          className="spotify-player-container"
+          style={{ marginTop: '24px' }}
+        >
           <SpotifyWebPlayback
             accessToken={getSpotifyAccessToken() ?? ''}
             trackUri={selectedSpotifySong?.spotifyUri}
+            onTrackEnded={findSimilarTrack}
+            onDeviceReady={setSpotifyDeviceId}
           />
         </div>
       )}
 
-      {/* Recently played history from the user's Spotify account. */}
+      <audio
+        ref={previewAudioRef}
+        preload="none"
+        onEnded={() => setPlayingSongId(null)}
+        onPause={() => setPlayingSongId(null)}
+        onError={() => {
+          setPlayingSongId(null);
+          setPreviewError(
+            'This preview could not be loaded.',
+          );
+        }}
+      />
+
       {connected && (
         <section className="recently-played-section">
-          <div className="music-section-title" style={{ marginTop: '32px' }}>
+          <div
+            className="music-section-title"
+            style={{ marginTop: '32px' }}
+          >
             <div>
               <h3>Recently Played</h3>
               <p>Your recent Spotify listening history</p>
@@ -636,8 +900,9 @@ useEffect(() => {
               <h3>Listening history unavailable</h3>
               <p>{historyError}</p>
               <p>
-                If you recently added the permission, disconnect and
-                reconnect Spotify to authorize it.
+                If you recently added the permission,
+                disconnect and reconnect Spotify to
+                authorize it.
               </p>
             </div>
           ) : recentlyPlayed.length > 0 ? (
@@ -654,87 +919,20 @@ useEffect(() => {
               <span>🎧</span>
               <h3>No recent tracks found</h3>
               <p>
-                Your Spotify account has no recent tracks available
-                to show, or Spotify returned an empty history.
+                Your Spotify account has no recent tracks
+                available to show, or Spotify returned an
+                empty history.
               </p>
             </div>
           )}
         </section>
       )}
 
-      {/* iTunes users get a preview player for their selected track. */}
-      {!connected && selectedSong?.source === 'itunes' && (
-        <div className="music-player-panel">
-          <div className="player-panel-heading">
-            <div>
-              <span className="music-eyebrow">SELECTED TRACK</span>
-              <h3>{selectedSong.title}</h3>
-              <p>{selectedSong.artist}</p>
-            </div>
-
-            <button
-              type="button"
-              className="close-player"
-              onClick={() => setSelectedSong(null)}
-              aria-label="Close music player"
-            >
-              ×
-            </button>
-          </div>
-
-          {selectedSong.previewUrl ? (
-            <div>
-              <audio
-                key={selectedSong.previewUrl}
-                controls
-                preload="none"
-                src={selectedSong.previewUrl}
-                style={{ width: '100%' }}
-              />
-
-              <p className="music-footer">
-                Preview provided courtesy of iTunes.
-              </p>
-
-              {selectedSong.trackViewUrl && (
-                <a
-                  href={selectedSong.trackViewUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="spotify-search-button"
-                  style={{
-                    display: 'inline-flex',
-                    marginTop: '12px',
-                    textDecoration: 'none',
-                  }}
-                >
-                  View on Apple Music/iTunes ↗
-                </a>
-              )}
-            </div>
-          ) : (
-            <div className="music-empty">
-              <h3>Preview unavailable</h3>
-              <p>This song does not have an available preview.</p>
-
-              {selectedSong.trackViewUrl && (
-                <a
-                  href={selectedSong.trackViewUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  View on Apple Music/iTunes ↗
-                </a>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
       {!connected && (
         <p className="music-footer">
-          Music previews courtesy of iTunes. Availability varies by track.
-          Follow Apple's attribution and store-link requirements.
+          Music previews courtesy of iTunes. Availability
+          varies by track. Follow Apple's attribution and
+          store-link requirements.
         </p>
       )}
 
